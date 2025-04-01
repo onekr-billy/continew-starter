@@ -81,14 +81,14 @@ public class LogRequest {
     private String os;
 
     public LogRequest(Set<Include> includes) {
-        this.method = ServletUtils.getReqMethod();
-        this.url = ServletUtils.getReqUrl();
-        this.ip = ServletUtils.getReqIp();
-        this.headers = (includes.contains(Include.REQUEST_HEADERS)) ? ServletUtils.getReqHeaders() : null;
+        this.method = ServletUtils.getRequestMethod();
+        this.url = ServletUtils.getRequestUrl();
+        this.ip = ServletUtils.getRequestIp();
+        this.headers = (includes.contains(Include.REQUEST_HEADERS)) ? ServletUtils.getRequestHeaders() : null;
         if (includes.contains(Include.REQUEST_BODY)) {
-            this.body = ServletUtils.getReqBody();
+            this.body = ServletUtils.getRequestBody();
         } else if (includes.contains(Include.REQUEST_PARAM)) {
-            this.param = ServletUtils.getReqParam();
+            this.param = ServletUtils.getRequestParams();
         }
         this.address = (includes.contains(Include.IP_ADDRESS))
             ? ExceptionUtils.exToNull(() -> IpUtils.getIpv4Address(this.ip))

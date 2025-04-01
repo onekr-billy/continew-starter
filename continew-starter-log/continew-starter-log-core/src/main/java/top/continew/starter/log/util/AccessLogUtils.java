@@ -16,16 +16,16 @@
 
 package top.continew.starter.log.util;
 
+import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ObjectUtil;
-import top.continew.starter.json.jackson.util.JSONUtil;
+import com.fasterxml.jackson.databind.JsonNode;
+import top.continew.starter.json.jackson.util.JSONUtils;
 import top.continew.starter.log.model.AccessLogProperties;
 import top.continew.starter.log.model.LogProperties;
 import top.continew.starter.web.util.ServletUtils;
 import top.continew.starter.web.util.SpringWebUtils;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -36,6 +36,9 @@ import java.util.stream.Collectors;
  * @since 2.10.0
  */
 public class AccessLogUtils {
+
+    private AccessLogUtils() {
+    }
 
     /**
      * 资源路径 - doc 路径
@@ -58,7 +61,7 @@ public class AccessLogUtils {
         // 参数为空返回空
         Object params;
         try {
-            params = ServletUtils.getAccessLogReqParam();
+            params = getAccessLogReqParam();
         } catch (Exception e) {
             return null;
         }
@@ -76,7 +79,7 @@ public class AccessLogUtils {
             params = processTruncateLongParams(params, properties.getLongParamThreshold(), properties
                 .getLongParamMaxLength(), properties.getLongParamSuffix());
         }
-        return JSONUtil.toJsonStr(params);
+        return JSONUtils.toJsonStr(params);
     }
 
     /**
@@ -146,7 +149,7 @@ public class AccessLogUtils {
             return truncateLongParams((Map<String, Object>)params, threshold, maxLength, suffix);
         } else if (params instanceof List) {
             return ((List<?>)params).stream()
-                .filter(item -> item instanceof Map)
+                .filter(Map.class::isInstance)
                 .map(item -> truncateLongParams((Map<String, Object>)item, threshold, maxLength, suffix))
                 .collect(Collectors.toList());
         }
@@ -182,6 +185,25 @@ public class AccessLogUtils {
         return truncatedParams;
     }
 
-    private AccessLogUtils() {
+    /**
+     * 获取访问日志请求参数
+     *
+     * @return {@link Object }
+     */
+    private static Object getAccessLogReqParam() {
+        String body = ServletUtils.getRequestBody();
+        if (CharSequenceUtil.isNotBlank(body) && JSONUtils.isTypeJSON(body)) {
+            try {
+                JsonNode jsonNode = JSONUtils.getObjectMapper().readTree(body);
+                if (jsonNode.isArray()) {
+                    return JSONUtils.toBean(body, List.class);
+                } else {
+                    return JSONUtils.toBean(body, Map.class);
+                }
+            } catch (Exception e) {
+                return null;
+            }
+        }
+        return Collections.unmodifiableMap(ServletUtils.getRequestParams());
     }
 }

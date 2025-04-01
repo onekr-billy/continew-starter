@@ -19,7 +19,6 @@ package top.continew.starter.ratelimiter.aop;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.extra.servlet.JakartaServletUtil;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -36,7 +35,7 @@ import top.continew.starter.ratelimiter.autoconfigure.RateLimiterProperties;
 import top.continew.starter.ratelimiter.generator.RateLimiterNameGenerator;
 import top.continew.starter.ratelimiter.enums.LimitType;
 import top.continew.starter.ratelimiter.exception.RateLimiterException;
-import top.continew.starter.web.util.SpringWebUtils;
+import top.continew.starter.web.util.ServletUtils;
 
 import java.lang.reflect.Method;
 import java.time.Duration;
@@ -170,7 +169,7 @@ public class RateLimiterAspect {
         }
         // 获取后缀
         String suffix = switch (rateLimiter.type()) {
-            case IP -> JakartaServletUtil.getClientIP(SpringWebUtils.getRequest());
+            case IP -> ServletUtils.getRequestIp();
             case CLUSTER -> redissonClient.getId();
             default -> StringConstants.EMPTY;
         };

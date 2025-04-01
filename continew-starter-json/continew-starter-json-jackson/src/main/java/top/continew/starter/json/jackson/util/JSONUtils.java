@@ -33,13 +33,11 @@ import java.util.Map;
  * json 工具
  *
  * @author echo
- * @since 2025/03/31
+ * @since 2.11.0
  */
-public class JSONUtil {
-    /**
-     * 私有构造函数，防止实例化。
-     */
-    private JSONUtil() {
+public class JSONUtils {
+
+    private JSONUtils() {
     }
 
     /**

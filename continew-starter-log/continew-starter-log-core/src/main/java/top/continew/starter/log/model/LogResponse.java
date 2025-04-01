@@ -51,12 +51,12 @@ public class LogResponse {
     private Map<String, Object> param;
 
     public LogResponse(Set<Include> includes) {
-        this.status = ServletUtils.getRespStatus();
-        this.headers = (includes.contains(Include.RESPONSE_HEADERS)) ? ServletUtils.getRespHeaders() : null;
+        this.status = ServletUtils.getResponseStatus();
+        this.headers = (includes.contains(Include.RESPONSE_HEADERS)) ? ServletUtils.getResponseHeaders() : null;
         if (includes.contains(Include.RESPONSE_BODY)) {
-            this.body = ServletUtils.getRespBody();
+            this.body = ServletUtils.getResponseBody();
         } else if (includes.contains(Include.RESPONSE_PARAM)) {
-            this.param = ServletUtils.getRespParam();
+            this.param = ServletUtils.getResponseParams();
         }
     }
 

@@ -21,7 +21,6 @@ import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.extra.servlet.JakartaServletUtil;
 import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
-import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -30,7 +29,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.UriUtils;
 import top.continew.starter.core.constant.StringConstants;
-import top.continew.starter.json.jackson.util.JSONUtil;
+import top.continew.starter.json.jackson.util.JSONUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -41,25 +40,12 @@ import java.util.*;
  * Servlet 工具类
  *
  * @author Charles7c
+ * @author echo
  * @since 1.0.0
  */
 public class ServletUtils extends JakartaServletUtil {
 
     private ServletUtils() {
-    }
-
-    /**
-     * 获取请求属性
-     *
-     * @return {@link ServletRequestAttributes }
-     */
-    public static ServletRequestAttributes getRequestAttributes() {
-        try {
-            RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
-            return (ServletRequestAttributes)attributes;
-        } catch (Exception e) {
-            return null;
-        }
     }
 
     /**
@@ -111,45 +97,24 @@ public class ServletUtils extends JakartaServletUtil {
     }
 
     /**
-     * 获取 http request
-     *
-     * @return HttpServletRequest
-     */
-    public static HttpServletRequest getRequest() {
-        ServletRequestAttributes attributes = getRequestAttributes();
-        if (attributes == null) {
-            return null;
-        }
-        return attributes.getRequest();
-    }
-
-    /**
      * 获取请求方法
      *
      * @return {@link String }
+     * @since 2.11.0
      */
-    public static String getReqMethod() {
+    public static String getRequestMethod() {
         HttpServletRequest request = getRequest();
         return request != null ? request.getMethod() : null;
     }
 
     /**
-     * 获取session
-     *
-     * @return HttpSession
-     */
-    public static HttpSession getSession() {
-        HttpServletRequest request = getRequest();
-        return request != null ? request.getSession() : null;
-    }
-
-    /**
-     * 获取 请求 字符串参数
+     * 获取请求参数
      *
      * @param name 参数名
      * @return {@link String }
+     * @since 2.11.0
      */
-    public static String getReqParameter(String name) {
+    public static String getRequestParameter(String name) {
         HttpServletRequest request = getRequest();
         return request != null ? request.getParameter(name) : null;
     }
@@ -158,8 +123,9 @@ public class ServletUtils extends JakartaServletUtil {
      * 获取请求 Ip
      *
      * @return {@link String }
+     * @since 2.11.0
      */
-    public static String getReqIp() {
+    public static String getRequestIp() {
         HttpServletRequest request = getRequest();
         return request != null ? getClientIP(request) : null;
     }
@@ -168,19 +134,21 @@ public class ServletUtils extends JakartaServletUtil {
      * 获取请求头信息
      *
      * @return {@link Map }<{@link String }, {@link String }>
+     * @since 2.11.0
      */
-    public static Map<String, String> getReqHeaders() {
+    public static Map<String, String> getRequestHeaders() {
         HttpServletRequest request = getRequest();
         return request != null ? getHeaderMap(request) : Collections.emptyMap();
     }
 
     /**
-     * 获取请求url 包含 query 参数
-     * <p>http://localhost:8000/system/user?page=1&size=10</p>
+     * 获取请求 URL（包含 query 参数）
+     * <p>{@code http://localhost:8000/system/user?page=1&size=10}</p>
      *
      * @return {@link URI }
+     * @since 2.11.0
      */
-    public static URI getReqUrl() {
+    public static URI getRequestUrl() {
         HttpServletRequest request = getRequest();
         if (request == null) {
             return null;
@@ -203,8 +171,9 @@ public class ServletUtils extends JakartaServletUtil {
      * 获取请求路径
      *
      * @return {@link URI }
+     * @since 2.11.0
      */
-    public static String getReqPath() {
+    public static String getRequestPath() {
         HttpServletRequest request = getRequest();
         return request != null ? request.getRequestURI() : null;
     }
@@ -213,12 +182,13 @@ public class ServletUtils extends JakartaServletUtil {
      * 获取请求 body 参数
      *
      * @return {@link String }
+     * @since 2.11.0
      */
-    public static String getReqBody() {
+    public static String getRequestBody() {
         HttpServletRequest request = getRequest();
         if (request instanceof RepeatReadRequestWrapper wrapper && !wrapper.isMultipartContent(request)) {
             String body = JakartaServletUtil.getBody(request);
-            return JSONUtil.isTypeJSON(body) ? body : null;
+            return JSONUtils.isTypeJSON(body) ? body : null;
         }
         return null;
     }
@@ -227,55 +197,22 @@ public class ServletUtils extends JakartaServletUtil {
      * 获取请求参数
      *
      * @return {@link Map }<{@link String }, {@link Object }>
+     * @since 2.11.0
      */
-    public static Map<String, Object> getReqParam() {
-        String body = getReqBody();
-        return CharSequenceUtil.isNotBlank(body) && JSONUtil.isTypeJSON(body)
-            ? JSONUtil.toBean(body, Map.class)
+    public static Map<String, Object> getRequestParams() {
+        String body = getRequestBody();
+        return CharSequenceUtil.isNotBlank(body) && JSONUtils.isTypeJSON(body)
+            ? JSONUtils.toBean(body, Map.class)
             : Collections.unmodifiableMap(JakartaServletUtil.getParamMap(Objects.requireNonNull(getRequest())));
-    }
-
-    /**
-     * 获取访问日志请求参数
-     *
-     * @return {@link Object }
-     */
-    public static Object getAccessLogReqParam() {
-        String body = getReqBody();
-        if (CharSequenceUtil.isNotBlank(body) && JSONUtil.isTypeJSON(body)) {
-            try {
-                JsonNode jsonNode = JSONUtil.getObjectMapper().readTree(body);
-                if (jsonNode.isArray()) {
-                    return JSONUtil.toBean(body, List.class);
-                } else {
-                    return JSONUtil.toBean(body, Map.class);
-                }
-            } catch (Exception e) {
-                return null;
-            }
-        }
-        return Collections.unmodifiableMap(JakartaServletUtil.getParamMap(Objects.requireNonNull(getRequest())));
-    }
-
-    /**
-     * 获取 http response
-     *
-     * @return HttpServletResponse
-     */
-    public static HttpServletResponse getResponse() {
-        ServletRequestAttributes attributes = getRequestAttributes();
-        if (attributes == null) {
-            return null;
-        }
-        return attributes.getResponse();
     }
 
     /**
      * 获取响应状态
      *
      * @return int
+     * @since 2.11.0
      */
-    public static int getRespStatus() {
+    public static int getResponseStatus() {
         HttpServletResponse response = getResponse();
         return response != null ? response.getStatus() : -1;
     }
@@ -284,8 +221,9 @@ public class ServletUtils extends JakartaServletUtil {
      * 获取响应所有的头（header）信息
      *
      * @return header值
+     * @since 2.11.0
      */
-    public static Map<String, String> getRespHeaders() {
+    public static Map<String, String> getResponseHeaders() {
         HttpServletResponse response = getResponse();
         if (response == null) {
             return Collections.emptyMap();
@@ -302,19 +240,82 @@ public class ServletUtils extends JakartaServletUtil {
      * 获取响应 body 参数
      *
      * @return {@link String }
+     * @since 2.11.0
      */
-    public static String getRespBody() {
+    public static String getResponseBody() {
         HttpServletResponse response = getResponse();
         if (response instanceof RepeatReadResponseWrapper wrapper && !wrapper.isStreamingResponse()) {
             String body = wrapper.getResponseContent();
-            return JSONUtil.isTypeJSON(body) ? body : null;
+            return JSONUtils.isTypeJSON(body) ? body : null;
         }
         return null;
     }
 
-    public static Map<String, Object> getRespParam() {
-        String body = getRespBody();
-        return CharSequenceUtil.isNotBlank(body) && JSONUtil.isTypeJSON(body) ? JSONUtil.toBean(body, Map.class) : null;
+    /**
+     * 获取响应参数
+     *
+     * @return {@link Map }<{@link String }, {@link Object }>
+     * @since 2.11.0
+     */
+    public static Map<String, Object> getResponseParams() {
+        String body = getResponseBody();
+        return CharSequenceUtil.isNotBlank(body) && JSONUtils.isTypeJSON(body)
+            ? JSONUtils.toBean(body, Map.class)
+            : null;
+    }
+
+    /**
+     * 获取 HTTP Session
+     *
+     * @return HttpSession
+     * @since 2.11.0
+     */
+    public static HttpSession getSession() {
+        HttpServletRequest request = getRequest();
+        return request != null ? request.getSession() : null;
+    }
+
+    /**
+     * 获取 HTTP Request
+     *
+     * @return HttpServletRequest
+     * @since 2.11.0
+     */
+    public static HttpServletRequest getRequest() {
+        ServletRequestAttributes attributes = getRequestAttributes();
+        if (attributes == null) {
+            return null;
+        }
+        return attributes.getRequest();
+    }
+
+    /**
+     * 获取 HTTP Response
+     *
+     * @return HttpServletResponse
+     * @since 2.11.0
+     */
+    public static HttpServletResponse getResponse() {
+        ServletRequestAttributes attributes = getRequestAttributes();
+        if (attributes == null) {
+            return null;
+        }
+        return attributes.getResponse();
+    }
+
+    /**
+     * 获取请求属性
+     *
+     * @return {@link ServletRequestAttributes }
+     * @since 2.11.0
+     */
+    public static ServletRequestAttributes getRequestAttributes() {
+        try {
+            RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
+            return (ServletRequestAttributes)attributes;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**

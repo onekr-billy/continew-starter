@@ -166,14 +166,14 @@ public abstract class AbstractLogHandler implements LogHandler {
         AccessLogProperties properties = accessLogContext.getProperties().getAccessLog();
         // 是否需要打印 规则: 是否打印开关 或 放行路径
         if (!properties.isEnabled() || AccessLogUtils.exclusionPath(accessLogContext.getProperties(), ServletUtils
-            .getReqPath())) {
+            .getRequestPath())) {
             return;
         }
         // 构建上下文
         logContextThread.set(accessLogContext);
         String param = AccessLogUtils.getParam(properties);
         log.info(param != null ? "[Start] [{}] {} param: {}" : "[Start] [{}] {}", ServletUtils
-            .getReqMethod(), ServletUtils.getReqPath(), param);
+            .getRequestMethod(), ServletUtils.getRequestPath(), param);
     }
 
     @Override
@@ -184,8 +184,8 @@ public abstract class AbstractLogHandler implements LogHandler {
         }
         try {
             Duration timeTaken = Duration.between(logContext.getStartTime(), accessLogContext.getEndTime());
-            log.info("[End] [{}] {} {} {}ms", ServletUtils.getReqMethod(), ServletUtils.getReqPath(), ServletUtils
-                .getRespStatus(), timeTaken.toMillis());
+            log.info("[End] [{}] {} {} {}ms", ServletUtils.getRequestMethod(), ServletUtils
+                .getRequestPath(), ServletUtils.getResponseStatus(), timeTaken.toMillis());
         } finally {
             logContextThread.remove();
         }

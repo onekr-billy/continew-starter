@@ -30,24 +30,24 @@ import java.util.Objects;
  * json 构建工具
  *
  * @author echo
- * @since 2025/03/31
+ * @since 2.11.0
  */
-public class JsonBuilder {
+public class JSONBuilder {
 
     private static final ObjectMapper OBJECT_MAPPER = SpringUtil.getBean(ObjectMapper.class);
     private final ObjectNode rootNode;
 
-    private JsonBuilder() {
+    private JSONBuilder() {
         this.rootNode = OBJECT_MAPPER.createObjectNode();
     }
 
     /**
      * 开始构建
      *
-     * @return {@link JsonBuilder }
+     * @return {@link JSONBuilder }
      */
-    public static JsonBuilder builder() {
-        return new JsonBuilder();
+    public static JSONBuilder builder() {
+        return new JSONBuilder();
     }
 
     /**
@@ -55,9 +55,9 @@ public class JsonBuilder {
      *
      * @param key   key 值
      * @param value 值
-     * @return {@link JsonBuilder }
+     * @return {@link JSONBuilder }
      */
-    public JsonBuilder add(String key, String value) {
+    public JSONBuilder add(String key, String value) {
         Objects.requireNonNull(key, "键不能为 null");
         if (value != null) {
             rootNode.put(key, value);
@@ -70,9 +70,9 @@ public class JsonBuilder {
      *
      * @param key   key 值
      * @param value 值
-     * @return {@link JsonBuilder }
+     * @return {@link JSONBuilder }
      */
-    public JsonBuilder add(String key, int value) {
+    public JSONBuilder add(String key, int value) {
         Objects.requireNonNull(key, "键不能为 null");
         rootNode.put(key, value);
         return this;
@@ -83,9 +83,9 @@ public class JsonBuilder {
      *
      * @param key   key 值
      * @param value 值
-     * @return {@link JsonBuilder }
+     * @return {@link JSONBuilder }
      */
-    public JsonBuilder add(String key, long value) {
+    public JSONBuilder add(String key, long value) {
         Objects.requireNonNull(key, "键不能为 null");
         rootNode.put(key, value);
         return this;
@@ -96,9 +96,9 @@ public class JsonBuilder {
      *
      * @param key   key 值
      * @param value 值
-     * @return {@link JsonBuilder }
+     * @return {@link JSONBuilder }
      */
-    public JsonBuilder add(String key, boolean value) {
+    public JSONBuilder add(String key, boolean value) {
         Objects.requireNonNull(key, "键不能为 null");
         rootNode.put(key, value);
         return this;
@@ -109,9 +109,9 @@ public class JsonBuilder {
      *
      * @param key   key 值
      * @param value 值
-     * @return {@link JsonBuilder }
+     * @return {@link JSONBuilder }
      */
-    public JsonBuilder add(String key, double value) {
+    public JSONBuilder add(String key, double value) {
         Objects.requireNonNull(key, "键不能为 null");
         rootNode.put(key, value);
         return this;
@@ -122,9 +122,9 @@ public class JsonBuilder {
      *
      * @param key   key 值
      * @param value 值
-     * @return {@link JsonBuilder }
+     * @return {@link JSONBuilder }
      */
-    public JsonBuilder add(String key, JsonNode value) {
+    public JSONBuilder add(String key, JsonNode value) {
         Objects.requireNonNull(key, "键不能为 null");
         if (value != null) {
             rootNode.set(key, value);
@@ -137,9 +137,9 @@ public class JsonBuilder {
      *
      * @param key   key 值
      * @param value 值
-     * @return {@link JsonBuilder }
+     * @return {@link JSONBuilder }
      */
-    public JsonBuilder add(String key, Object value) {
+    public JSONBuilder add(String key, Object value) {
         Objects.requireNonNull(key, "键不能为 null");
         if (value != null) {
             rootNode.set(key, OBJECT_MAPPER.valueToTree(value));
@@ -152,9 +152,9 @@ public class JsonBuilder {
      *
      * @param key  key 值
      * @param list list 参数
-     * @return {@link JsonBuilder }
+     * @return {@link JSONBuilder }
      */
-    public JsonBuilder add(String key, List<?> list) {
+    public JSONBuilder add(String key, List<?> list) {
         Objects.requireNonNull(key, "键不能为 null");
         if (list != null) {
             ArrayNode arrayNode = OBJECT_MAPPER.createArrayNode();
@@ -171,9 +171,9 @@ public class JsonBuilder {
      *
      * @param key key 值
      * @param map map 参数
-     * @return {@link JsonBuilder }
+     * @return {@link JSONBuilder }
      */
-    public JsonBuilder add(String key, Map<?, ?> map) {
+    public JSONBuilder add(String key, Map<?, ?> map) {
         Objects.requireNonNull(key, "键不能为 null");
         if (map != null) {
             ObjectNode objectNode = OBJECT_MAPPER.valueToTree(map);

@@ -20,13 +20,9 @@ import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import jakarta.servlet.ServletContext;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.server.PathContainer;
 import org.springframework.web.accept.ContentNegotiationManager;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
@@ -38,7 +34,6 @@ import top.continew.starter.core.constant.StringConstants;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Spring Web 工具类
@@ -49,24 +44,6 @@ import java.util.Objects;
 public class SpringWebUtils {
 
     private SpringWebUtils() {
-    }
-
-    /**
-     * 获取请求对象
-     *
-     * @return 请求对象
-     */
-    public static HttpServletRequest getRequest() {
-        return getServletRequestAttributes().getRequest();
-    }
-
-    /**
-     * 获取响应对象
-     *
-     * @return 响应对象
-     */
-    public static HttpServletResponse getResponse() {
-        return getServletRequestAttributes().getResponse();
     }
 
     /**
@@ -156,9 +133,5 @@ public class SpringWebUtils {
             .<SimpleUrlHandlerMapping>invoke(resourceHandlerRegistry, "getHandlerMapping")
             .getUrlMap();
         ReflectUtil.<Void>invoke(resourceHandlerMapping, "registerHandlers", additionalUrlMap);
-    }
-
-    private static ServletRequestAttributes getServletRequestAttributes() {
-        return (ServletRequestAttributes)Objects.requireNonNull(RequestContextHolder.getRequestAttributes());
     }
 }
