@@ -16,8 +16,6 @@
 
 package top.continew.starter.log.aspect;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -25,8 +23,6 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import top.continew.starter.log.handler.LogHandler;
-import top.continew.starter.log.http.servlet.RecordableServletHttpRequest;
-import top.continew.starter.log.http.servlet.RecordableServletHttpResponse;
 import top.continew.starter.log.model.AccessLogContext;
 import top.continew.starter.log.model.LogProperties;
 
@@ -107,22 +103,16 @@ public class AccessLogAspect {
         if (attributes == null) {
             return joinPoint.proceed();
         }
-        HttpServletRequest request = attributes.getRequest();
-        HttpServletResponse response = attributes.getResponse();
         try {
             // 开始访问日志记录
             logHandler.accessLogStart(AccessLogContext.builder()
                 .startTime(startTime)
-                .request(new RecordableServletHttpRequest(request))
                 .properties(logProperties)
                 .build());
             return joinPoint.proceed();
         } finally {
             Instant endTime = Instant.now();
-            logHandler.accessLogFinish(AccessLogContext.builder()
-                .endTime(endTime)
-                .response(new RecordableServletHttpResponse(response, response.getStatus()))
-                .build());
+            logHandler.accessLogFinish(AccessLogContext.builder().endTime(endTime).build());
         }
     }
 }

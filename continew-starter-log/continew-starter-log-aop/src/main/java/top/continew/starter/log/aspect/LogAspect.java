@@ -18,8 +18,6 @@ package top.continew.starter.log.aspect;
 
 import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.text.CharSequenceUtil;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -35,7 +33,6 @@ import top.continew.starter.log.dao.LogDao;
 import top.continew.starter.log.handler.LogHandler;
 import top.continew.starter.log.model.LogProperties;
 import top.continew.starter.log.model.LogRecord;
-import top.continew.starter.web.util.SpringWebUtils;
 
 import java.lang.reflect.Method;
 import java.time.Instant;
@@ -79,7 +76,6 @@ public class LogAspect {
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         Instant startTime = Instant.now();
         // 指定规则不记录
-        HttpServletRequest request = SpringWebUtils.getRequest();
         Method targetMethod = this.getMethod(joinPoint);
         Class<?> targetClass = joinPoint.getTarget().getClass();
         if (!isRequestRecord(targetMethod, targetClass)) {
@@ -87,7 +83,7 @@ public class LogAspect {
         }
         String errorMsg = null;
         // 开始记录
-        LogRecord.Started startedLogRecord = logHandler.start(startTime, request);
+        LogRecord.Started startedLogRecord = logHandler.start(startTime);
         try {
             // 执行目标方法
             return joinPoint.proceed();
@@ -97,8 +93,7 @@ public class LogAspect {
         } finally {
             try {
                 Instant endTime = Instant.now();
-                HttpServletResponse response = SpringWebUtils.getResponse();
-                LogRecord logRecord = logHandler.finish(startedLogRecord, endTime, response, logProperties
+                LogRecord logRecord = logHandler.finish(startedLogRecord, endTime, logProperties
                     .getIncludes(), targetMethod, targetClass);
                 // 记录异常信息
                 if (errorMsg != null) {

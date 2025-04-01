@@ -17,7 +17,7 @@
 package top.continew.starter.log.model;
 
 import top.continew.starter.log.enums.Include;
-import top.continew.starter.log.http.RecordableHttpResponse;
+import top.continew.starter.web.util.ServletUtils;
 
 import java.util.Map;
 import java.util.Set;
@@ -50,13 +50,13 @@ public class LogResponse {
      */
     private Map<String, Object> param;
 
-    public LogResponse(RecordableHttpResponse response, Set<Include> includes) {
-        this.status = response.getStatus();
-        this.headers = (includes.contains(Include.RESPONSE_HEADERS)) ? response.getHeaders() : null;
+    public LogResponse(Set<Include> includes) {
+        this.status = ServletUtils.getRespStatus();
+        this.headers = (includes.contains(Include.RESPONSE_HEADERS)) ? ServletUtils.getRespHeaders() : null;
         if (includes.contains(Include.RESPONSE_BODY)) {
-            this.body = response.getBody();
+            this.body = ServletUtils.getRespBody();
         } else if (includes.contains(Include.RESPONSE_PARAM)) {
-            this.param = response.getParam();
+            this.param = ServletUtils.getRespParam();
         }
     }
 

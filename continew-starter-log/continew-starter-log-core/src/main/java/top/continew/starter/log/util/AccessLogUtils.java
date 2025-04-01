@@ -18,9 +18,9 @@ package top.continew.starter.log.util;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
-import top.continew.starter.log.http.RecordableHttpRequest;
 import top.continew.starter.log.model.AccessLogProperties;
 import top.continew.starter.log.model.LogProperties;
+import top.continew.starter.web.util.ServletUtils;
 import top.continew.starter.web.util.SpringWebUtils;
 
 import java.util.HashMap;
@@ -45,11 +45,10 @@ public class AccessLogUtils {
     /**
      * 获取参数信息
      *
-     * @param request    请求
      * @param properties 属性
      * @return {@link String }
      */
-    public static String getParam(RecordableHttpRequest request, AccessLogProperties properties) {
+    public static String getParam(AccessLogProperties properties) {
         // 是否需要打印请求参数
         if (!properties.isPrintRequestParam()) {
             return null;
@@ -58,7 +57,7 @@ public class AccessLogUtils {
         // 参数为空返回空
         Map<String, Object> params;
         try {
-            params = request.getParam();
+            params = ServletUtils.getReqParam();
         } catch (Exception e) {
             return null;
         }

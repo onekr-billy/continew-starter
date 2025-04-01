@@ -22,7 +22,6 @@ import top.continew.starter.core.util.ExceptionUtils;
 import top.continew.starter.core.util.IpUtils;
 import top.continew.starter.web.util.ServletUtils;
 import top.continew.starter.log.enums.Include;
-import top.continew.starter.log.http.RecordableHttpRequest;
 
 import java.net.URI;
 import java.util.Map;
@@ -81,15 +80,15 @@ public class LogRequest {
      */
     private String os;
 
-    public LogRequest(RecordableHttpRequest request, Set<Include> includes) {
-        this.method = request.getMethod();
-        this.url = request.getUrl();
-        this.ip = request.getIp();
-        this.headers = (includes.contains(Include.REQUEST_HEADERS)) ? request.getHeaders() : null;
+    public LogRequest(Set<Include> includes) {
+        this.method = ServletUtils.getReqMethod();
+        this.url = ServletUtils.getReqUrl();
+        this.ip = ServletUtils.getReqIp();
+        this.headers = (includes.contains(Include.REQUEST_HEADERS)) ? ServletUtils.getReqHeaders() : null;
         if (includes.contains(Include.REQUEST_BODY)) {
-            this.body = request.getBody();
+            this.body = ServletUtils.getReqBody();
         } else if (includes.contains(Include.REQUEST_PARAM)) {
-            this.param = request.getParam();
+            this.param = ServletUtils.getReqParam();
         }
         this.address = (includes.contains(Include.IP_ADDRESS))
             ? ExceptionUtils.exToNull(() -> IpUtils.getIpv4Address(this.ip))

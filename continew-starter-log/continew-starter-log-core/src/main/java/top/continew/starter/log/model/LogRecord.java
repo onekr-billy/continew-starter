@@ -17,8 +17,6 @@
 package top.continew.starter.log.model;
 
 import top.continew.starter.log.enums.Include;
-import top.continew.starter.log.http.RecordableHttpRequest;
-import top.continew.starter.log.http.RecordableHttpResponse;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -80,22 +78,20 @@ public class LogRecord {
     /**
      * 开始记录日志
      *
-     * @param request 请求信息
      * @return 日志记录器
      */
-    public static Started start(RecordableHttpRequest request) {
-        return start(Instant.now(), request);
+    public static Started start() {
+        return start(Instant.now());
     }
 
     /**
      * 开始记录日志
      *
      * @param timestamp 开始时间
-     * @param request   请求信息
      * @return 日志记录器
      */
-    public static Started start(Instant timestamp, RecordableHttpRequest request) {
-        return new Started(timestamp, request);
+    public static Started start(Instant timestamp) {
+        return new Started(timestamp);
     }
 
     /**
@@ -105,24 +101,20 @@ public class LogRecord {
 
         private final Instant timestamp;
 
-        private final RecordableHttpRequest request;
-
-        private Started(Instant timestamp, RecordableHttpRequest request) {
+        private Started(Instant timestamp) {
             this.timestamp = timestamp;
-            this.request = request;
         }
 
         /**
          * 结束日志记录
          *
          * @param timestamp 结束时间
-         * @param response  响应信息
          * @param includes  包含信息
          * @return 日志记录
          */
-        public LogRecord finish(Instant timestamp, RecordableHttpResponse response, Set<Include> includes) {
-            LogRequest logRequest = new LogRequest(this.request, includes);
-            LogResponse logResponse = new LogResponse(response, includes);
+        public LogRecord finish(Instant timestamp, Set<Include> includes) {
+            LogRequest logRequest = new LogRequest(includes);
+            LogResponse logResponse = new LogResponse(includes);
             Duration duration = Duration.between(this.timestamp, timestamp);
             return new LogRecord(this.timestamp, logRequest, logResponse, duration);
         }

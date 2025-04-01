@@ -16,8 +16,6 @@
 
 package top.continew.starter.log.handler;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import top.continew.starter.log.enums.Include;
 import top.continew.starter.log.model.AccessLogContext;
 import top.continew.starter.log.model.LogRecord;
@@ -39,28 +37,25 @@ public interface LogHandler {
      * 开始日志记录
      *
      * @param startTime 开始时间
-     * @param request   请求对象
      * @return 日志记录器
      */
-    LogRecord.Started start(Instant startTime, HttpServletRequest request);
+    LogRecord.Started start(Instant startTime);
 
     /**
      * 结束日志记录
      *
      * @param started  开始日志记录器
      * @param endTime  结束时间
-     * @param response 响应对象
      * @param includes 包含信息
      * @return 日志记录
      */
-    LogRecord finish(LogRecord.Started started, Instant endTime, HttpServletResponse response, Set<Include> includes);
+    LogRecord finish(LogRecord.Started started, Instant endTime, Set<Include> includes);
 
     /**
      * 结束日志记录
      *
      * @param started      开始日志记录器-
      * @param endTime      结束时间
-     * @param response     响应对象
      * @param includes     包含信息
      * @param targetMethod 目标方法
      * @param targetClass  目标类
@@ -68,7 +63,6 @@ public interface LogHandler {
      */
     LogRecord finish(LogRecord.Started started,
                      Instant endTime,
-                     HttpServletResponse response,
                      Set<Include> includes,
                      Method targetMethod,
                      Class<?> targetClass);
