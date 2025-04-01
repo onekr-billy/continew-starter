@@ -174,8 +174,9 @@ public abstract class AbstractLogHandler implements LogHandler {
     public void accessLogStart(AccessLogContext accessLogContext) {
         AccessLogProperties properties = accessLogContext.getProperties().getAccessLog();
         // 是否需要打印 规则: 是否打印开关 或 放行路径
-        if (!properties.isEnabled() || accessLogContext.getProperties()
-            .isMatch(accessLogContext.getRequest().getPath())) {
+        if (!properties.isEnabled() || AccessLogUtils.exclusionPath(accessLogContext.getProperties(), accessLogContext
+            .getRequest()
+            .getPath())) {
             return;
         }
         // 构建上下文

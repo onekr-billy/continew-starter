@@ -20,6 +20,8 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
 import top.continew.starter.log.http.RecordableHttpRequest;
 import top.continew.starter.log.model.AccessLogProperties;
+import top.continew.starter.log.model.LogProperties;
+import top.continew.starter.web.util.SpringWebUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +35,12 @@ import java.util.Map;
  * @since 2.10.0
  */
 public class AccessLogUtils {
+
+    /**
+     * 资源路径 - doc 路径
+     */
+    private static final List<String> RESOURCE_PATH = List
+        .of("/doc/**", "/v2/api-docs/**", "/v3/api-docs/**", "/webjars/**", "/swagger-resources/**", "/swagger-ui.html");
 
     /**
      * 获取参数信息
@@ -70,6 +78,19 @@ public class AccessLogUtils {
                 .getLongParamMaxLength(), properties.getLongParamSuffix());
         }
         return JSONUtil.toJsonStr(params);
+    }
+
+    /**
+     * 排除路径
+     *
+     * @param properties 属性
+     * @param path       路径
+     * @return boolean
+     */
+    public static boolean exclusionPath(LogProperties properties, String path) {
+        // 放行路由配置的排除检查
+        return properties.isMatch(path) || RESOURCE_PATH.stream()
+            .anyMatch(resourcePath -> SpringWebUtils.isMatch(path, resourcePath));
     }
 
     /**
