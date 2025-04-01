@@ -56,7 +56,7 @@ public class ServletUtils extends JakartaServletUtil {
     public static ServletRequestAttributes getRequestAttributes() {
         try {
             RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
-            return (ServletRequestAttributes) attributes;
+            return (ServletRequestAttributes)attributes;
         } catch (Exception e) {
             return null;
         }
@@ -231,8 +231,8 @@ public class ServletUtils extends JakartaServletUtil {
     public static Map<String, Object> getReqParam() {
         String body = getReqBody();
         return CharSequenceUtil.isNotBlank(body) && JSONUtil.isTypeJSON(body)
-                ? JSONUtil.toBean(body, Map.class)
-                : Collections.unmodifiableMap(JakartaServletUtil.getParamMap(Objects.requireNonNull(getRequest())));
+            ? JSONUtil.toBean(body, Map.class)
+            : Collections.unmodifiableMap(JakartaServletUtil.getParamMap(Objects.requireNonNull(getRequest())));
     }
 
     /**
@@ -329,7 +329,7 @@ public class ServletUtils extends JakartaServletUtil {
             return new StringBuilder();
         }
         return new StringBuilder().append(request.getRequestURL())
-                .append(StringConstants.QUESTION_MARK)
-                .append(queryString);
+            .append(StringConstants.QUESTION_MARK)
+            .append(queryString);
     }
 }

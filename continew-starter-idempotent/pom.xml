@@ -13,11 +13,6 @@
     <description>ContiNew Starter 幂等模块</description>
 
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-aop</artifactId>
-        </dependency>
-
         <!-- 缓存模块 - Redisson -->
         <dependency>
             <groupId>top.continew</groupId>
