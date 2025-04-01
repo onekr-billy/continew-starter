@@ -21,7 +21,7 @@ import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.extra.servlet.JakartaServletUtil;
 import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
-import cn.hutool.json.JSONUtil;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -30,14 +30,12 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.UriUtils;
 import top.continew.starter.core.constant.StringConstants;
+import top.continew.starter.json.jackson.util.JSONUtil;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Servlet 工具类
@@ -58,7 +56,7 @@ public class ServletUtils extends JakartaServletUtil {
     public static ServletRequestAttributes getRequestAttributes() {
         try {
             RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
-            return (ServletRequestAttributes)attributes;
+            return (ServletRequestAttributes) attributes;
         } catch (Exception e) {
             return null;
         }
@@ -233,8 +231,30 @@ public class ServletUtils extends JakartaServletUtil {
     public static Map<String, Object> getReqParam() {
         String body = getReqBody();
         return CharSequenceUtil.isNotBlank(body) && JSONUtil.isTypeJSON(body)
-            ? JSONUtil.toBean(body, Map.class)
-            : Collections.unmodifiableMap(JakartaServletUtil.getParamMap(Objects.requireNonNull(getRequest())));
+                ? JSONUtil.toBean(body, Map.class)
+                : Collections.unmodifiableMap(JakartaServletUtil.getParamMap(Objects.requireNonNull(getRequest())));
+    }
+
+    /**
+     * 获取访问日志请求参数
+     *
+     * @return {@link Object }
+     */
+    public static Object getAccessLogReqParam() {
+        String body = getReqBody();
+        if (CharSequenceUtil.isNotBlank(body) && JSONUtil.isTypeJSON(body)) {
+            try {
+                JsonNode jsonNode = JSONUtil.getObjectMapper().readTree(body);
+                if (jsonNode.isArray()) {
+                    return JSONUtil.toBean(body, List.class);
+                } else {
+                    return JSONUtil.toBean(body, Map.class);
+                }
+            } catch (Exception e) {
+                return null;
+            }
+        }
+        return Collections.unmodifiableMap(JakartaServletUtil.getParamMap(Objects.requireNonNull(getRequest())));
     }
 
     /**
@@ -309,7 +329,7 @@ public class ServletUtils extends JakartaServletUtil {
             return new StringBuilder();
         }
         return new StringBuilder().append(request.getRequestURL())
-            .append(StringConstants.QUESTION_MARK)
-            .append(queryString);
+                .append(StringConstants.QUESTION_MARK)
+                .append(queryString);
     }
 }

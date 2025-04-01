@@ -17,7 +17,7 @@
 package top.continew.starter.log.util;
 
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.json.JSONUtil;
+import top.continew.starter.json.jackson.util.JSONUtil;
 import top.continew.starter.log.model.AccessLogProperties;
 import top.continew.starter.log.model.LogProperties;
 import top.continew.starter.web.util.ServletUtils;
@@ -26,6 +26,7 @@ import top.continew.starter.web.util.SpringWebUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 访问日志工具类
@@ -55,25 +56,24 @@ public class AccessLogUtils {
         }
 
         // 参数为空返回空
-        Map<String, Object> params;
+        Object params;
         try {
-            params = ServletUtils.getReqParam();
+            params = ServletUtils.getAccessLogReqParam();
         } catch (Exception e) {
             return null;
         }
-
-        if (ObjectUtil.isEmpty(params) || params.isEmpty()) {
+        if (ObjectUtil.isEmpty(params)) {
             return null;
         }
 
         // 是否需要对特定入参脱敏
         if (properties.isParamSensitive()) {
-            params = filterSensitiveParams(params, properties.getSensitiveParams());
+            params = processSensitiveParams(params, properties.getSensitiveParams());
         }
 
         // 是否自动截断超长参数值
         if (properties.isLongParamTruncate()) {
-            params = truncateLongParams(params, properties.getLongParamThreshold(), properties
+            params = processTruncateLongParams(params, properties.getLongParamThreshold(), properties
                 .getLongParamMaxLength(), properties.getLongParamSuffix());
         }
         return JSONUtil.toJsonStr(params);
@@ -93,6 +93,25 @@ public class AccessLogUtils {
     }
 
     /**
+     * 处理敏感参数，支持 Map 和 List<Map<String, Object>> 类型
+     *
+     * @param params          参数
+     * @param sensitiveParams 敏感参数列表
+     * @return 处理后的参数
+     */
+    private static Object processSensitiveParams(Object params, List<String> sensitiveParams) {
+        if (params instanceof Map) {
+            return filterSensitiveParams((Map<String, Object>)params, sensitiveParams);
+        } else if (params instanceof List) {
+            return ((List<?>)params).stream()
+                .filter(item -> item instanceof Map)
+                .map(item -> filterSensitiveParams((Map<String, Object>)item, sensitiveParams))
+                .collect(Collectors.toList());
+        }
+        return params;
+    }
+
+    /**
      * 过滤敏感参数
      *
      * @param params          参数 Map
@@ -106,9 +125,32 @@ public class AccessLogUtils {
 
         Map<String, Object> filteredParams = new HashMap<>(params);
         for (String sensitiveKey : sensitiveParams) {
-            filteredParams.computeIfPresent(sensitiveKey, (key, value) -> "***");
+            if (filteredParams.containsKey(sensitiveKey)) {
+                filteredParams.put(sensitiveKey, "***");
+            }
         }
         return filteredParams;
+    }
+
+    /**
+     * 处理超长参数，支持 Map 和 List<Map<String, Object>> 类型
+     *
+     * @param params    参数
+     * @param threshold 截断阈值（值长度超过该值才截断）
+     * @param maxLength 最大长度
+     * @param suffix    后缀（如 "..."）
+     * @return 处理后的参数
+     */
+    private static Object processTruncateLongParams(Object params, int threshold, int maxLength, String suffix) {
+        if (params instanceof Map) {
+            return truncateLongParams((Map<String, Object>)params, threshold, maxLength, suffix);
+        } else if (params instanceof List) {
+            return ((List<?>)params).stream()
+                .filter(item -> item instanceof Map)
+                .map(item -> truncateLongParams((Map<String, Object>)item, threshold, maxLength, suffix))
+                .collect(Collectors.toList());
+        }
+        return params;
     }
 
     /**
