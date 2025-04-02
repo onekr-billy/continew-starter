@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package top.continew.starter.web.autoconfigure.container;
+package top.continew.starter.web.autoconfigure.server;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.embedded.undertow.UndertowServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -28,16 +30,22 @@ import org.springframework.context.annotation.Bean;
 import io.undertow.Undertow;
 import io.undertow.server.handlers.DisallowedMethodsHandler;
 import io.undertow.util.HttpString;
+import top.continew.starter.core.constant.PropertiesConstants;
+
+import java.util.stream.Collectors;
 
 /**
- * Undertow 自定义配置
+ * Undertow 自动配置
  *
  * @author Jasmine
+ * @author Charles7c
  * @since 2.11.0
  */
 @AutoConfiguration
 @ConditionalOnWebApplication
 @ConditionalOnClass(Undertow.class)
+@EnableConfigurationProperties(ServerExtensionProperties.class)
+@ConditionalOnProperty(prefix = "server.extension", name = PropertiesConstants.ENABLED, havingValue = "true")
 public class UndertowAutoConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(UndertowAutoConfiguration.class);
@@ -46,16 +54,17 @@ public class UndertowAutoConfiguration {
      * Undertow 自定义配置
      */
     @Bean
-    public WebServerFactoryCustomizer<UndertowServletWebServerFactory> customize() {
+    public WebServerFactoryCustomizer<UndertowServletWebServerFactory> customize(ServerExtensionProperties properties) {
         return factory -> {
             factory.addDeploymentInfoCustomizers(deploymentInfo -> deploymentInfo
-                .addInitialHandlerChainWrapper(handler -> {
-                    // 禁止三个不安全的 HTTP 方法（如 CONNECT、TRACE、TRACK）
-                    HttpString[] disallowedHttpMethods = {HttpString.tryFromString("CONNECT"), HttpString
-                        .tryFromString("TRACE"), HttpString.tryFromString("TRACK")};
-                    return new DisallowedMethodsHandler(handler, disallowedHttpMethods);
-                }));
-            log.debug("[ContiNew Starter] - Auto Configuration 'Web-Undertow' completed initialization.");
+                .addInitialHandlerChainWrapper(handler -> new DisallowedMethodsHandler(handler, properties
+                    .getDisallowedMethods()
+                    .stream()
+                    .map(HttpString::tryFromString)
+                    .collect(Collectors.toSet()))));
+            log.debug("[ContiNew Starter] - Disallowed HTTP methods on Server Undertow: {}.", properties
+                .getDisallowedMethods());
+            log.debug("[ContiNew Starter] - Auto Configuration 'Web-Server Undertow' completed initialization.");
         };
     }
 }
