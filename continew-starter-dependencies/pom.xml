@@ -3,12 +3,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>3.3.9</version>
-        <relativePath/>
-    </parent>
 
     <groupId>top.continew</groupId>
     <artifactId>continew-starter-dependencies</artifactId>
@@ -44,6 +38,7 @@
     <properties>
         <!-- 项目版本号 -->
         <revision>2.11.0-SNAPSHOT</revision>
+        <spring-boot.version>3.3.9</spring-boot.version>
         <spring-cloud.version>2023.0.5</spring-cloud.version>
         <redisson.version>3.45.0</redisson.version>
         <jetcache.version>2.7.7</jetcache.version>
@@ -82,7 +77,16 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- Spring Cloud（Spring 团队提供的微服务解决方案） -->
+            <!-- Spring Boot（由 Pivotal 团队提供的全新框架，其设计目的是用来简化新Spring应用的初始搭建以及开发过程）-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Spring Cloud（由 Pivotal 团队提供的微服务解决方案） -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
@@ -101,20 +105,10 @@
             <!-- JetCache（一个基于 Java 的缓存系统封装，提供统一的 API 和注解来简化缓存的使用。提供了比 SpringCache 更加强大的注解，可以原生的支持 TTL、两级缓存、分布式自动刷新，还提供了 Cache 接口用于手工缓存操作） -->
             <dependency>
                 <groupId>com.alicp.jetcache</groupId>
-                <artifactId>jetcache-autoconfigure</artifactId>
+                <artifactId>jetcache-bom</artifactId>
                 <version>${jetcache.version}</version>
-            </dependency>
-            <!-- JetCache 注解 -->
-            <dependency>
-                <groupId>com.alicp.jetcache</groupId>
-                <artifactId>jetcache-anno</artifactId>
-                <version>${jetcache.version}</version>
-            </dependency>
-            <!-- JetCache Redisson 适配 -->
-            <dependency>
-                <groupId>com.alicp.jetcache</groupId>
-                <artifactId>jetcache-redisson</artifactId>
-                <version>${jetcache.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
 
             <!-- CosId（通用、灵活、高性能的分布式 ID 生成器） -->
@@ -162,6 +156,17 @@
             </dependency>
 
             <!-- MyBatis Plus（MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率） -->
+            <!-- 注意:
+                1、此注释在升级到 mybatis-plus 3.5.9 之后的版本时才进行启用,同时删掉后续相对应的mybatis-plus依赖
+                2、不升级版本可忽略不计,此处仅为了后续升级,做准备
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-bom</artifactId>
+                <version>${mybatis-plus.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            -->
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
@@ -181,13 +186,10 @@
             <!-- MyBatis Flex（MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率） -->
             <dependency>
                 <groupId>com.mybatis-flex</groupId>
-                <artifactId>mybatis-flex-spring-boot3-starter</artifactId>
+                <artifactId>mybatis-flex-dependencies</artifactId>
                 <version>${mybatis-flex.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.mybatis-flex</groupId>
-                <artifactId>mybatis-flex-processor</artifactId>
-                <version>${mybatis-flex.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
 
             <!-- Dynamic Datasource（基于 Spring Boot 的快速集成多数据源的启动器） -->
