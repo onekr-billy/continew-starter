@@ -24,5 +24,11 @@
             <groupId>top.continew</groupId>
             <artifactId>continew-starter-extension-datapermission-core</artifactId>
         </dependency>
+
+        <!--  ContiNew Starter 数据访问模块 - 核心模块-->
+        <dependency>
+            <groupId>top.continew</groupId>
+            <artifactId>continew-starter-data-core</artifactId>
+        </dependency>
     </dependencies>
 </project>

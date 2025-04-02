@@ -16,35 +16,44 @@
 
 package top.continew.starter.extension.datapermission.handler;
 
-import cn.hutool.core.text.CharSequenceUtil;
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.Set;
+
+import javax.sql.DataSource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.handler.DataPermissionHandler;
+
+import cn.hutool.core.text.CharSequenceUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Function;
 import net.sf.jsqlparser.expression.LongValue;
+import net.sf.jsqlparser.expression.StringValue;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
 import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.expression.operators.relational.InExpression;
+import net.sf.jsqlparser.expression.operators.relational.LikeExpression;
 import net.sf.jsqlparser.expression.operators.relational.ParenthesedExpressionList;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.select.ParenthesedSelect;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.SelectItem;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import top.continew.starter.core.constant.StringConstants;
+import top.continew.starter.data.core.enums.DatabaseType;
+import top.continew.starter.data.core.util.MetaUtils;
 import top.continew.starter.extension.datapermission.annotation.DataPermission;
 import top.continew.starter.extension.datapermission.enums.DataScope;
 import top.continew.starter.extension.datapermission.filter.DataPermissionUserContextProvider;
 import top.continew.starter.extension.datapermission.model.RoleContext;
 import top.continew.starter.extension.datapermission.model.UserContext;
-
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.Set;
 
 /**
  * 默认数据权限处理器
@@ -57,6 +66,7 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultDataPermissionHandler.class);
     private final DataPermissionUserContextProvider dataPermissionUserContextProvider;
+    private static final DataSource dataSource = SpringUtil.getBean(DataSource.class);
 
     public DefaultDataPermissionHandler(DataPermissionUserContextProvider dataPermissionUserContextProvider) {
         this.dataPermissionUserContextProvider = dataPermissionUserContextProvider;
@@ -133,13 +143,34 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
         PlainSelect select = new PlainSelect();
         select.setSelectItems(Collections.singletonList(new SelectItem<>(new Column(dataPermission.id()))));
         select.setFromItem(new Table(dataPermission.deptTableAlias()));
+
         EqualsTo equalsTo = new EqualsTo();
         equalsTo.setLeftExpression(new Column(dataPermission.id()));
         equalsTo.setRightExpression(new LongValue(userContext.getDeptId()));
-        Function function = new Function();
-        function.setName("find_in_set");
-        function.setParameters(new ExpressionList<>(new LongValue(userContext.getDeptId()), new Column("ancestors")));
-        select.setWhere(new OrExpression(equalsTo, function));
+
+        DatabaseType databaseType = MetaUtils.getDatabaseType(dataSource);
+        Expression inSetExpression;
+        if (DatabaseType.MYSQL.getDatabase().equalsIgnoreCase(databaseType.getDatabase())) {
+            Function findInSetFunction = new Function();
+            findInSetFunction.setName("find_in_set");
+            findInSetFunction.setParameters(new ExpressionList<>(new LongValue(userContext
+                .getDeptId()), new StringValue(new Column("ancestors") + ",")));
+            inSetExpression = findInSetFunction;
+        } else if (DatabaseType.POSTGRE_SQL.getDatabase().equalsIgnoreCase(databaseType.getDatabase())) {
+            // 构建 concat 函数
+            Function concatFunction = new Function("concat");
+            concatFunction.setParameters(new ExpressionList<>(new Column("ancestors"), new StringValue(",")));
+
+            // 创建 LIKE 函数
+            LikeExpression likeExpression = new LikeExpression();
+            likeExpression.setLeftExpression(concatFunction);
+            likeExpression.setRightExpression(new StringValue("%," + userContext.getDeptId() + ",%"));
+            inSetExpression = likeExpression;
+        } else {
+            throw new IllegalArgumentException("暂不支持 [%s] 数据权限".formatted(""));
+        }
+
+        select.setWhere(new OrExpression(equalsTo, inSetExpression));
         subSelect.setSelect(select);
         // 构建父查询
         InExpression inExpression = new InExpression();
