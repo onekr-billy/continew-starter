@@ -43,7 +43,7 @@
         <redisson.version>3.45.0</redisson.version>
         <jetcache.version>2.7.7</jetcache.version>
         <cosid.version>2.11.0</cosid.version>
-        <sa-token.version>1.40.0</sa-token.version>
+        <sa-token.version>1.41.0</sa-token.version>
         <just-auth.version>1.16.7</just-auth.version>
         <mybatis-plus.version>3.5.8</mybatis-plus.version>
         <mybatis-flex.version>1.10.8</mybatis-flex.version>

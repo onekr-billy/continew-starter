@@ -18,12 +18,13 @@ package top.continew.starter.auth.satoken.autoconfigure.dao;
 
 import cn.dev33.satoken.dao.SaTokenDao;
 import cn.dev33.satoken.dao.SaTokenDaoDefaultImpl;
-import org.redisson.client.RedisClient;
+import cn.dev33.satoken.dao.SaTokenDaoForRedisson;
+import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -63,8 +64,8 @@ public class SaTokenDaoConfiguration {
      * 自定义持久层实现-Redis（默认）
      */
     @ConditionalOnMissingBean(SaTokenDao.class)
-    @ConditionalOnClass(RedisClient.class)
-    @AutoConfigureBefore(RedissonAutoConfiguration.class)
+    @ConditionalOnBean(RedissonClient.class)
+    @AutoConfigureAfter(RedissonAutoConfiguration.class)
     @ConditionalOnProperty(name = "sa-token.extension.dao.type", havingValue = "redis")
     public static class Redis {
         static {
@@ -72,8 +73,8 @@ public class SaTokenDaoConfiguration {
         }
 
         @Bean
-        public SaTokenDao saTokenDao() {
-            return new SaTokenDaoRedisDefaultImpl();
+        public SaTokenDao saTokenDao(RedissonClient redissonClient) {
+            return new SaTokenDaoForRedisson(redissonClient);
         }
     }
 
