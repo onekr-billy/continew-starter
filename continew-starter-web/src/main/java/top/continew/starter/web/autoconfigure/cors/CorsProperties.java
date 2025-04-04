@@ -36,7 +36,7 @@ public class CorsProperties {
     private static final List<String> ALL = Collections.singletonList(StringConstants.ASTERISK);
 
     /**
-     * 是否启用跨域配置
+     * 是否启用
      */
     private boolean enabled = false;
 

@@ -36,7 +36,7 @@ import java.util.Set;
 public class LogProperties {
 
     /**
-     * 是否启用日志
+     * 是否启用
      */
     private boolean enabled = true;
 

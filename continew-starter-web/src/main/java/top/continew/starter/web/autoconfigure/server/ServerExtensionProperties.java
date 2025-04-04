@@ -36,7 +36,7 @@ public class ServerExtensionProperties {
     private static final List<String> DEFAULT_ALLOWED_METHODS = List.of("CONNECT", "TRACE", "TRACK");
 
     /**
-     * 是否启用跨域配置
+     * 是否启用
      */
     private boolean enabled = true;
 

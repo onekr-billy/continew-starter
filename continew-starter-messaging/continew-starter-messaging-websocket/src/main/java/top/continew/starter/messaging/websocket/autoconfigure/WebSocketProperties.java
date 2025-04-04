@@ -36,7 +36,7 @@ public class WebSocketProperties {
     private static final List<String> ALL = Collections.singletonList(StringConstants.ASTERISK);
 
     /**
-     * 是否启用 WebSocket
+     * 是否启用
      */
     private boolean enabled = true;
 

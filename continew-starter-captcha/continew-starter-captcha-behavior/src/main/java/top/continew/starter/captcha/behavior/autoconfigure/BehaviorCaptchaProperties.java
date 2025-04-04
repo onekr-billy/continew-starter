@@ -34,7 +34,7 @@ import java.awt.*;
 public class BehaviorCaptchaProperties {
 
     /**
-     * 是否启用行为验证码
+     * 是否启用
      */
     private boolean enabled = true;
 

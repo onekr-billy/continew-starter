@@ -31,7 +31,7 @@ import top.continew.starter.data.mp.autoconfigure.idgenerator.MyBatisPlusIdGener
 public class MyBatisPlusExtensionProperties {
 
     /**
-     * 是否启用扩展
+     * 是否启用
      */
     private boolean enabled = false;
 
@@ -70,7 +70,7 @@ public class MyBatisPlusExtensionProperties {
     public static class PaginationProperties {
 
         /**
-         * 是否启用分页插件
+         * 是否启用
          */
         private boolean enabled = true;
 

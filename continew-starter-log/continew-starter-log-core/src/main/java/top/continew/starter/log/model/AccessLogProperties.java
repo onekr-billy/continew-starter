@@ -29,7 +29,7 @@ import java.util.List;
 public class AccessLogProperties {
 
     /**
-     * 是否打印访问日志（类似于 Nginx access log）
+     * 是否启用
      * <p>
      * 不记录请求日志也支持开启打印访问日志
      * </p>

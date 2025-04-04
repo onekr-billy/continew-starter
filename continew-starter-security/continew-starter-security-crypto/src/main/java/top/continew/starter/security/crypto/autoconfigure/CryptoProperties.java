@@ -29,7 +29,7 @@ import top.continew.starter.core.constant.PropertiesConstants;
 public class CryptoProperties {
 
     /**
-     * 是否启用加/解密配置
+     * 是否启用
      */
     private boolean enabled = true;
 

@@ -30,7 +30,7 @@ import top.continew.starter.core.constant.PropertiesConstants;
 public class GraphicCaptchaProperties {
 
     /**
-     * 是否启用图形验证码
+     * 是否启用
      */
     private boolean enabled = true;
 

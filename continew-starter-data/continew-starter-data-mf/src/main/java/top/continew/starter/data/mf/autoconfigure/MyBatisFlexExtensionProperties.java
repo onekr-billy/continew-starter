@@ -29,7 +29,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class MyBatisFlexExtensionProperties {
 
     /**
-     * 是否启用扩展
+     * 是否启用
      */
     private boolean enabled = false;
 
@@ -57,7 +57,7 @@ public class MyBatisFlexExtensionProperties {
     public static class DataPermissionProperties {
 
         /**
-         * 是否启用数据权限插件
+         * 是否启用
          */
         private boolean enabled = false;
 
@@ -76,7 +76,7 @@ public class MyBatisFlexExtensionProperties {
     public static class PaginationProperties {
 
         /**
-         * 是否启用分页插件
+         * 是否启用
          */
         private boolean enabled = true;
 

@@ -29,9 +29,22 @@ import top.continew.starter.core.constant.PropertiesConstants;
 public class RateLimiterProperties {
 
     /**
+     * 是否启用
+     */
+    private boolean enabled = true;
+
+    /**
      * Key 前缀
      */
     private String keyPrefix = "RateLimiter";
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
     public String getKeyPrefix() {
         return keyPrefix;

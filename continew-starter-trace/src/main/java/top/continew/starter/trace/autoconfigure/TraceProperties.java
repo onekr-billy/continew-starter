@@ -30,7 +30,7 @@ import top.continew.starter.core.constant.PropertiesConstants;
 public class TraceProperties {
 
     /**
-     * 是否启用链路追踪配置
+     * 是否启用
      */
     private boolean enabled = false;
 

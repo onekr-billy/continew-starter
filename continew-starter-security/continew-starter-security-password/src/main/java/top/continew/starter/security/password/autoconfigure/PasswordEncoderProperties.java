@@ -29,7 +29,7 @@ import top.continew.starter.core.constant.PropertiesConstants;
 public class PasswordEncoderProperties {
 
     /**
-     * 是否启用密码编解码配置
+     * 是否启用
      */
     private boolean enabled = true;
 

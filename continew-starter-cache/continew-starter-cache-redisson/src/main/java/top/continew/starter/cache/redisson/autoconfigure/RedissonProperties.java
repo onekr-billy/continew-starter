@@ -33,7 +33,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 public class RedissonProperties {
 
     /**
-     * 是否启用 Redisson
+     * 是否启用
      */
     private boolean enabled = true;
 

@@ -33,7 +33,7 @@ import java.util.List;
 public class XssProperties {
 
     /**
-     * 是否启用 XSS 过滤
+     * 是否启用
      */
     private boolean enabled = true;
 

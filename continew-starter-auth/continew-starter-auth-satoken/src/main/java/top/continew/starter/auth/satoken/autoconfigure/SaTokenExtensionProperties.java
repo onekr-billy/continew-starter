@@ -30,7 +30,7 @@ import top.continew.starter.auth.satoken.autoconfigure.dao.SaTokenDaoProperties;
 public class SaTokenExtensionProperties {
 
     /**
-     * 是否启用扩展
+     * 是否启用
      */
     private boolean enabled = false;
 

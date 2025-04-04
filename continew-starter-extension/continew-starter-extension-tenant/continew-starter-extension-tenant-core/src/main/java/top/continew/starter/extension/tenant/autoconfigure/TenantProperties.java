@@ -32,7 +32,7 @@ import java.util.List;
 public class TenantProperties {
 
     /**
-     * 是否启用多租户
+     * 是否启用
      */
     private boolean enabled = true;
 

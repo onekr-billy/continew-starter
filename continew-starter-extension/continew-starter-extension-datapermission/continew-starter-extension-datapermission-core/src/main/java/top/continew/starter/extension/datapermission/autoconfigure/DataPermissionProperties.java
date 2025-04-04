@@ -29,7 +29,7 @@ import top.continew.starter.core.constant.PropertiesConstants;
 public class DataPermissionProperties {
 
     /**
-     * 是否启用数据权限
+     * 是否启用
      */
     private boolean enabled = true;
 
