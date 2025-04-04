@@ -33,6 +33,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import top.continew.starter.cache.redisson.handler.NameMapperHandler;
 import top.continew.starter.core.constant.PropertiesConstants;
 import top.continew.starter.core.constant.StringConstants;
 
@@ -104,6 +105,10 @@ public class RedissonAutoConfiguration {
         if (CharSequenceUtil.isBlank(clusterServersConfig.getPassword())) {
             clusterServersConfig.setPassword(redisProperties.getPassword());
         }
+        // Key 前缀
+        if (CharSequenceUtil.isNotBlank(properties.getKeyPrefix())) {
+            clusterServersConfig.setNameMapper(new NameMapperHandler(properties.getKeyPrefix()));
+        }
     }
 
     /**
@@ -130,6 +135,10 @@ public class RedissonAutoConfiguration {
         if (CharSequenceUtil.isBlank(sentinelServersConfig.getMasterName())) {
             sentinelServersConfig.setMasterName(redisProperties.getSentinel().getMaster());
         }
+        // Key 前缀
+        if (CharSequenceUtil.isNotBlank(properties.getKeyPrefix())) {
+            sentinelServersConfig.setNameMapper(new NameMapperHandler(properties.getKeyPrefix()));
+        }
     }
 
     /**
@@ -152,6 +161,10 @@ public class RedissonAutoConfiguration {
         if (CharSequenceUtil.isBlank(singleServerConfig.getAddress())) {
             singleServerConfig.setAddress(protocolPrefix + redisProperties
                 .getHost() + StringConstants.COLON + redisProperties.getPort());
+        }
+        // Key 前缀
+        if (CharSequenceUtil.isNotBlank(properties.getKeyPrefix())) {
+            singleServerConfig.setNameMapper(new NameMapperHandler(properties.getKeyPrefix()));
         }
     }
 }

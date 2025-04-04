@@ -38,6 +38,11 @@ public class RedissonProperties {
     private boolean enabled = true;
 
     /**
+     * 缓存键前缀
+     */
+    private String keyPrefix;
+
+    /**
      * Redis 模式
      */
     private Mode mode = Mode.SINGLE;
@@ -86,6 +91,14 @@ public class RedissonProperties {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public String getKeyPrefix() {
+        return keyPrefix;
+    }
+
+    public void setKeyPrefix(String keyPrefix) {
+        this.keyPrefix = keyPrefix;
     }
 
     public Mode getMode() {
