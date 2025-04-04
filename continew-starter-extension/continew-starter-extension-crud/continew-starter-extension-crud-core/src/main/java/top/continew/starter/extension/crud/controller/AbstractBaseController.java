@@ -30,7 +30,8 @@ import top.continew.starter.extension.crud.enums.Api;
 import top.continew.starter.extension.crud.handler.CrudApiHandler;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.query.SortQuery;
-import top.continew.starter.extension.crud.model.resp.BaseIdResp;
+import top.continew.starter.extension.crud.model.req.IdsReq;
+import top.continew.starter.extension.crud.model.resp.IdResp;
 import top.continew.starter.extension.crud.model.resp.BasePageResp;
 import top.continew.starter.extension.crud.service.BaseService;
 import top.continew.starter.extension.crud.validation.CrudValidationGroup;
@@ -123,8 +124,8 @@ public abstract class AbstractBaseController<S extends BaseService<L, D, Q, C>, 
     @Operation(summary = "创建数据", description = "创建数据")
     @ResponseBody
     @PostMapping
-    public BaseIdResp<Long> create(@Validated(CrudValidationGroup.Create.class) @RequestBody C req) {
-        return new BaseIdResp<>(baseService.create(req));
+    public IdResp<Long> create(@Validated(CrudValidationGroup.Create.class) @RequestBody C req) {
+        return new IdResp<>(baseService.create(req));
     }
 
     /**
@@ -145,15 +146,14 @@ public abstract class AbstractBaseController<S extends BaseService<L, D, Q, C>, 
     /**
      * 删除
      *
-     * @param ids ID 列表
+     * @param req 删除参数
      */
     @CrudApi(Api.DELETE)
     @Operation(summary = "删除数据", description = "删除数据")
-    @Parameter(name = "ids", description = "ID 列表", example = "1,2", in = ParameterIn.PATH)
     @ResponseBody
-    @DeleteMapping("/{ids}")
-    public void delete(@PathVariable("ids") List<Long> ids) {
-        baseService.delete(ids);
+    @DeleteMapping
+    public void delete(@Validated @RequestBody IdsReq req) {
+        baseService.delete(req.getIds());
     }
 
     /**

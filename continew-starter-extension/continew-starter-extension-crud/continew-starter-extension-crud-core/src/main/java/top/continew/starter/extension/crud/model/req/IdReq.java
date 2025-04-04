@@ -14,38 +14,33 @@
  * limitations under the License.
  */
 
-package top.continew.starter.extension.crud.model.resp;
+package top.continew.starter.extension.crud.model.req;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 
 /**
- * ID 响应信息
+ * ID 请求参数
  *
  * @author Charles7c
- * @since 2.5.0
+ * @since 2.11.0
  */
-public class BaseIdResp<T extends Serializable> implements Serializable {
+public class IdReq implements Serializable {
 
     /**
      * ID
      */
     @Schema(description = "ID", example = "1")
-    private T id;
+    @NotNull(message = "ID 不能为空")
+    private Long id;
 
-    public T getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(T id) {
-        this.id = id;
-    }
-
-    public BaseIdResp() {
-    }
-
-    public BaseIdResp(final T id) {
+    public void setId(Long id) {
         this.id = id;
     }
 }
