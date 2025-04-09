@@ -19,7 +19,7 @@ package top.continew.starter.extension.crud.annotation;
 import java.lang.annotation.*;
 
 /**
- * 字典结构字段
+ * 字典结构映射
  *
  * @author Charles7c
  * @since 2.1.0
@@ -27,7 +27,7 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface DictField {
+public @interface DictModel {
 
     /**
      * 标签字段名

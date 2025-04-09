@@ -42,7 +42,8 @@ import top.continew.starter.core.validation.ValidationUtils;
 import top.continew.starter.data.mp.base.BaseMapper;
 import top.continew.starter.data.mp.service.impl.ServiceImpl;
 import top.continew.starter.data.mp.util.QueryWrapperHelper;
-import top.continew.starter.extension.crud.annotation.DictField;
+import top.continew.starter.extension.crud.annotation.DictModel;
+import top.continew.starter.extension.crud.annotation.DictModel;
 import top.continew.starter.extension.crud.annotation.TreeField;
 import top.continew.starter.extension.crud.autoconfigure.CrudProperties;
 import top.continew.starter.extension.crud.autoconfigure.CrudTreeProperties;
@@ -138,18 +139,18 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseIdD
 
     @Override
     public List<LabelValueResp> listDict(Q query, SortQuery sortQuery) {
-        DictField dictField = super.getEntityClass().getDeclaredAnnotation(DictField.class);
-        CheckUtils.throwIfNull(dictField, "请添加并配置 @DictField 字典结构信息");
+        DictModel dictModel = super.getEntityClass().getDeclaredAnnotation(DictModel.class);
+        CheckUtils.throwIfNull(dictModel, "请添加并配置 @DictModel 字典结构信息");
         List<L> list = this.list(query, sortQuery);
         // 解析映射
         List<LabelValueResp> respList = new ArrayList<>(list.size());
-        String labelKey = dictField.labelKey().contains(StringConstants.DOT)
-            ? CharSequenceUtil.subAfter(dictField.labelKey(), StringConstants.DOT, true)
-            : dictField.labelKey();
-        String valueKey = dictField.valueKey().contains(StringConstants.DOT)
-            ? CharSequenceUtil.subAfter(dictField.valueKey(), StringConstants.DOT, true)
-            : dictField.valueKey();
-        List<String> extraFieldNames = Arrays.stream(dictField.extraKeys())
+        String labelKey = dictModel.labelKey().contains(StringConstants.DOT)
+            ? CharSequenceUtil.subAfter(dictModel.labelKey(), StringConstants.DOT, true)
+            : dictModel.labelKey();
+        String valueKey = dictModel.valueKey().contains(StringConstants.DOT)
+            ? CharSequenceUtil.subAfter(dictModel.valueKey(), StringConstants.DOT, true)
+            : dictModel.valueKey();
+        List<String> extraFieldNames = Arrays.stream(dictModel.extraKeys())
             .map(extraKey -> extraKey.contains(StringConstants.DOT)
                 ? CharSequenceUtil.subAfter(extraKey, StringConstants.DOT, true)
                 : extraKey)
@@ -165,7 +166,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseIdD
                 continue;
             }
             // 额外数据
-            Map<String, Object> extraMap = MapUtil.newHashMap(dictField.extraKeys().length);
+            Map<String, Object> extraMap = MapUtil.newHashMap(dictModel.extraKeys().length);
             for (String extraFieldName : extraFieldNames) {
                 extraMap.put(extraFieldName, ReflectUtil.getFieldValue(entity, extraFieldName));
             }
