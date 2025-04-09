@@ -26,6 +26,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.log.annotation.ConditionalOnEnabledLog;
 import top.continew.starter.log.dao.LogDao;
 import top.continew.starter.log.dao.impl.DefaultLogDaoImpl;
@@ -56,7 +57,9 @@ public class LogAutoConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LogInterceptor(logProperties, logHandler(), logDao()));
+        registry.addInterceptor(new LogInterceptor(logProperties, logHandler(), logDao()))
+            .addPathPatterns(StringConstants.PATH_PATTERN)
+            .excludePathPatterns(logProperties.getExcludePatterns());
     }
 
     /**

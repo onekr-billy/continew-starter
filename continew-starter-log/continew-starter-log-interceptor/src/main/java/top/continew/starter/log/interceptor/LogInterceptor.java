@@ -109,10 +109,6 @@ public class LogInterceptor implements HandlerInterceptor {
         if (!(handler instanceof HandlerMethod handlerMethod)) {
             return false;
         }
-        // 如果接口匹配排除列表，不记录日志
-        if (logProperties.isMatch(request.getRequestURI())) {
-            return false;
-        }
         // 如果接口被隐藏，不记录日志
         Operation methodOperation = handlerMethod.getMethodAnnotation(Operation.class);
         if (null != methodOperation && methodOperation.hidden()) {
