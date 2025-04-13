@@ -19,31 +19,6 @@
         ContiNew Starter 包含了一系列经过企业实践优化的依赖包（如 MyBatis-Plus、SaToken），
         可轻松集成到应用中，为开发人员减少手动引入依赖及配置的麻烦，为 Spring Boot Web 项目的灵活快速构建提供支持。
     </description>
-    <url>https://github.com/continew-org/continew-starter</url>
-    <licenses>
-        <license>
-            <name>GNU LESSER GENERAL PUBLIC LICENSE</name>
-            <url>http://www.gnu.org/licenses/lgpl.html</url>
-        </license>
-    </licenses>
-    <developers>
-        <developer>
-            <id>charles7c</id>
-            <name>Charles7c</name>
-            <email>charles7c@126.com</email>
-            <roles>
-                <role>Creator</role>
-                <role>Java Development Engineer</role>
-            </roles>
-            <timezone>+8</timezone>
-            <url>https://github.com/Charles7c</url>
-        </developer>
-    </developers>
-    <scm>
-        <connection>scm:git:git@github.com:continew-org/continew-starter.git</connection>
-        <developerConnection>scm:git:git@github.com:continew-org/continew-starter.git</developerConnection>
-        <url>https://github.com/continew-org/continew-starter</url>
-    </scm>
 
     <properties>
         <!-- Maven Environment Versions -->
@@ -143,4 +118,30 @@
             </plugin>
         </plugins>
     </build>
+
+    <url>https://github.com/continew-org/continew-starter</url>
+    <licenses>
+        <license>
+            <name>GNU LESSER GENERAL PUBLIC LICENSE</name>
+            <url>http://www.gnu.org/licenses/lgpl.html</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <id>charles7c</id>
+            <name>Charles7c</name>
+            <email>charles7c@126.com</email>
+            <roles>
+                <role>Creator</role>
+                <role>Java Development Engineer</role>
+            </roles>
+            <timezone>+8</timezone>
+            <url>https://github.com/Charles7c</url>
+        </developer>
+    </developers>
+    <scm>
+        <connection>scm:git:git@github.com:continew-org/continew-starter.git</connection>
+        <developerConnection>scm:git:git@github.com:continew-org/continew-starter.git</developerConnection>
+        <url>https://github.com/continew-org/continew-starter</url>
+    </scm>
 </project>

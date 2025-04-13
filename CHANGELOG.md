@@ -1,3 +1,38 @@
+## [v2.11.0](https://github.com/continew-org/continew-starter/compare/v2.10.0...v2.11.0) (2025-04-13)
+
+### ✨ 新特性
+
+- 【web】添加 Undertow 自定义配置和默认配置，默认禁止三个不安全的 HTTP 方法（如 CONNECT、TRACE、TRACK） (Gitee#50@httpsjt) ([49b1b6a](https://github.com/continew-org/continew-starter/commit/49b1b6a69073095859c7e692f4e5908144eb4ae6)) ([08068cb](https://github.com/continew-org/continew-starter/commit/08068cb9f7ad7e56ec4df662e2c1e8bf04cb45a1))
+- 新增 continew-starter-bom 模块，用于集中管理所有子模块版本 ([5822d07](https://github.com/continew-org/continew-starter/commit/5822d073fb28c7178409010e6e4f9e78c1ae2d5a))
+- 【cache/redisson】添加缓存键前缀支持 ([615dfdd](https://github.com/continew-org/continew-starter/commit/615dfdd03fb0bc8989b8a788c9babd30709ac643))
+
+### 💎 功能优化
+
+- 【dependencies】采取 bom 方式来管理 JetCache 依赖 (Gitee#44@jiang4yu) ([e2d8f45](https://github.com/continew-org/continew-starter/commit/e2d8f45206a55e333c26a48c501efbb82c89beea)) ([f662b74](https://github.com/continew-org/continew-starter/commit/f662b740610da3e1ff4c0fadf2e5b2a188b06d73)) ([3e0dd83](https://github.com/continew-org/continew-starter/commit/3e0dd83e2664e57d61c37e4ea7afa618c322b984))
+
+- 替换 aspectjweaver 依赖为 Spring Boot Starter AOP ([ae2b898](https://github.com/continew-org/continew-starter/commit/ae2b898e57ca8e418289a2974c92447ec191e15f))
+- 【dependencies】调整 sa-token 版本锁定为 bom 方式（PR by iang4yu） ([e242568](https://github.com/continew-org/continew-starter/commit/e24256818d716c4c2bbc50d6e7bd0df394bbbd4f))
+- 【log】访问日志过滤资源路径 (Gitee#47@dom-w) ([a6a44cd](https://github.com/continew-org/continew-starter/commit/a6a44cd46131d41f8626fe67f6ad9e4d70f1d46c))
+- 【log】重构请求和响应信息获取 (Gitee#47@dom-w) ([ca2c886](https://github.com/continew-org/continew-starter/commit/ca2c88651ff84b165ed9c9389fefb346d2be92ab))
+- 【log】修复访问日志 JSON 数组打印 (Gitee#47@dom-w) ([199a83f](https://github.com/continew-org/continew-starter/commit/199a83fbea015415484a84b5e7cb535bf804e0bc))
+- 删除多余依赖，格式化代码 (Gitee#47@dom-w) ([7e8a15a](https://github.com/continew-org/continew-starter/commit/7e8a15ae8ace650ca5ccf1b807a3149fc2d1e352))
+- 优化部分代码及方法命名，移除 SpringWebUtils 部分重复方法 ([f2ba10b](https://github.com/continew-org/continew-starter/commit/f2ba10beae9d17fad7fa260924ede5cd8ca0cbe4))
+- 调整  Spring Boot 等依赖为 bom 引入 (Gitee#49@jiang4yu) ([1d4f3a3](https://github.com/continew-org/continew-starter/commit/1d4f3a33b9ea6aa84c096b4d97cbb35220c13d86))
+- 【auth/satoken】使用 satoken 官方插件替换 Redisson 缓存 DAO 支持 ([a871048](https://github.com/continew-org/continew-starter/commit/a87104830fa1660035718c4721aa5862433dad7f))
+- 【extension/crud】重构删除接口，以解决批量删除时 URL 中 ID 列表过长问题 ([45da758](https://github.com/continew-org/continew-starter/commit/45da758dee5446f19a230c47a1f5135a86bbff63))
+- 统一配置启用属性描述 ([efaef9d](https://github.com/continew-org/continew-starter/commit/efaef9d7e6a3584e92748e33bf333a2166a3b355))
+- 【extension/crud】将 @DictField 注解重命名为 @DictModel，用于更清晰地表示字典结构映射 ([8766f11](https://github.com/continew-org/continew-starter/commit/8766f11eb2ea3c2cedc5754be4d8969298f95cb3))
+- 【log】优化日志拦截器配置 ([0463c74](https://github.com/continew-org/continew-starter/commit/0463c74aa4737db69798da00c4f1975401a6659d))
+
+### 🐛 问题修复
+
+- 【data/mp】修改构建本部门及以下数据权限表达式 以支持PostgreSQL (Gitee#48@httpsjt) ([5a2621a](https://github.com/continew-org/continew-starter/commit/5a2621a030b8e4f437e2c37fc4021ee661f497c7))
+- 解决部分传递依赖漏洞问题 ([1c65191](https://github.com/continew-org/continew-starter/commit/1c65191b8ab8023fb5990bd532397f3571406420))
+
+### 📦 依赖升级
+
+- sa-token 1.40.0 => 1.41.0 ([a871048](https://github.com/continew-org/continew-starter/commit/a87104830fa1660035718c4721aa5862433dad7f))
+
 ## [v2.10.0](https://github.com/continew-org/continew-starter/compare/v2.9.0...v2.10.0) (2025-03-26)
 
 ### ✨ 新特性
