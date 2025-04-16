@@ -21,7 +21,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
 /**
- * ID 响应信息
+ * ID 响应参数
  *
  * @author Charles7c
  * @since 2.5.0

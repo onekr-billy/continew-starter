@@ -45,7 +45,7 @@ import java.util.List;
  * @param <L> 列表类型
  * @param <D> 详情类型
  * @param <Q> 查询条件
- * @param <C> 创建或修改参数类型
+ * @param <C> 创建或修改请求参数类型
  * @author Charles7c
  * @since 1.0.0
  */
@@ -117,7 +117,7 @@ public abstract class AbstractBaseController<S extends BaseService<L, D, Q, C>, 
     /**
      * 创建
      *
-     * @param req 创建参数
+     * @param req 创建请求参数
      * @return ID
      */
     @CrudApi(Api.CREATE)
@@ -131,7 +131,7 @@ public abstract class AbstractBaseController<S extends BaseService<L, D, Q, C>, 
     /**
      * 修改
      *
-     * @param req 修改参数
+     * @param req 修改请求参数
      * @param id  ID
      */
     @CrudApi(Api.UPDATE)
@@ -146,7 +146,7 @@ public abstract class AbstractBaseController<S extends BaseService<L, D, Q, C>, 
     /**
      * 删除
      *
-     * @param req 删除参数
+     * @param req 删除请求参数
      */
     @CrudApi(Api.DELETE)
     @Operation(summary = "删除数据", description = "删除数据")

@@ -31,7 +31,7 @@ import java.util.List;
  * @param <L> 列表类型
  * @param <D> 详情类型
  * @param <Q> 查询条件
- * @param <C> 创建或修改参数类型
+ * @param <C> 创建或修改请求参数类型
  * @author Charles7c
  * @since 1.0.0
  */
@@ -90,7 +90,7 @@ public interface BaseService<L, D, Q, C> {
     /**
      * 创建
      *
-     * @param req 创建参数
+     * @param req 创建请求参数
      * @return 自增 ID
      */
     Long create(C req);
@@ -98,7 +98,7 @@ public interface BaseService<L, D, Q, C> {
     /**
      * 修改
      *
-     * @param req 修改参数
+     * @param req 修改请求参数
      * @param id  ID
      */
     void update(C req, Long id);

@@ -23,13 +23,13 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 键值对信息
+ * 键值对响应参数
  *
  * @param <T>
  * @author Charles7c
  * @since 2.1.0
  */
-@Schema(description = "键值对信息")
+@Schema(description = "键值对响应参数")
 public class LabelValueResp<T> implements Serializable {
 
     @Serial

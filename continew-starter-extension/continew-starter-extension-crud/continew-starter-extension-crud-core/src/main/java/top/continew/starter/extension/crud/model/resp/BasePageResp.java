@@ -23,13 +23,13 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 分页信息
+ * 分页响应参数
  *
  * @param <T> 列表数据类型
  * @author Charles7c
  * @since 2.5.2
  */
-@Schema(description = "分页信息")
+@Schema(description = "分页响应参数")
 public class BasePageResp<T> implements Serializable {
 
     @Serial
