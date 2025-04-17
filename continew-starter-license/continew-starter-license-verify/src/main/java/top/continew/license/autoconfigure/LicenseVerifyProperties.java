@@ -14,27 +14,45 @@
  * limitations under the License.
  */
 
-package top.continew.license.config;
+package top.continew.license.autoconfigure;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import cn.hutool.core.io.FileUtil;
+import top.continew.starter.core.constant.PropertiesConstants;
+
 /**
- * @Desc:
- * @Author loach
- * @ClassName top.continew.license.config.LicenseYmlConfig
- * @Date 2025-04-14 14:56
+ * license 校验模块配置属性
+ *
+ * @author loach
+ * @since 1.2.0
  */
-@ConfigurationProperties(prefix = "license")
+@ConfigurationProperties(PropertiesConstants.LICENSE_VERIFY)
 public class LicenseVerifyProperties {
 
-    private String savePath;
+    /**
+     * 是否启用
+     */
+    private boolean enabled = true;
 
-    public String getSavePath() {
-        return savePath;
+    /**
+     * 生成的license文件所在路径
+     */
+    private String storePath = FileUtil.getTmpDirPath();
+
+    public boolean isEnabled() {
+        return enabled;
     }
 
-    public void setSavePath(String savePath) {
-        this.savePath = savePath;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
+    public String getStorePath() {
+        return storePath;
+    }
+
+    public void setStorePath(String storePath) {
+        this.storePath = storePath;
+    }
 }

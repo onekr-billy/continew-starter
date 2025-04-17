@@ -13,10 +13,10 @@
 2. 配置YML（license 压缩包存放位置）
 
 ```yaml
-license:
-  savePath: D:/license/
+continew-starter:
+  license:
+    verify:
+      storePath: D:/license
 ```
 
-
-
-注：默认加载 `D:/license/` 位置。
+注：默认加载 `FileUtil.getTmpDirPath()` 位置。

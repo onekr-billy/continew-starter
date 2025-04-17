@@ -16,12 +16,33 @@
 
 package top.continew.license.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import de.schlichtherle.license.*;
-import net.lingala.zip4j.ZipFile;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.prefs.Preferences;
+
+import javax.security.auth.x500.X500Principal;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import de.schlichtherle.license.CipherParam;
+import de.schlichtherle.license.DefaultCipherParam;
+import de.schlichtherle.license.DefaultLicenseParam;
+import de.schlichtherle.license.KeyStoreParam;
+import de.schlichtherle.license.LicenseContent;
+import de.schlichtherle.license.LicenseManager;
+import de.schlichtherle.license.LicenseParam;
+import net.lingala.zip4j.ZipFile;
 import top.continew.license.dto.ConfigParam;
 import top.continew.license.dto.LicenseCreatorParam;
 import top.continew.license.dto.LicenseCreatorParamVO;
@@ -31,13 +52,6 @@ import top.continew.license.keyStoreParam.CustomKeyStoreParam;
 import top.continew.license.manager.ServerLicenseManager;
 import top.continew.license.util.ExecCmdUtil;
 import top.continew.license.util.ServerInfoUtils;
-
-import javax.security.auth.x500.X500Principal;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.*;
-import java.util.prefs.Preferences;
 
 /**
  * 证书生成接口 实现类
@@ -114,7 +128,7 @@ public class LicenseCreateService {
         String privateAlias = customerName + "-private-alias";
         String publicAlias = customerName + "-public-alias";
         String relativePath = relativePath(paramVO);
-        String currentCustomerDir = relativePath + customerName + uuid() + "/";
+        String currentCustomerDir = relativePath + customerName + uuid() + File.separator;
         File file = new File(currentCustomerDir);
         if (!file.exists()) {
             file.mkdirs();

@@ -1,4 +1,4 @@
-## continew-starter-license-generate 食用方法
+## continew-starter-license-generate 使用方法
 
 1. 引入依赖
 
@@ -66,7 +66,8 @@ public class LicenseGenerateController {
         paramVO.setStorePass("123456a");
         //设置过期时间
         Calendar calendar = Calendar.getInstance();
-        long expire = new Date().getTime() + (24L * 3600L * 1000L);
+        long expire = Instant.now().toEpochMilli() + (24L * 3600L * 1000L);;
+        // long expire = new Date().getTime() + (24L * 3600L * 1000L);
         calendar.setTimeInMillis(expire);
         paramVO.setExpireTime(calendar.getTime());
         //设置额外校验参数(服务器信息)
@@ -78,7 +79,4 @@ public class LicenseGenerateController {
 }
 
 ```
-
-
-
-注：默认生成 license 为C:/license下。将压缩包发送给客户端使用。
+注：默认生成 license 为FileUtil.getTmpDirPath()下。将压缩包发送给客户端使用。

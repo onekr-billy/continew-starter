@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import top.continew.license.bean.LicenseInstallerBean;
-import top.continew.license.config.LicenseVerifyProperties;
+import top.continew.license.autoconfigure.LicenseVerifyProperties;
 import top.continew.license.dto.ConfigParam;
 import top.continew.license.dto.LicenseExtraModel;
 import top.continew.license.keyStoreParam.CustomKeyStoreParam;
@@ -37,10 +37,8 @@ import java.util.prefs.Preferences;
 /**
  * 客户端证书管理类(证书验证)
  *
- * @Desc:
- * @Author loach
- * @ClassName top.continew.license.manager.ClientLicenseManager
- * @Date 2025-04-11 15:00
+ * @author loach
+ * @since 1.2.0
  */
 @Component
 public class CustomLicenseManager extends LicenseManager {
@@ -49,6 +47,28 @@ public class CustomLicenseManager extends LicenseManager {
 
     private static volatile CustomLicenseManager INSTANCE;
     private LicenseExtraModel extraModel;
+
+    private LicenseVerifyProperties properties;
+
+    private CustomLicenseManager(LicenseVerifyProperties properties) {
+        this.properties = properties;
+        // 初始化服务信息
+        initServerExtraModel();
+        // 解压证书和配置文件等
+        extractZip();
+        // 获取配置文件
+        ConfigParam configParam = getConfigParam();
+        // 安装证书
+        Preferences preferences = Preferences.userNodeForPackage(LicenseInstallerBean.class);
+        CipherParam cipherParam = new DefaultCipherParam(configParam.getStorePass());
+        KeyStoreParam publicKeyStoreParam = new CustomKeyStoreParam(LicenseInstallerBean.class, properties
+            .getStorePath() + File.separator + "clientLicense/publicCerts.keystore", configParam
+                .getPublicAlias(), configParam.getStorePass(), null);
+        LicenseParam licenseParam = new DefaultLicenseParam(configParam
+            .getSubject(), preferences, publicKeyStoreParam, cipherParam);
+
+        super.setLicenseParam(licenseParam);
+    }
 
     public static CustomLicenseManager getInstance(LicenseVerifyProperties properties) {
         if (INSTANCE == null) {
@@ -61,36 +81,6 @@ public class CustomLicenseManager extends LicenseManager {
         return INSTANCE;
     }
 
-    private String licensePath;
-
-    public CustomLicenseManager(LicenseVerifyProperties properties) {
-        if (properties == null || properties.getSavePath() == null) {
-            String os = System.getProperty("os.name");
-            if (os.toLowerCase().contains("windows")) {
-                this.licensePath = "D:/license/";
-            }
-            this.licensePath = "/data/license/";
-        } else {
-            this.licensePath = properties.getSavePath();
-
-        }
-        //初始化服务信息
-        initServerExtraModel();
-        //解压证书和配置文件等
-        extractZip();
-        //获取配置文件
-        ConfigParam configParam = getConfigParam();
-        //安装证书
-        Preferences preferences = Preferences.userNodeForPackage(LicenseInstallerBean.class);
-        CipherParam cipherParam = new DefaultCipherParam(configParam.getStorePass());
-        KeyStoreParam publicKeyStoreParam = new CustomKeyStoreParam(LicenseInstallerBean.class, getLicensePath() + "clientLicense/publicCerts.keystore", configParam
-            .getPublicAlias(), configParam.getStorePass(), null);
-        LicenseParam licenseParam = new DefaultLicenseParam(configParam
-            .getSubject(), preferences, publicKeyStoreParam, cipherParam);
-
-        super.setLicenseParam(licenseParam);
-    }
-
     private void initServerExtraModel() {
         this.extraModel = ServerInfoUtils.getServerInfos();
     }
@@ -101,8 +91,8 @@ public class CustomLicenseManager extends LicenseManager {
      * @throws ZipException
      */
     private void extractZip() {
-        ZipFile config = new ZipFile(getLicensePath() + "clientLicense.zip");
-        File licenseDir = new File(getLicensePath() + "clientLicense");
+        ZipFile config = new ZipFile(properties.getStorePath() + File.separator + "clientLicense.zip");
+        File licenseDir = new File(properties.getStorePath() + File.separator + "clientLicense");
         if (!licenseDir.exists()) {
             licenseDir.mkdir();
         }
@@ -124,7 +114,8 @@ public class CustomLicenseManager extends LicenseManager {
         FileInputStream config = null;
         BufferedReader reader = null;
         try {
-            config = new FileInputStream(getLicensePath() + "clientLicense/clientConfig.json");
+            config = new FileInputStream(properties
+                .getStorePath() + File.separator + "clientLicense/clientConfig.json");
             reader = new BufferedReader(new InputStreamReader(config, "UTF-8"));
             StringBuilder sb = new StringBuilder();
             String temp = null;
@@ -156,22 +147,13 @@ public class CustomLicenseManager extends LicenseManager {
     }
 
     /**
-     * 获取license文件位置
-     *
-     * @return
-     */
-    private String getLicensePath() {
-        return this.licensePath;
-    }
-
-    /**
      * 重写验证证书方法，添加自定义参数验证
      */
     @Override
     protected synchronized void validate(LicenseContent content) throws LicenseContentException {
-        //系统验证基本参数：生效时间、失效时间、公钥别名、公钥密码
+        // 系统验证基本参数：生效时间、失效时间、公钥别名、公钥密码
         super.validate(content);
-        //验证自定义参数
+        // 验证自定义参数
         Object o = content.getExtra();
         if (o != null && extraModel != null && o instanceof LicenseExtraModel) {
             LicenseExtraModel contentExtraModel = (LicenseExtraModel)o;

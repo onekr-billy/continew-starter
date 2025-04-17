@@ -276,6 +276,18 @@
                 <artifactId>continew-starter-core</artifactId>
                 <version>${revision}</version>
             </dependency>
+            <!-- license 生成模块 -->
+            <dependency>
+                <groupId>top.continew</groupId>
+                <artifactId>continew-starter-license-generate</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <!-- license 校验模块 -->
+            <dependency>
+                <groupId>top.continew</groupId>
+                <artifactId>continew-starter-license-verify</artifactId>
+                <version>${revision}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

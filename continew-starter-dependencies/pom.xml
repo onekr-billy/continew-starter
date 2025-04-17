@@ -48,6 +48,10 @@
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
         <commons-io.version>2.17.0</commons-io.version>
         <commons-compress.version>1.26.0</commons-compress.version>
+        <!--license-->
+        <truelicense.version>1.33</truelicense.version>
+        <zip4j.version>2.11.5</zip4j.version>
+
         <!-- Maven Plugin Versions -->
         <flatten.version>1.7.0</flatten.version>
         <spotless.version>2.44.3</spotless.version>
@@ -368,6 +372,20 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-compress</artifactId>
                 <version>${commons-compress.version}</version>
+            </dependency>
+
+            <!-- license 依赖-->
+            <dependency>
+                <groupId>de.schlichtherle.truelicense</groupId>
+                <artifactId>truelicense-core</artifactId>
+                <version>${truelicense.version}</version>
+            </dependency>
+
+            <!--zip4j压缩文件-->
+            <dependency>
+                <groupId>net.lingala.zip4j</groupId>
+                <artifactId>zip4j</artifactId>
+                <version>${zip4j.version}</version>
             </dependency>
 
             <!-- ContiNew Starter 依赖 -->

@@ -16,12 +16,12 @@
 
 package top.continew.license.util;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+
+import cn.hutool.core.util.ArrayUtil;
 
 /**
  * 运行命令行工具类
@@ -50,7 +50,7 @@ public class ExecCmdUtil {
                 process = Runtime.getRuntime().exec(cmd);
             }
         } else {
-            cmd = ArrayUtils.addAll(new String[] {"/bin/sh", "-c"}, cmd);
+            cmd = ArrayUtil.addAll(new String[] {"/bin/sh", "-c"}, cmd);
             process = Runtime.getRuntime().exec(cmd);
         }
 

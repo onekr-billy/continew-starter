@@ -19,7 +19,7 @@ package top.continew.license.bean;
 import de.schlichtherle.license.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.continew.license.config.LicenseVerifyProperties;
+import top.continew.license.autoconfigure.LicenseVerifyProperties;
 import top.continew.license.exception.VerifyException;
 import top.continew.license.manager.CustomLicenseManager;
 
@@ -28,16 +28,12 @@ import java.io.*;
 /**
  * 证书安装业务类
  *
- * @Desc:
- * @Author loach
- * @ClassName top.continew.license.bean.LicenseInstallerBean
- * @Date 2025-04-15 15:05
+ * @author loach
+ * @since 1.2.0
  */
 public class LicenseInstallerBean {
 
     private static final Logger log = LoggerFactory.getLogger(LicenseInstallerBean.class);
-
-    private String licensePath;
 
     private LicenseManager licenseManager;
 
@@ -45,28 +41,15 @@ public class LicenseInstallerBean {
 
     public LicenseInstallerBean(LicenseVerifyProperties properties) {
         this.properties = properties;
-
-        if (properties == null || properties.getSavePath() == null) {
-            String os = System.getProperty("os.name");
-            if (os.toLowerCase().contains("windows")) {
-                this.licensePath = "D:/license/";
-            }
-            this.licensePath = "/data/license/";
-        } else {
-            this.licensePath = properties.getSavePath();
-
-        }
     }
 
-    //安装证书
+    // 安装证书
     public void installLicense() throws Exception {
-
         try {
-
             licenseManager = CustomLicenseManager.getInstance(properties);
             licenseManager.uninstall();
-            LicenseContent licenseContent = licenseManager
-                .install(new File(getLicensePath() + "clientLicense/license.lic"));
+            LicenseContent licenseContent = licenseManager.install(new File(properties
+                .getStorePath() + File.separator + "clientLicense/license.lic"));
             log.info("证书认证通过，安装成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -90,15 +73,6 @@ public class LicenseInstallerBean {
             //Log.info("证书认证通过");
         }
         throw new VerifyException("证书认证失败:licenseManager is null");
-    }
-
-    /**
-     * 获取license文件位置
-     *
-     * @return
-     */
-    private String getLicensePath() {
-        return licensePath;
     }
 
 }

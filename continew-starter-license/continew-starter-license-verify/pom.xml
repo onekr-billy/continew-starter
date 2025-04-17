@@ -13,54 +13,23 @@
     <packaging>jar</packaging>
     <description>license 校验模块 基于 truelicens 实现</description>
 
-    <properties>
-        <truelicense.version>1.33</truelicense.version>
-        <zip4j.version>2.2.6</zip4j.version>
-    </properties>
-
     <dependencies>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-
-
+        <!--ContiNew Starter 日志模块 - 核心模块-->
         <dependency>
             <groupId>top.continew</groupId>
             <artifactId>continew-starter-log-core</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-
+        <!-- license 依赖-->
         <dependency>
             <groupId>de.schlichtherle.truelicense</groupId>
             <artifactId>truelicense-core</artifactId>
-            <version>${truelicense.version}</version>
         </dependency>
 
         <!--zip4j压缩文件-->
         <dependency>
             <groupId>net.lingala.zip4j</groupId>
             <artifactId>zip4j</artifactId>
-            <version>${zip4j.version}</version>
-        </dependency>
-
-        <!--jackson-->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
         </dependency>
     </dependencies>
 </project>

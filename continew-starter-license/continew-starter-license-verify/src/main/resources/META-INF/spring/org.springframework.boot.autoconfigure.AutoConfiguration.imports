@@ -1,2 +1,1 @@
-top.continew.license.config.LicenseAutoConfiguration
-top.continew.license.Initializing.LicenseStarterInitializingBean
+top.continew.license.autoconfigure.LicenseVerifyAutoConfiguration

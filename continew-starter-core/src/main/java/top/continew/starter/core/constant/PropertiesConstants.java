@@ -139,6 +139,21 @@ public class PropertiesConstants {
      */
     public static final String TRACE = CONTINEW_STARTER + StringConstants.DOT + "trace";
 
+    /**
+     * license配置
+     */
+    public static final String LICENSE = CONTINEW_STARTER + StringConstants.DOT + "license";
+
+    /**
+     * license 生成模块配置
+     */
+    public static final String LICENSE_GENERATE = LICENSE + StringConstants.DOT + "generate";
+
+    /**
+     * license 校验模块配置
+     */
+    public static final String LICENSE_VERIFY = LICENSE + StringConstants.DOT + "verify";
+
     private PropertiesConstants() {
     }
 }

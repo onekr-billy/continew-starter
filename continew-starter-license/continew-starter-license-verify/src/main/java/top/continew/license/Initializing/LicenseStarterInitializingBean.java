@@ -17,31 +17,25 @@
 package top.continew.license.Initializing;
 
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+
 import top.continew.license.bean.LicenseInstallerBean;
 
 /**
  * 启动校验 License
  *
- * @Desc:
- * @Author loach
- * @ClassName top.continew.license.Initializing.LicenseStarterAutoConfiguration
- * @Date 2025-04-11 15:40
+ * @author loach
+ * @since 1.2.0
  */
-@Configuration
-@EnableConfigurationProperties(LicenseStarterInitializingBean.class)
 public class LicenseStarterInitializingBean implements InitializingBean {
+    private final LicenseInstallerBean licenseInstallerBean;
 
-    @Autowired
-    private LicenseInstallerBean licenseInstallerBean;
+    public LicenseStarterInitializingBean(LicenseInstallerBean licenseInstallerBean) {
+        this.licenseInstallerBean = licenseInstallerBean;
+    }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-
-        //安装证书，即校验客户机器参数是否符合证书要求，符合则安装成功，不符合则报错无法启动。
+        // 安装证书，即校验客户机器参数是否符合证书要求，符合则安装成功，不符合则报错无法启动。
         licenseInstallerBean.installLicense();
-
     }
 }
