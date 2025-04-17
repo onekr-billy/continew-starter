@@ -51,6 +51,7 @@
         <module>continew-starter-auth</module>
         <module>continew-starter-messaging</module>
         <module>continew-starter-extension</module>
+        <module>continew-starter-license</module>
     </modules>
 
     <build>
