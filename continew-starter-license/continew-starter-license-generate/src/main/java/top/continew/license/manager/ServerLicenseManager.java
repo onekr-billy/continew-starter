@@ -18,16 +18,16 @@ package top.continew.license.manager;
 
 import de.schlichtherle.license.*;
 import de.schlichtherle.xml.GenericCertificate;
+import top.continew.license.exception.LicenseException;
 
 import java.util.Date;
 
 /**
  * 自定义服务端证书管理类(生成证书)
  *
- * @Desc:
- * @Author loach
- * @ClassName top.continew.license.manager.ServerLicenseManager
- * @Date 2025-03-22 14:31
+ * @author loach
+ * @author echo
+ * @since 2.11.0
  */
 public class ServerLicenseManager extends LicenseManager {
 
@@ -38,27 +38,31 @@ public class ServerLicenseManager extends LicenseManager {
     /**
      * 证书生成参数验证
      *
-     * @param content
-     * @throws LicenseContentException
+     * @param content 内容
      */
-    protected synchronized void validateCreate(final LicenseContent content) throws LicenseContentException {
+    protected synchronized void validateCreate(final LicenseContent content) {
         Date now = new Date();
         Date notBefore = content.getNotBefore();
         Date notAfter = content.getNotAfter();
         if (notBefore != null && now.before(notBefore)) {
-            throw new LicenseContentException("证书尚未生效，无法生成");
+            throw new LicenseException("证书尚未生效，无法生成");
         }
         if (notAfter != null && now.after(notAfter)) {
-            throw new LicenseContentException("证书已过期，无法生成");
+            throw new LicenseException("证书已过期，无法生成");
         }
 
         if (notBefore != null && notAfter != null && notBefore.after(notAfter)) {
-            throw new LicenseContentException("证书生效时间晚于失效时间，无法生成");
+            throw new LicenseException("证书生效时间晚于失效时间，无法生成");
         }
     }
 
     /**
      * 重写生成证书的方法，增加生成参数验证
+     *
+     * @param content 内容
+     * @param notary  公证人
+     * @return {@link byte[] }
+     * @throws Exception 例外
      */
     @Override
     protected synchronized byte[] create(LicenseContent content, LicenseNotary notary) throws Exception {

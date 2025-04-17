@@ -17,7 +17,6 @@
 package top.continew.license.Initializing;
 
 import org.springframework.beans.factory.InitializingBean;
-
 import top.continew.license.bean.LicenseInstallerBean;
 
 /**
@@ -34,8 +33,7 @@ public class LicenseStarterInitializingBean implements InitializingBean {
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
-        // 安装证书，即校验客户机器参数是否符合证书要求，符合则安装成功，不符合则报错无法启动。
+    public void afterPropertiesSet() {
         licenseInstallerBean.installLicense();
     }
 }

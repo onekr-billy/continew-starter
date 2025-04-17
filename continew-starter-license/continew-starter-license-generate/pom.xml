@@ -11,25 +11,13 @@
 
     <artifactId>continew-starter-license-generate</artifactId>
     <packaging>jar</packaging>
-    <description>license 生成模块 基于 truelicens 实现</description>
+    <description>ContiNew Starter License生成模块</description>
 
     <dependencies>
-        <!--ContiNew Starter 日志模块 - 核心模块-->
+        <!-- license 核心模块 -->
         <dependency>
             <groupId>top.continew</groupId>
-            <artifactId>continew-starter-log-core</artifactId>
-        </dependency>
-
-        <!-- license 依赖-->
-        <dependency>
-            <groupId>de.schlichtherle.truelicense</groupId>
-            <artifactId>truelicense-core</artifactId>
-        </dependency>
-
-        <!--zip4j压缩文件-->
-        <dependency>
-            <groupId>net.lingala.zip4j</groupId>
-            <artifactId>zip4j</artifactId>
+            <artifactId>continew-starter-license-core</artifactId>
         </dependency>
     </dependencies>
 </project>

@@ -16,62 +16,51 @@
 
 package top.continew.license.service;
 
+import cn.hutool.core.util.IdUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import de.schlichtherle.license.*;
+import net.lingala.zip4j.ZipFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import top.continew.license.exception.LicenseException;
+import top.continew.license.manager.ServerLicenseManager;
+import top.continew.license.model.*;
+import top.continew.license.util.ExecCmdUtil;
+import top.continew.license.util.ServerInfoUtils;
+
+import javax.security.auth.x500.X500Principal;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import java.util.prefs.Preferences;
-
-import javax.security.auth.x500.X500Principal;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import de.schlichtherle.license.CipherParam;
-import de.schlichtherle.license.DefaultCipherParam;
-import de.schlichtherle.license.DefaultLicenseParam;
-import de.schlichtherle.license.KeyStoreParam;
-import de.schlichtherle.license.LicenseContent;
-import de.schlichtherle.license.LicenseManager;
-import de.schlichtherle.license.LicenseParam;
-import net.lingala.zip4j.ZipFile;
-import top.continew.license.dto.ConfigParam;
-import top.continew.license.dto.LicenseCreatorParam;
-import top.continew.license.dto.LicenseCreatorParamVO;
-import top.continew.license.dto.LicenseExtraModel;
-import top.continew.license.exception.LicenseException;
-import top.continew.license.keyStoreParam.CustomKeyStoreParam;
-import top.continew.license.manager.ServerLicenseManager;
-import top.continew.license.util.ExecCmdUtil;
-import top.continew.license.util.ServerInfoUtils;
 
 /**
  * 证书生成接口 实现类
  *
- * @Desc:
- * @Author loach
- * @ClassName top.continew.license.service.impl.LicenseCreateServiceImpl
- * @Date 2025-03-22 18:36
- */
-@Component
+ * @author loach
+ * @since 2.11.0
+ **/
+
 public class LicenseCreateService {
 
     private static final Logger log = LoggerFactory.getLogger(LicenseCreateService.class);
 
     private static volatile LicenseCreateService instance;
 
+    private static final X500Principal DEFAULT_HOLDER_ISSUER = new X500Principal("CN=localhost, OU=localhost, O=localhost, L=SH, ST=SH, C=CN");
+
     private LicenseCreateService() {
-        // 私有构造
     }
 
+    /**
+     * 获取实例
+     *
+     * @return {@link LicenseCreateService }
+     */
     public static LicenseCreateService getInstance() {
         if (instance == null) {
             synchronized (LicenseCreateService.class) {
@@ -83,135 +72,115 @@ public class LicenseCreateService {
         return instance;
     }
 
-    private static final X500Principal DEFAULT_HOLDER_ISSUER = new X500Principal("CN=localhost, OU=localhost, O=localhost, L=SH, ST=SH, C=CN");
-
     /**
      * 获取服务器信息
      *
-     * @return
+     * @return {@link LicenseExtraModel }
      */
     public LicenseExtraModel getServerInfo() {
-        LicenseExtraModel serverInfos = ServerInfoUtils.getServerInfos();
-        return serverInfos;
+        return ServerInfoUtils.getServerInfos();
     }
 
     /**
      * 生成一个证书
      *
-     * @param paramVO
+     * @param paramVO param vo
+     * @throws Exception 例外
      */
     public void generateLicense(LicenseCreatorParamVO paramVO) throws Exception {
 
-        Map<String, Object> map = buildCreator(paramVO);
-        LicenseCreatorParam param = (LicenseCreatorParam)map.get("creator");
-        ZipFile clientZipFile = (ZipFile)map.get("clientZipFile");
+        BuildCreatorResp buildCreatorResp = buildCreator(paramVO);
+        LicenseCreatorParam param = buildCreatorResp.getParam();
+        ZipFile clientZipFile = buildCreatorResp.getClientZipFile();
         try {
             LicenseParam licenseParam = initLicenseParam(param);
             LicenseManager licenseManager = new ServerLicenseManager(licenseParam);
-            LicenseContent licenseContent = initLcenseContent(param);
+            LicenseContent licenseContent = initLicenseContent(param);
             licenseManager.store(licenseContent, new File(param.getLicensePath()));
-            log.info("{}证书生成成功", param.getSubject());
+            log.info("{} 证书生成成功 路径: {}", param.getSubject(), param.getLicensePath());
             clientZipFile.addFile(param.getLicensePath());
         } catch (Exception e) {
-            e.printStackTrace();
-            // log.error("{}生成证书失败:", param.getSubject());
-            throw new LicenseException("生成证书失败:" + param.getSubject());
+            throw new LicenseException("生成证书失败:" + param.getSubject(), e);
         }
-
     }
 
     /**
-     * 封装证书生成参数
+     * 构建 License 创建者对象及客户端配置压缩包。
+     *
+     * @param paramVO 创建参数封装对象，包含客户名、密码、描述、扩展信息等。
+     * @return Map 包含 LicenseCreatorParam（creator） 和 生成的客户端 Zip 文件（clientZipFile）
+     * @throws Exception 命令执行或文件操作过程中出现异常
      */
-    private Map<String, Object> buildCreator(LicenseCreatorParamVO paramVO) throws Exception {
+    private BuildCreatorResp buildCreator(LicenseCreatorParamVO paramVO) throws Exception {
         String customerName = paramVO.getCustomerName();
         String privateAlias = customerName + "-private-alias";
         String publicAlias = customerName + "-public-alias";
-        String relativePath = relativePath(paramVO);
-        String currentCustomerDir = relativePath + customerName + uuid() + File.separator;
-        File file = new File(currentCustomerDir);
-        if (!file.exists()) {
-            file.mkdirs();
+        String currentCustomerDir = relativePath(paramVO) + customerName + IdUtil.fastSimpleUUID() + File.separator;
+        File customerDirFile = new File(currentCustomerDir);
+        if (!customerDirFile.exists() && !customerDirFile.mkdirs()) {
+            throw new IOException("Failed to create directory: " + currentCustomerDir);
         }
+
         String privateKeystore = currentCustomerDir + "privateKeys.keystore";
         String publicKeystore = currentCustomerDir + "publicCerts.keystore";
+        String certFilePath = currentCustomerDir + "certfile.cer";
+        String licensePath = currentCustomerDir + "license.lic";
 
         LicenseCreatorParam param = new LicenseCreatorParam();
         param.setSubject(customerName);
         param.setPrivateAlias(privateAlias);
         param.setKeyPass(paramVO.getKeyPass());
         param.setStorePass(paramVO.getStorePass());
-        param.setLicensePath(currentCustomerDir + "license.lic");
+        param.setLicensePath(licensePath);
         param.setPrivateKeysStorePath(privateKeystore);
         param.setExpiryTime(paramVO.getExpireTime());
         param.setDescription(paramVO.getDescription());
         param.setLicenseExtraModel(paramVO.getLicenseExtraModel());
 
-        if (checkJavaVersion()) {
-            // JDK>=17 生成私钥库
+        int validity = getValidity(param.getIssuedTime(), paramVO.getExpireTime());
+        String dname = "\"CN=localhost, OU=localhost, O=localhost, L=SH, ST=SH, C=CN\"";
 
-            String exe1 = "keytool -genkeypair -keyalg DSA -keysize 1024 -validity " + getValidity(param
-                .getIssuedTime(), paramVO
-                    .getExpireTime()) + " -alias " + privateAlias + " -keystore " + privateKeystore + " -storepass " + paramVO
-                        .getStorePass() + " -keypass " + paramVO
-                            .getKeyPass() + " -dname \"CN=localhost, OU=localhost, O=localhost, L=SH, ST=SH, C=CN\"";
-            String exe2 = "keytool -exportcert -alias " + privateAlias + " -keystore " + privateKeystore + " -storepass " + paramVO
-                .getStorePass() + " -file \"" + currentCustomerDir + "certfile.cer\"";
+        // 生成私钥库
+        String keyAlgOption = checkJavaVersion() ? "-keyalg DSA" : ""; // JDK>=17 要指定 keyalg
+        String genKeyCmd = String
+            .format("keytool -genkeypair %s -keysize 1024 -validity %d -alias %s -keystore %s -storepass %s -keypass %s -dname %s", keyAlgOption, validity, privateAlias, privateKeystore, paramVO
+                .getStorePass(), paramVO.getKeyPass(), dname);
 
-            String exe3 = "keytool -noprompt -import -alias " + publicAlias + " -file \"" + currentCustomerDir + "certfile.cer\"" + " -keystore " + publicKeystore + " -storepass " + paramVO
-                .getStorePass();
+        // 导出证书
+        String exportCertCmd = String
+            .format("keytool -exportcert -alias %s -keystore %s -storepass %s -file \"%s\"", privateAlias, privateKeystore, paramVO
+                .getStorePass(), certFilePath);
 
-            ExecCmdUtil.exec(exe1);
-            ExecCmdUtil.exec(exe2);
-            ExecCmdUtil.exec(exe3);
+        // 导入到公钥库
+        String importCertCmd = String
+            .format("keytool -noprompt -import -alias %s -file \"%s\" -keystore %s -storepass %s", publicAlias, certFilePath, publicKeystore, paramVO
+                .getStorePass());
 
-        } else {
-            // JDK<17 生成私钥库
-            String exe1 = "keytool -genkeypair -keysize 1024 -validity " + getValidity(param.getIssuedTime(), paramVO
-                .getExpireTime()) + " -alias " + privateAlias + " -keystore " + privateKeystore + " -storepass " + paramVO
-                    .getStorePass() + " -keypass " + paramVO
-                        .getKeyPass() + " -dname \"CN=localhost, OU=localhost, " + "O=localhost, L=SH, ST=SH, C=CN\"";
-            String exe2 = "keytool -exportcert -alias " + privateAlias + " -keystore " + privateKeystore + " -storepass " + paramVO
-                .getStorePass() + " -file \"" + currentCustomerDir + "certfile.cer\"";
-            String exe3 = "keytool -noprompt -import -alias " + publicAlias + " -file \"" + currentCustomerDir + "certfile.cer\" -keystore " + publicKeystore + " -storepass " + paramVO
-                .getStorePass();
-            ExecCmdUtil.exec(exe1);
-            ExecCmdUtil.exec(exe2);
-            ExecCmdUtil.exec(exe3);
-        }
+        // 执行命令
+        ExecCmdUtil.exec(genKeyCmd);
+        ExecCmdUtil.exec(exportCertCmd);
+        ExecCmdUtil.exec(importCertCmd);
 
+        // 生成客户端配置文件
         ZipFile clientZipFile = generateClientConfig(param, currentCustomerDir, publicAlias);
-        Map<String, Object> map = new HashMap<>();
-        map.put("creator", param);
-        map.put("clientZipFile", clientZipFile);
-        return map;
-    }
-
-    private String uuid() {
-        return UUID.randomUUID().toString().replace("-", "");
+        return new BuildCreatorResp(param, clientZipFile);
     }
 
     /**
      * 校验JDK版本
      *
-     * @return
-     * @throws Exception
+     * @return boole T 17 版本 F 非 17 版本
+     * @throws Exception 例外
      */
     private boolean checkJavaVersion() throws Exception {
         String version = System.getProperty("java.version");
-
         int currentVersion = 0;
         if (version.startsWith("1.")) {
             currentVersion = Integer.parseInt(version.split("\\.")[1]);
         } else {
             currentVersion = Integer.parseInt(version.split("\\.")[0]);
         }
-
-        if (currentVersion >= 17) {
-            return true;
-        } else {
-            return false;
-        }
+        return currentVersion >= 17;
     }
 
     private ZipFile generateClientConfig(LicenseCreatorParam param,
@@ -229,17 +198,16 @@ public class LicenseCreateService {
         FileOutputStream out = null;
         try {
             out = new FileOutputStream(config);
-            out.write(json.getBytes("UTF-8"));
+            out.write(json.getBytes(StandardCharsets.UTF_8));
             out.flush();
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new LicenseException("密钥文件生成失败");
+            throw new LicenseException("密钥文件生成失败", e);
         } finally {
             if (out != null) {
                 try {
                     out.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    throw new LicenseException("文件流关闭失败", e);
                 }
             }
         }
@@ -250,28 +218,41 @@ public class LicenseCreateService {
         return clientLicense;
     }
 
-    //将有效时间转换成天
+    /**
+     * 将有效时间转换成天
+     *
+     * @param issuedTime 签发时间
+     * @param expireTime 过期时间
+     * @return int
+     */
     private int getValidity(Date issuedTime, Date expireTime) {
         long issued = issuedTime.getTime();
         long expire = expireTime.getTime();
         long differ = expire - issued;
         long remaining = differ % (24L * 3600L * 1000L);
-        Long validity = differ / (24L * 3600L * 1000L);
+        long validity = differ / (24L * 3600L * 1000L);
         if (remaining > 0) {
             validity++;
         }
-        return validity.intValue();
+        return (int)validity;
     }
 
+    /**
+     * 是否是 Windows
+     *
+     * @return boolean
+     */
     private boolean isWindows() {
         String os = System.getProperty("os.name");
-        if (os.toLowerCase().contains("windows")) {
-            return true;
-        }
-        return false;
+        return os.toLowerCase().contains("windows");
     }
 
-    //证书生成路径
+    /**
+     * 证书生成路径
+     *
+     * @param paramVO param vo
+     * @return {@link String }
+     */
     private String relativePath(LicenseCreatorParamVO paramVO) {
 
         if (paramVO.getLicenseSavePath() != null) {
@@ -292,16 +273,17 @@ public class LicenseCreateService {
         CipherParam cipherParam = new DefaultCipherParam(param.getStorePass());
         KeyStoreParam privateStoreParam = new CustomKeyStoreParam(LicenseCreateService.class, param
             .getPrivateKeysStorePath(), param.getPrivateAlias(), param.getStorePass(), param.getKeyPass());
-        LicenseParam licenseParam = new DefaultLicenseParam(param
-            .getSubject(), preferences, privateStoreParam, cipherParam);
-        return licenseParam;
+        return new DefaultLicenseParam(param.getSubject(), preferences, privateStoreParam, cipherParam);
 
     }
 
     /**
      * 设置证书生成内容
+     *
+     * @param param 参数
+     * @return {@link LicenseContent }
      */
-    private LicenseContent initLcenseContent(LicenseCreatorParam param) {
+    private LicenseContent initLicenseContent(LicenseCreatorParam param) {
 
         LicenseContent licenseContent = new LicenseContent();
         licenseContent.setHolder(DEFAULT_HOLDER_ISSUER);
@@ -314,7 +296,7 @@ public class LicenseCreateService {
         licenseContent.setConsumerAmount(param.getConsumerAmount());
         licenseContent.setInfo(param.getDescription());
 
-        if (param != null && param.getLicenseExtraModel() != null) {
+        if (param.getLicenseExtraModel() != null) {
             licenseContent.setExtra(param.getLicenseExtraModel());
         }
 

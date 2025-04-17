@@ -14,42 +14,56 @@
  * limitations under the License.
  */
 
-package top.continew.license.dto;
+package top.continew.license.model;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @Desc:
- * @Author loach
- * @ClassName top.continew.license.dto.LicenseCreatorParam
- * @Date 2025-03-21 14:22
- */
+ * 许可证创建者参数
+ *
+ * @author loach
+ * @since 2.11.0
+ **/
 public class LicenseCreatorParam implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
 
-    /** 证书主题 */
+    /**
+     * 证书主题
+     */
     private String subject;
 
-    /** 私钥别称 */
+    /**
+     * 私钥别称
+     */
     private String privateAlias;
 
-    /** 私钥密码 */
+    /**
+     * 私钥密码
+     */
     private String keyPass;
 
-    /** 访问公钥库的密码 */
+    /**
+     * 访问公钥库的密码
+     */
     private String storePass;
 
-    /** 证书生成路径 */
+    /**
+     * 证书生成路径
+     */
     private String licensePath;
 
-    /** 私钥库存储路径 */
+    /**
+     * 私钥库存储路径
+     */
     private String privateKeysStorePath;
 
-    /** 证书生效时间 */
+    /**
+     * 证书生效时间
+     */
     private Date issuedTime = new Date();
 
     /**
@@ -67,10 +81,14 @@ public class LicenseCreatorParam implements Serializable {
      */
     private Integer consumerAmount = 1;
 
-    /** 描述信息 */
+    /**
+     * 描述信息
+     */
     private String description;
 
-    /** 额外的服务器硬件校验信息 */
+    /**
+     * 额外的服务器硬件校验信息
+     */
     private LicenseExtraModel licenseExtraModel;
 
     public String getSubject() {

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package top.continew.license.dto;
+package top.continew.license.model;
 
 /**
- * @Desc:
- * @Author loach
- * @ClassName top.continew.license.dto.ConfigParam
- * @Date 2025-03-21 14:50
- */
+ * config参数
+ *
+ * @author loach
+ * @since 2.11.0
+ **/
 public class ConfigParam {
 
     /**

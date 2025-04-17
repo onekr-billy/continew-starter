@@ -16,14 +16,16 @@
 
 package top.continew.license.bean;
 
-import de.schlichtherle.license.*;
+import de.schlichtherle.license.LicenseContent;
+import de.schlichtherle.license.LicenseManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.continew.license.autoconfigure.LicenseVerifyProperties;
-import top.continew.license.exception.VerifyException;
+import top.continew.license.exception.LicenseException;
 import top.continew.license.manager.CustomLicenseManager;
 
-import java.io.*;
+import java.io.File;
+import java.nio.file.Paths;
 
 /**
  * 证书安装业务类
@@ -35,44 +37,56 @@ public class LicenseInstallerBean {
 
     private static final Logger log = LoggerFactory.getLogger(LicenseInstallerBean.class);
 
+    private final LicenseVerifyProperties properties;
     private LicenseManager licenseManager;
-
-    private LicenseVerifyProperties properties;
 
     public LicenseInstallerBean(LicenseVerifyProperties properties) {
         this.properties = properties;
     }
 
-    // 安装证书
-    public void installLicense() throws Exception {
+    /**
+     * 安装许可证
+     */
+    public void installLicense() {
         try {
-            licenseManager = CustomLicenseManager.getInstance(properties);
+            this.licenseManager = CustomLicenseManager.getInstance(properties);
             licenseManager.uninstall();
-            LicenseContent licenseContent = licenseManager.install(new File(properties
-                .getStorePath() + File.separator + "clientLicense/license.lic"));
-            log.info("证书认证通过，安装成功");
+            File licenseFile = Paths.get(properties.getStorePath(), "clientLicense", "license.lic").toFile();
+            LicenseContent licenseContent = licenseManager.install(licenseFile);
+            log.info("证书认证通过，安装成功: {}", licenseContent.getSubject());
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new VerifyException("证书认证失败:" + e + " " + e.getMessage());
-        }
-
-    }
-
-    //卸载证书
-    public void uninstallLicense() throws Exception {
-        if (licenseManager != null) {
-            licenseManager.uninstall();
-            //Log.info("证书已卸载");
+            throw new LicenseException("证书认证失败", e);
         }
     }
 
-    //即时验证证书合法性
-    public void verify() throws Exception {
+    /**
+     * 卸载许可证
+     */
+    public void uninstallLicense() {
         if (licenseManager != null) {
-            licenseManager.verify();
-            //Log.info("证书认证通过");
+            try {
+                licenseManager.uninstall();
+                log.info("证书已卸载");
+            } catch (Exception e) {
+                log.warn("卸载证书失败", e);
+            }
         }
-        throw new VerifyException("证书认证失败:licenseManager is null");
+    }
+
+    /**
+     * 即时验证证书合法性
+     */
+    public void verify() {
+        if (licenseManager != null) {
+            try {
+                licenseManager.verify();
+                log.info("证书验证成功");
+            } catch (Exception e) {
+                throw new LicenseException("证书认证失败", e);
+            }
+        } else {
+            throw new LicenseException("证书认证失败: licenseManager is null");
+        }
     }
 
 }

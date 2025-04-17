@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.license.keyStoreParam;
+package top.continew.license.model;
 
 import de.schlichtherle.license.AbstractKeyStoreParam;
 
@@ -23,23 +23,36 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * @Desc:
- * @Author loach
- * @ClassName top.continew.license.keyStoreParam.CustomKeyStoreParam
- * @Date 2025-03-21 14:50
+ * 自定义密钥存储参数
+ *
+ * @author loach
+ * @author echo
+ * @since 2.11.0
  */
 public class CustomKeyStoreParam extends AbstractKeyStoreParam {
-    /** 密钥路径，可为磁盘路径，也可为项目资源文件里的路径,如果为磁盘路径需重写getStream()方法 */
+    /**
+     * 密钥路径，可为磁盘路径，也可为项目资源文件里的路径,如果为磁盘路径需重写getStream()方法
+     */
     private String storePath;
 
-    /** 公钥或私钥的别名 */
+    /**
+     * 公钥或私钥的别名
+     */
     private String alias;
 
-    /** 访问公钥/私钥库的密码 */
+    /**
+     * 访问公钥/私钥库的密码
+     */
     private String storePass;
 
-    /** 公钥/私钥的密码 */
+    /**
+     * 公钥/私钥的密码
+     */
     private String keyPass;
+
+    public CustomKeyStoreParam(Class aClass, String s) {
+        super(aClass, s);
+    }
 
     public CustomKeyStoreParam(Class clazz, String resource, String alias, String storePass, String keyPass) {
         super(clazz, resource);

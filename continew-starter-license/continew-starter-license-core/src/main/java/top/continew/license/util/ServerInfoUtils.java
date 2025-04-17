@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.license.utils;
+package top.continew.license.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
@@ -23,8 +23,8 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import top.continew.license.dto.LicenseExtraModel;
-import top.continew.license.exception.VerifyException;
+import top.continew.license.exception.LicenseException;
+import top.continew.license.model.LicenseExtraModel;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
  * 服务器信息工具类
  *
  * @author Rong.Jia
- * @date 2022/03/10
+ * @since 2.11.0
  */
 public class ServerInfoUtils {
 
@@ -55,7 +55,7 @@ public class ServerInfoUtils {
     /**
      * 组装需要额外校验的License参数
      *
-     * @return
+     * @return {@link LicenseExtraModel }
      */
     public static LicenseExtraModel getServerInfos() {
         LicenseExtraModel result = new LicenseExtraModel();
@@ -67,7 +67,7 @@ public class ServerInfoUtils {
             result.setMainBoardSerial(ServerInfosContainer.mainBoardSerial);
         } catch (Exception e) {
             log.error("获取服务器硬件信息异常", e);
-            throw new VerifyException(String.format("获取服务器硬件信息异常, %s", e.getMessage()));
+            throw new LicenseException(String.format("获取服务器硬件信息异常, %s", e.getMessage()));
         }
         return result;
     }
@@ -75,7 +75,7 @@ public class ServerInfoUtils {
     /**
      * 初始化服务器硬件信息，并将信息缓存到内存
      *
-     * @throws Exception 默认异常
+     * @throws Exception 例外
      */
     private static void initServerInfos() throws Exception {
         if (ServerInfosContainer.ipAddress == null) {
@@ -104,7 +104,7 @@ public class ServerInfoUtils {
     /**
      * 获取CPU序列号
      *
-     * @return String 主板序列号
+     * @return String CPU 序列号
      */
     public static String getCpuSerial() {
         return FileUtil.isWindows() ? getWindowCpuSerial() : getLinuxCpuSerial();
@@ -158,15 +158,22 @@ public class ServerInfoUtils {
      */
     private static String getWindowCpuSerial() {
 
-        String result = StrUtil.EMPTY;
+        StringBuilder result = new StringBuilder(StrUtil.EMPTY);
         File file = null;
         BufferedReader input = null;
         try {
             file = File.createTempFile("tmp", ".vbs");
             file.deleteOnExit();
             FileWriter fw = new FileWriter(file);
-            String vbs = "Set objWMIService = GetObject(\"winmgmts:\\\\.\\root\\cimv2\")\n" + "Set colItems = objWMIService.ExecQuery _ \n" + "   (\"Select * from Win32_Processor\") \n" + "For Each objItem in colItems \n" + "    Wscript.Echo objItem.ProcessorId \n" + "    exit for  ' do the first cpu only! \n" + "Next \n";
+            String vbs = """
+                Set objWMIService = GetObject("winmgmts:\\\\.\\root\\cimv2")
+                Set colItems = objWMIService.ExecQuery("Select * from Win32_Processor")
 
+                For Each objItem In colItems
+                    WScript.Echo objItem.ProcessorId
+                    Exit For ' do the first cpu only!
+                Next
+                """;
             fw.write(vbs);
             fw.close();
 
@@ -174,7 +181,7 @@ public class ServerInfoUtils {
             input = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
             while ((line = input.readLine()) != null) {
-                result += line;
+                result.append(line);
             }
         } catch (Exception e) {
             log.error("获取window cpu信息错误, {}", e.getMessage());
@@ -182,7 +189,7 @@ public class ServerInfoUtils {
             IoUtil.close(input);
             FileUtil.del(file);
         }
-        return result.trim();
+        return result.toString().trim();
     }
 
     /**
@@ -191,23 +198,16 @@ public class ServerInfoUtils {
      * @return {@link String}
      */
     private static String getLinuxMainBoardSerial() {
-        String result = StrUtil.EMPTY;
-        String maniBordCmd = "dmidecode | grep 'Serial Number' | awk '{print $3}' | tail -1";
-        BufferedReader br = null;
+        String command = "dmidecode | grep 'Serial Number' | awk '{print $3}' | tail -1";
         try {
-            Process p = Runtime.getRuntime().exec(new String[] {"sh", "-c", maniBordCmd});
-            br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line;
-            while ((line = br.readLine()) != null) {
-                result += line;
-                break;
+            Process process = new ProcessBuilder("sh", "-c", command).start();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                return reader.lines().findFirst().orElse(StrUtil.EMPTY);
             }
         } catch (IOException e) {
-            log.error("获取Linux主板信息错误 {}", e.getMessage());
-        } finally {
-            IoUtil.close(br);
+            log.error("获取 Linux 主板序列号失败: {}", e.getMessage());
+            return StrUtil.EMPTY;
         }
-        return result;
     }
 
     /**
@@ -216,7 +216,7 @@ public class ServerInfoUtils {
      * @return {@link String}
      */
     private static String getWindowMainBoardSerial() {
-        String result = StrUtil.EMPTY;
+        StringBuilder result = new StringBuilder(StrUtil.EMPTY);
         File file = null;
         BufferedReader input = null;
         try {
@@ -224,7 +224,15 @@ public class ServerInfoUtils {
             file.deleteOnExit();
             FileWriter fw = new FileWriter(file);
 
-            String vbs = "Set objWMIService = GetObject(\"winmgmts:\\\\.\\root\\cimv2\")\n" + "Set colItems = objWMIService.ExecQuery _ \n" + "   (\"Select * from Win32_BaseBoard\") \n" + "For Each objItem in colItems \n" + "    Wscript.Echo objItem.SerialNumber \n" + "    exit for  ' do the first cpu only! \n" + "Next \n";
+            String vbs = """
+                Set objWMIService = GetObject("winmgmts:\\\\.\\root\\cimv2")
+                Set colItems = objWMIService.ExecQuery _
+                   ("Select * from Win32_BaseBoard")
+                For Each objItem in colItems
+                    Wscript.Echo objItem.SerialNumber
+                    exit for  ' do the first cpu only!
+                Next
+                """;
 
             fw.write(vbs);
             fw.close();
@@ -232,7 +240,7 @@ public class ServerInfoUtils {
             input = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
             while ((line = input.readLine()) != null) {
-                result += line;
+                result.append(line);
             }
         } catch (Exception e) {
             log.error("获取Window主板信息错误 {}", e.getMessage());
@@ -240,7 +248,7 @@ public class ServerInfoUtils {
             IoUtil.close(input);
             FileUtil.del(file);
         }
-        return result.trim();
+        return result.toString().trim();
     }
 
     /**

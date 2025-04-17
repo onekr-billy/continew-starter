@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package top.continew.license.dto;
+package top.continew.license.model;
 
 import java.util.Date;
 
 /**
  * 为用户生成证书需要的具体参数
  *
- * @Desc:
- * @Author loach
- * @ClassName top.continew.license.dto.LicenseCreatorParamVO
- * @Date 2025-03-21 14:29
- */
+ * @author loach
+ * @since 2.11.0
+ **/
 public class LicenseCreatorParamVO {
 
     /**
@@ -57,14 +55,6 @@ public class LicenseCreatorParamVO {
      * license 保存位置
      */
     private String licenseSavePath;
-
-    public String getLicenseSavePath() {
-        return licenseSavePath;
-    }
-
-    public void setLicenseSavePath(String licenseSavePath) {
-        this.licenseSavePath = licenseSavePath;
-    }
 
     /**
      * 额外的服务器硬件校验信息
@@ -109,6 +99,14 @@ public class LicenseCreatorParamVO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getLicenseSavePath() {
+        return licenseSavePath;
+    }
+
+    public void setLicenseSavePath(String licenseSavePath) {
+        this.licenseSavePath = licenseSavePath;
     }
 
     public LicenseExtraModel getLicenseExtraModel() {

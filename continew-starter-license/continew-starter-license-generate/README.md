@@ -36,8 +36,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import top.continew.license.dto.LicenseCreatorParamVO;
-import top.continew.license.dto.LicenseExtraModel;
+import top.continew.license.model.LicenseCreatorParamVO;
+import top.continew.license.model.LicenseExtraModel;
 import top.continew.license.service.LicenseCreateService;
 
 import java.util.Calendar;

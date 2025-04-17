@@ -16,17 +16,34 @@
 
 package top.continew.license.exception;
 
+import top.continew.starter.core.exception.BaseException;
+
+import java.io.Serial;
+
 /**
  * 自定义证书认证异常
  *
- * @Desc:
- * @Author loach
- * @ClassName top.continew.license.exception.LicenseException
- * @Date 2025-03-21 14:30
+ * @author loach
+ * @author echo
+ * @since 2.11.0
  */
-public class LicenseException extends RuntimeException {
+public class LicenseException extends BaseException {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    public LicenseException() {
+    }
 
     public LicenseException(String message) {
         super(message);
+    }
+
+    public LicenseException(Throwable cause) {
+        super(cause);
+    }
+
+    public LicenseException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

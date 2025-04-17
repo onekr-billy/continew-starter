@@ -35,7 +35,7 @@ import top.continew.starter.core.constant.PropertiesConstants;
  * license 校验模块 自动配置
  *
  * @author loach
- * @since 1.2.0
+ * @since 2.11.0
  */
 @AutoConfiguration
 @EnableConfigurationProperties(LicenseVerifyProperties.class)
@@ -44,7 +44,12 @@ public class LicenseVerifyAutoConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(LicenseVerifyAutoConfiguration.class);
 
-    /** 证书安装业务类 */
+    /**
+     * 证书安装业务类
+     *
+     * @param properties 属性
+     * @return {@link LicenseInstallerBean }
+     */
     @Bean
     public LicenseInstallerBean licenseInstallerBean(LicenseVerifyProperties properties) {
         return new LicenseInstallerBean(properties);
@@ -52,6 +57,9 @@ public class LicenseVerifyAutoConfiguration {
 
     /**
      * 启动校验 License服务
+     *
+     * @param licenseInstallerBean 许可证安装程序bean
+     * @return {@link LicenseStarterInitializingBean }
      */
     @Bean
     @DependsOn("licenseInstallerBean")
@@ -59,7 +67,12 @@ public class LicenseVerifyAutoConfiguration {
         return new LicenseStarterInitializingBean(licenseInstallerBean);
     }
 
-    /** 客户端证书管理类(证书验证) */
+    /**
+     * 客户端证书管理类(证书验证)
+     *
+     * @param properties 属性
+     * @return {@link LicenseManager }
+     */
     @Bean
     public LicenseManager licenseManager(LicenseVerifyProperties properties) {
         return CustomLicenseManager.getInstance(properties);

@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package top.continew.license.dto;
+package top.continew.license.model;
 
 import java.util.Set;
 
 /**
  * 额外的服务器硬件校验信息对象,这里的属性可根据需求自定义
  *
- * @Desc:
- * @Author loach
- * @ClassName top.continew.license.dto.LicenseExtraModel
- * @Date 2025-03-21 14:28
- */
+ * @author loach
+ * @since 2.11.0
+ **/
 public class LicenseExtraModel {
 
     /**

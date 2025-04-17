@@ -16,21 +16,19 @@
 
 package top.continew.license.util;
 
+import cn.hutool.core.util.ArrayUtil;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 
-import cn.hutool.core.util.ArrayUtil;
-
 /**
  * 运行命令行工具类
  *
- * @Desc:
- * @Author loach
- * @ClassName top.continew.license.util.ExecCmdUtil
- * @Date 2025-03-22 18:44
- */
+ * @author loach
+ * @since 2.11.0
+ **/
 public class ExecCmdUtil {
 
     private static final String CREATE_3RDSESSION_SHELL_SCRIPT = "head -n 80 /dev/urandom | tr -dc A-Za-z0-9 | head -c 168";
@@ -42,8 +40,8 @@ public class ExecCmdUtil {
      * @return String 返回打印信息
      */
     public static String exec(String... cmd) throws IOException {
-        Process process = null;
-        if (System.getProperty("os.name").indexOf("Windows") != -1) {
+        Process process;
+        if (System.getProperty("os.name").contains("Windows")) {
             if (cmd != null && cmd.length == 1) {
                 process = Runtime.getRuntime().exec(cmd[0]);
             } else {
@@ -59,6 +57,12 @@ public class ExecCmdUtil {
         return print + " " + err;
     }
 
+    /**
+     * 读取 InputStream 内容为字符串（使用 GBK 编码）。
+     *
+     * @param in 输入流
+     * @return 拼接后的字符串，读取失败返回空字符串
+     */
     private static String readProcess(InputStream in) {
         try (LineNumberReader print = new LineNumberReader(new InputStreamReader(in, "GBK"))) {
             StringBuffer sb = new StringBuffer();
