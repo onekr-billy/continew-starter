@@ -63,7 +63,7 @@ public class IdempotentAspect {
     public Object around(ProceedingJoinPoint joinPoint, Idempotent idempotent) throws Throwable {
         String cacheKey = this.getCacheKey(joinPoint, idempotent);
         // 如果键已存在，则抛出异常
-        if (!RedisUtils.setIfAbsent(cacheKey, Duration.ofMillis(idempotent.unit().toMillis(idempotent.timeout())))) {
+        if (!RedisUtils.setIfAbsent(cacheKey,cacheKey, Duration.ofMillis(idempotent.unit().toMillis(idempotent.timeout())))) {
             throw new IdempotentException(idempotent.message());
         }
         // 执行目标方法
