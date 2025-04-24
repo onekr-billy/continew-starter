@@ -102,8 +102,10 @@ public class RedissonAutoConfiguration {
             List<String> nodeList = redisProperties.getCluster().getNodes();
             nodeList.stream().map(node -> protocolPrefix + node).forEach(clusterServersConfig::addNodeAddress);
         }
+        // 兼容 Redis 没配置密码的情况
         if (CharSequenceUtil.isBlank(clusterServersConfig.getPassword())) {
-            clusterServersConfig.setPassword(redisProperties.getPassword());
+            String password = redisProperties.getPassword();
+            clusterServersConfig.setPassword(CharSequenceUtil.isNotBlank(password) ? password : null);
         }
         // Key 前缀
         if (CharSequenceUtil.isNotBlank(properties.getKeyPrefix())) {
@@ -129,8 +131,10 @@ public class RedissonAutoConfiguration {
             List<String> nodeList = redisProperties.getSentinel().getNodes();
             nodeList.stream().map(node -> protocolPrefix + node).forEach(sentinelServersConfig::addSentinelAddress);
         }
+        // 兼容 Redis 没配置密码的情况
         if (CharSequenceUtil.isBlank(sentinelServersConfig.getPassword())) {
-            sentinelServersConfig.setPassword(redisProperties.getPassword());
+            String password = redisProperties.getPassword();
+            sentinelServersConfig.setPassword(CharSequenceUtil.isNotBlank(password) ? password : null);
         }
         if (CharSequenceUtil.isBlank(sentinelServersConfig.getMasterName())) {
             sentinelServersConfig.setMasterName(redisProperties.getSentinel().getMaster());
@@ -155,8 +159,10 @@ public class RedissonAutoConfiguration {
         }
         // 下方配置如果为空，则使用 Redis 的配置
         singleServerConfig.setDatabase(redisProperties.getDatabase());
+        // 兼容 Redis 没配置密码的情况
         if (CharSequenceUtil.isBlank(singleServerConfig.getPassword())) {
-            singleServerConfig.setPassword(redisProperties.getPassword());
+            String password = redisProperties.getPassword();
+            singleServerConfig.setPassword(CharSequenceUtil.isNotBlank(password) ? password : null);
         }
         if (CharSequenceUtil.isBlank(singleServerConfig.getAddress())) {
             singleServerConfig.setAddress(protocolPrefix + redisProperties
