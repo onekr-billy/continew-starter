@@ -26,7 +26,7 @@ import org.springframework.context.annotation.DependsOn;
 
 import de.schlichtherle.license.LicenseManager;
 import jakarta.annotation.PostConstruct;
-import top.continew.license.Initializing.LicenseStarterInitializingBean;
+import top.continew.license.initializing.LicenseStarterInitializingBean;
 import top.continew.license.bean.LicenseInstallerBean;
 import top.continew.license.manager.CustomLicenseManager;
 import top.continew.starter.core.constant.PropertiesConstants;
@@ -39,7 +39,7 @@ import top.continew.starter.core.constant.PropertiesConstants;
  */
 @AutoConfiguration
 @EnableConfigurationProperties(LicenseVerifyProperties.class)
-@ConditionalOnProperty(prefix = PropertiesConstants.LICENSE_VERIFY, name = PropertiesConstants.ENABLED, havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(prefix = PropertiesConstants.LICENSE_VERIFIER, name = PropertiesConstants.ENABLED, havingValue = "true", matchIfMissing = true)
 public class LicenseVerifyAutoConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(LicenseVerifyAutoConfiguration.class);
@@ -80,7 +80,7 @@ public class LicenseVerifyAutoConfiguration {
 
     @PostConstruct
     public void postConstruct() {
-        log.debug("[ContiNew Starter] - Auto Configuration 'License-Verify' completed initialization.");
+        log.debug("[ContiNew Starter] - Auto Configuration 'License-Verifier' completed initialization.");
     }
 
 }

@@ -52,6 +52,9 @@ public class ServerInfoUtils {
         private static String mainBoardSerial = null;
     }
 
+    private ServerInfoUtils() {
+    }
+
     /**
      * 组装需要额外校验的License参数
      *
@@ -324,7 +327,6 @@ public class ServerInfoUtils {
      * @throws Exception 默认异常
      */
     private static Set<InetAddress> getLocalAllInetAddress() throws Exception {
-
         Set<InetAddress> result = CollUtil.newHashSet();
         // 遍历所有的网络接口
         for (Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
@@ -342,5 +344,4 @@ public class ServerInfoUtils {
         }
         return result;
     }
-
 }

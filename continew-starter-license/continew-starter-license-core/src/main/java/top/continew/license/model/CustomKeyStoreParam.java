@@ -30,6 +30,7 @@ import java.io.InputStream;
  * @since 2.11.0
  */
 public class CustomKeyStoreParam extends AbstractKeyStoreParam {
+
     /**
      * 密钥路径，可为磁盘路径，也可为项目资源文件里的路径,如果为磁盘路径需重写getStream()方法
      */
@@ -50,8 +51,8 @@ public class CustomKeyStoreParam extends AbstractKeyStoreParam {
      */
     private String keyPass;
 
-    public CustomKeyStoreParam(Class aClass, String s) {
-        super(aClass, s);
+    public CustomKeyStoreParam(Class clazz, String s) {
+        super(clazz, s);
     }
 
     public CustomKeyStoreParam(Class clazz, String resource, String alias, String storePass, String keyPass) {

@@ -14,29 +14,26 @@
  * limitations under the License.
  */
 
-package top.continew.license.autoconfigure;
+package top.continew.license.initializing;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import top.continew.starter.core.constant.PropertiesConstants;
+import org.springframework.beans.factory.InitializingBean;
+import top.continew.license.bean.LicenseInstallerBean;
 
 /**
- * license 生成模块配置属性
+ * 启动校验 License
  *
- * @author Jasmine
- * @since 2.11.0
+ * @author loach
+ * @since 1.2.0
  */
-@ConfigurationProperties(PropertiesConstants.LICENSE_GENERATE)
-public class LicenseGenerateProperties {
-    /**
-     * 是否启用
-     */
-    private boolean enabled = true;
+public class LicenseStarterInitializingBean implements InitializingBean {
+    private final LicenseInstallerBean licenseInstallerBean;
 
-    public boolean isEnabled() {
-        return enabled;
+    public LicenseStarterInitializingBean(LicenseInstallerBean licenseInstallerBean) {
+        this.licenseInstallerBean = licenseInstallerBean;
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    @Override
+    public void afterPropertiesSet() {
+        licenseInstallerBean.installLicense();
     }
 }

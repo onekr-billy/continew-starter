@@ -21,7 +21,7 @@ package top.continew.license.model;
  *
  * @author loach
  * @since 2.11.0
- **/
+ */
 public class ConfigParam {
 
     /**

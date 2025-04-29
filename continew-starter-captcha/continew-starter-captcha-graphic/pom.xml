@@ -19,7 +19,7 @@
             <artifactId>easy-captcha</artifactId>
         </dependency>
 
-        <!-- JS 引擎（一个纯编译的 JavaScript 引擎） -->
+        <!-- JS 引擎（纯编译的 JavaScript 引擎） -->
         <dependency>
             <groupId>org.openjdk.nashorn</groupId>
             <artifactId>nashorn-core</artifactId>

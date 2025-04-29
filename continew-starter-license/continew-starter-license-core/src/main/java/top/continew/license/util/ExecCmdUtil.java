@@ -28,10 +28,13 @@ import java.io.LineNumberReader;
  *
  * @author loach
  * @since 2.11.0
- **/
+ */
 public class ExecCmdUtil {
 
     private static final String CREATE_3RDSESSION_SHELL_SCRIPT = "head -n 80 /dev/urandom | tr -dc A-Za-z0-9 | head -c 168";
+
+    private ExecCmdUtil() {
+    }
 
     /**
      * 执行cmd命令(shell脚本)
@@ -82,7 +85,6 @@ public class ExecCmdUtil {
      * 执行linux命令(shell脚本)生成3rd_session随机数
      */
     public static String create3rdSessionToken() throws IOException {
-
         return exec(CREATE_3RDSESSION_SHELL_SCRIPT);
     }
 }

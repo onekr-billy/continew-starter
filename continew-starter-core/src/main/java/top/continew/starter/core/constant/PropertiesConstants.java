@@ -35,6 +35,21 @@ public class PropertiesConstants {
     public static final String ENABLED = "enabled";
 
     /**
+     * Web 配置
+     */
+    public static final String WEB = CONTINEW_STARTER + StringConstants.DOT + "web";
+
+    /**
+     * Web-跨域配置
+     */
+    public static final String WEB_CORS = WEB + StringConstants.DOT + "cors";
+
+    /**
+     * Web-响应配置
+     */
+    public static final String WEB_RESPONSE = WEB + StringConstants.DOT + "response";
+
+    /**
      * 安全配置
      */
     public static final String SECURITY = CONTINEW_STARTER + StringConstants.DOT + "security";
@@ -60,29 +75,19 @@ public class PropertiesConstants {
     public static final String SECURITY_XSS = SECURITY + StringConstants.DOT + "xss";
 
     /**
-     * Web 配置
+     * 限流配置
      */
-    public static final String WEB = CONTINEW_STARTER + StringConstants.DOT + "web";
+    public static final String RATE_LIMITER = CONTINEW_STARTER + StringConstants.DOT + "rate-limiter";
 
     /**
-     * Web-跨域配置
+     * 幂等配置
      */
-    public static final String WEB_CORS = WEB + StringConstants.DOT + "cors";
+    public static final String IDEMPOTENT = CONTINEW_STARTER + StringConstants.DOT + "idempotent";
 
     /**
-     * Web-响应配置
+     * 链路追踪配置
      */
-    public static final String WEB_RESPONSE = WEB + StringConstants.DOT + "response";
-
-    /**
-     * 日志配置
-     */
-    public static final String LOG = CONTINEW_STARTER + StringConstants.DOT + "log";
-
-    /**
-     * 存储配置
-     */
-    public static final String STORAGE = CONTINEW_STARTER + StringConstants.DOT + "storage";
+    public static final String TRACE = CONTINEW_STARTER + StringConstants.DOT + "trace";
 
     /**
      * 验证码配置
@@ -110,6 +115,31 @@ public class PropertiesConstants {
     public static final String MESSAGING_WEBSOCKET = MESSAGING + StringConstants.DOT + "websocket";
 
     /**
+     * 日志配置
+     */
+    public static final String LOG = CONTINEW_STARTER + StringConstants.DOT + "log";
+
+    /**
+     * 存储配置
+     */
+    public static final String STORAGE = CONTINEW_STARTER + StringConstants.DOT + "storage";
+
+    /**
+     * License 配置
+     */
+    public static final String LICENSE = CONTINEW_STARTER + StringConstants.DOT + "license";
+
+    /**
+     * License 生成器配置
+     */
+    public static final String LICENSE_GENERATOR = LICENSE + StringConstants.DOT + "generator";
+
+    /**
+     * License 校验器配置
+     */
+    public static final String LICENSE_VERIFIER = LICENSE + StringConstants.DOT + "verifier";
+
+    /**
      * CRUD 配置
      */
     public static final String CRUD = CONTINEW_STARTER + StringConstants.DOT + "crud";
@@ -123,36 +153,6 @@ public class PropertiesConstants {
      * 多租户配置
      */
     public static final String TENANT = CONTINEW_STARTER + StringConstants.DOT + "tenant";
-
-    /**
-     * 限流配置
-     */
-    public static final String RATE_LIMITER = CONTINEW_STARTER + StringConstants.DOT + "rate-limiter";
-
-    /**
-     * 幂等配置
-     */
-    public static final String IDEMPOTENT = CONTINEW_STARTER + StringConstants.DOT + "idempotent";
-
-    /**
-     * 链路追踪配置
-     */
-    public static final String TRACE = CONTINEW_STARTER + StringConstants.DOT + "trace";
-
-    /**
-     * license配置
-     */
-    public static final String LICENSE = CONTINEW_STARTER + StringConstants.DOT + "license";
-
-    /**
-     * license 生成模块配置
-     */
-    public static final String LICENSE_GENERATE = LICENSE + StringConstants.DOT + "generate";
-
-    /**
-     * license 校验模块配置
-     */
-    public static final String LICENSE_VERIFY = LICENSE + StringConstants.DOT + "verify";
 
     private PropertiesConstants() {
     }

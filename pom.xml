@@ -38,20 +38,20 @@
         <module>continew-starter-json</module>
         <module>continew-starter-api-doc</module>
         <module>continew-starter-web</module>
+        <module>continew-starter-auth</module>
+        <module>continew-starter-data</module>
+        <module>continew-starter-cache</module>
         <module>continew-starter-security</module>
         <module>continew-starter-ratelimiter</module>
         <module>continew-starter-idempotent</module>
         <module>continew-starter-trace</module>
-        <module>continew-starter-log</module>
-        <module>continew-starter-storage</module>
-        <module>continew-starter-file</module>
         <module>continew-starter-captcha</module>
-        <module>continew-starter-cache</module>
-        <module>continew-starter-data</module>
-        <module>continew-starter-auth</module>
         <module>continew-starter-messaging</module>
-        <module>continew-starter-extension</module>
+        <module>continew-starter-log</module>
+        <module>continew-starter-file</module>
+        <module>continew-starter-storage</module>
         <module>continew-starter-license</module>
+        <module>continew-starter-extension</module>
     </modules>
 
     <build>

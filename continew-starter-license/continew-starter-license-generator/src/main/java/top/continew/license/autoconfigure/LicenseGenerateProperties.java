@@ -17,28 +17,21 @@
 package top.continew.license.autoconfigure;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import cn.hutool.core.io.FileUtil;
 import top.continew.starter.core.constant.PropertiesConstants;
 
 /**
- * license 校验模块配置属性
+ * license 生成模块配置属性
  *
- * @author loach
+ * @author Jasmine
  * @since 2.11.0
- **/
-@ConfigurationProperties(PropertiesConstants.LICENSE_VERIFY)
-public class LicenseVerifyProperties {
+ */
+@ConfigurationProperties(PropertiesConstants.LICENSE_GENERATOR)
+public class LicenseGenerateProperties {
 
     /**
      * 是否启用
      */
     private boolean enabled = true;
-
-    /**
-     * 生成的license文件所在路径
-     */
-    private String storePath = FileUtil.getTmpDirPath();
 
     public boolean isEnabled() {
         return enabled;
@@ -46,13 +39,5 @@ public class LicenseVerifyProperties {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-    public String getStorePath() {
-        return storePath;
-    }
-
-    public void setStorePath(String storePath) {
-        this.storePath = storePath;
     }
 }

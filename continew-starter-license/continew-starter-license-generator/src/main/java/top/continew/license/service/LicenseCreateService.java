@@ -43,8 +43,7 @@ import java.util.prefs.Preferences;
  *
  * @author loach
  * @since 2.11.0
- **/
-
+ */
 public class LicenseCreateService {
 
     private static final Logger log = LoggerFactory.getLogger(LicenseCreateService.class);
@@ -88,7 +87,6 @@ public class LicenseCreateService {
      * @throws Exception 例外
      */
     public void generateLicense(LicenseCreatorParamVO paramVO) throws Exception {
-
         BuildCreatorResp buildCreatorResp = buildCreator(paramVO);
         LicenseCreatorParam param = buildCreatorResp.getParam();
         ZipFile clientZipFile = buildCreatorResp.getClientZipFile();
@@ -186,7 +184,6 @@ public class LicenseCreateService {
     private ZipFile generateClientConfig(LicenseCreatorParam param,
                                          String currentCustomerDir,
                                          String publicAlias) throws Exception {
-
         ZipFile clientLicense = new ZipFile(currentCustomerDir + "clientLicense.zip");
         File config = new File(currentCustomerDir + "clientConfig.json");
         ConfigParam configParam = new ConfigParam();
@@ -254,7 +251,6 @@ public class LicenseCreateService {
      * @return {@link String }
      */
     private String relativePath(LicenseCreatorParamVO paramVO) {
-
         if (paramVO.getLicenseSavePath() != null) {
             return paramVO.getLicenseSavePath();
         }
@@ -284,7 +280,6 @@ public class LicenseCreateService {
      * @return {@link LicenseContent }
      */
     private LicenseContent initLicenseContent(LicenseCreatorParam param) {
-
         LicenseContent licenseContent = new LicenseContent();
         licenseContent.setHolder(DEFAULT_HOLDER_ISSUER);
         licenseContent.setIssuer(DEFAULT_HOLDER_ISSUER);

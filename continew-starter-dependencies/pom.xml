@@ -44,14 +44,12 @@
         <ip2region.version>3.3.6</ip2region.version>
         <hutool.version>5.8.36</hutool.version>
         <snakeyaml.version>2.4</snakeyaml.version>
+        <truelicense.version>1.33</truelicense.version>
+        <zip4j.version>2.11.5</zip4j.version>
         <!-- 解决部分传递依赖漏洞问题 -->
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
         <commons-io.version>2.17.0</commons-io.version>
         <commons-compress.version>1.26.0</commons-compress.version>
-        <!--license-->
-        <truelicense.version>1.33</truelicense.version>
-        <zip4j.version>2.11.5</zip4j.version>
-
         <!-- Maven Plugin Versions -->
         <flatten.version>1.7.0</flatten.version>
         <spotless.version>2.44.3</spotless.version>
@@ -85,7 +83,7 @@
                 <version>${redisson.version}</version>
             </dependency>
 
-            <!-- JetCache（一个基于 Java 的缓存系统封装，提供统一的 API 和注解来简化缓存的使用。提供了比 SpringCache 更加强大的注解，可以原生的支持 TTL、两级缓存、分布式自动刷新，还提供了 Cache 接口用于手工缓存操作） -->
+            <!-- JetCache（基于 Java 的缓存系统封装，提供统一的 API 和注解来简化缓存的使用。提供了比 SpringCache 更加强大的注解，可以原生的支持 TTL、两级缓存、分布式自动刷新，还提供了 Cache 接口用于手工缓存操作） -->
             <dependency>
                 <groupId>com.alicp.jetcache</groupId>
                 <artifactId>jetcache-bom</artifactId>
@@ -227,14 +225,14 @@
                 <version>${easy-captcha.version}</version>
             </dependency>
 
-            <!-- JS 引擎（一个纯编译的 JavaScript 引擎） -->
+            <!-- JS 引擎（纯编译的 JavaScript 引擎） -->
             <dependency>
                 <groupId>org.openjdk.nashorn</groupId>
                 <artifactId>nashorn-core</artifactId>
                 <version>${nashorn.version}</version>
             </dependency>
 
-            <!-- Easy Excel（一个基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具） -->
+            <!-- Easy Excel（基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具） -->
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>easyexcel</artifactId>
@@ -283,14 +281,14 @@
                 <version>${thumbnails.version}</version>
             </dependency>
 
-            <!-- Graceful Response（一个Spring Boot技术栈下的优雅响应处理组件，可以帮助开发者完成响应数据封装、异常处理、错误码填充等过程，提高开发效率，提高代码质量） -->
+            <!-- Graceful Response（Spring Boot技术栈下的优雅响应处理组件，可以帮助开发者完成响应数据封装、异常处理、错误码填充等过程，提高开发效率，提高代码质量） -->
             <dependency>
                 <groupId>com.feiniaojin</groupId>
                 <artifactId>graceful-response</artifactId>
                 <version>${graceful-response.version}</version>
             </dependency>
 
-            <!-- Crane4j（一个基于注解的，用于完成一切 “根据 A 的 key 值拿到 B，再把 B 的属性映射到 A” 这类需求的字段填充框架） -->
+            <!-- Crane4j（基于注解的，用于完成一切 “根据 A 的 key 值拿到 B，再把 B 的属性映射到 A” 这类需求的字段填充框架） -->
             <dependency>
                 <groupId>cn.crane4j</groupId>
                 <artifactId>crane4j-spring-boot-starter</artifactId>
@@ -320,7 +318,7 @@
                 <version>${snakeyaml.version}</version>
             </dependency>
 
-            <!-- OkHTTP（一个默认高效的 HTTP 客户端） -->
+            <!-- OkHTTP（默认高效的 HTTP 客户端） -->
             <dependency>
                 <groupId>com.squareup.okhttp3</groupId>
                 <artifactId>okhttp</artifactId>
@@ -355,6 +353,19 @@
                 <version>${hutool.version}</version>
             </dependency>
 
+            <!-- TrueLicense (开源的证书管理引擎) -->
+            <dependency>
+                <groupId>de.schlichtherle.truelicense</groupId>
+                <artifactId>truelicense-core</artifactId>
+                <version>${truelicense.version}</version>
+            </dependency>
+            <!-- Zip4j (开源的 Java 处理 zip 压缩文件的开发包) -->
+            <dependency>
+                <groupId>net.lingala.zip4j</groupId>
+                <artifactId>zip4j</artifactId>
+                <version>${zip4j.version}</version>
+            </dependency>
+
             <!-- 解决部分传递依赖漏洞问题 -->
             <dependency>
                 <groupId>commons-beanutils</groupId>
@@ -372,20 +383,6 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-compress</artifactId>
                 <version>${commons-compress.version}</version>
-            </dependency>
-
-            <!-- license 依赖-->
-            <dependency>
-                <groupId>de.schlichtherle.truelicense</groupId>
-                <artifactId>truelicense-core</artifactId>
-                <version>${truelicense.version}</version>
-            </dependency>
-
-            <!--zip4j压缩文件-->
-            <dependency>
-                <groupId>net.lingala.zip4j</groupId>
-                <artifactId>zip4j</artifactId>
-                <version>${zip4j.version}</version>
             </dependency>
 
             <!-- ContiNew Starter 依赖 -->

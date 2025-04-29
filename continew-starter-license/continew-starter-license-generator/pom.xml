@@ -9,16 +9,14 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>continew-starter-license-verify</artifactId>
-    <packaging>jar</packaging>
-    <description>ContiNew Starter License校验模块</description>
+    <artifactId>continew-starter-license-generator</artifactId>
+    <description>ContiNew Starter License 模块 - 生成器</description>
 
     <dependencies>
-        <!-- license 核心模块 -->
+        <!-- License 模块 - 核心模块 -->
         <dependency>
             <groupId>top.continew</groupId>
             <artifactId>continew-starter-license-core</artifactId>
         </dependency>
-
     </dependencies>
 </project>

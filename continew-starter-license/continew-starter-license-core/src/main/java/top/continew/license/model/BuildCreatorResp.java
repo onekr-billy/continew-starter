@@ -26,7 +26,7 @@ import java.io.Serializable;
  *
  * @author echo
  * @since 2.11.0
- **/
+ */
 public class BuildCreatorResp implements Serializable {
 
     @Serial
@@ -38,7 +38,7 @@ public class BuildCreatorResp implements Serializable {
     private LicenseCreatorParam param;
 
     /**
-     * 客户端zip文件
+     * 客户端 Zip 文件
      */
     private ZipFile clientZipFile;
 

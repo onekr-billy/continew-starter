@@ -23,7 +23,7 @@ import java.util.Date;
  *
  * @author loach
  * @since 2.11.0
- **/
+ */
 public class LicenseCreatorParamVO {
 
     /**

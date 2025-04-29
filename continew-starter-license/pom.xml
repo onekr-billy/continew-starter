@@ -12,9 +12,10 @@
     <artifactId>continew-starter-license</artifactId>
     <packaging>pom</packaging>
     <description>ContiNew Starter License模块</description>
+
     <modules>
         <module>continew-starter-license-core</module>
-        <module>continew-starter-license-generate</module>
-        <module>continew-starter-license-verify</module>
+        <module>continew-starter-license-generator</module>
+        <module>continew-starter-license-verifier</module>
     </modules>
 </project>

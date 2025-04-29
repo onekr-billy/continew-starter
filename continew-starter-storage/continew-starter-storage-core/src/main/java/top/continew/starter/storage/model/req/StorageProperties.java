@@ -21,7 +21,7 @@ package top.continew.starter.storage.model.req;
  *
  * @author echo
  * @date 2024/11/04 15:13
- **/
+ */
 public class StorageProperties {
 
     /**
