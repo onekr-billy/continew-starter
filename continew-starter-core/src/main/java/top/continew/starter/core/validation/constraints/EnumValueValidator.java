@@ -28,7 +28,7 @@ import java.util.Arrays;
 import java.util.function.Function;
 
 /**
- * 枚举校验注解校验器
+ * 枚举校验器
  *
  * @author Charles7c
  * @author Jasmine

@@ -16,23 +16,23 @@
 
 package top.continew.starter.core.validation.constraints;
 
-import cn.hutool.core.util.PhoneUtil;
+import cn.hutool.json.JSONUtil;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 /**
- * 手机号校验器
+ * JSON 格式字符串校验器
  *
  * @author Charles7c
- * @since 2.10.0
+ * @since 2.12.0
  */
-public class MobileValidator implements ConstraintValidator<Mobile, String> {
+public class JsonStringValidator implements ConstraintValidator<JsonString, String> {
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         if (value == null) {
             return true;
         }
-        return PhoneUtil.isMobile(value);
+        return JSONUtil.isTypeJSON(value);
     }
 }
