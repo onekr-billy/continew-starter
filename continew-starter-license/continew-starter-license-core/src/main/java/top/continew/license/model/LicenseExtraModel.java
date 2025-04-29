@@ -22,7 +22,7 @@ import java.util.Set;
  * 额外的服务器硬件校验信息对象,这里的属性可根据需求自定义
  *
  * @author loach
- * @since 2.11.0
+ * @since 2.12.0
  */
 public class LicenseExtraModel {
 

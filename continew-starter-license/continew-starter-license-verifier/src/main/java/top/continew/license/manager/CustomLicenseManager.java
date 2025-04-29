@@ -42,7 +42,7 @@ import java.util.prefs.Preferences;
  * 客户端证书管理类(证书验证)
  *
  * @author loach
- * @since 2.11.0
+ * @since 2.12.0
  */
 public class CustomLicenseManager extends LicenseManager {
 

@@ -27,7 +27,7 @@ import java.util.Date;
  *
  * @author loach
  * @author echo
- * @since 2.11.0
+ * @since 2.12.0
  */
 public class ServerLicenseManager extends LicenseManager {
 

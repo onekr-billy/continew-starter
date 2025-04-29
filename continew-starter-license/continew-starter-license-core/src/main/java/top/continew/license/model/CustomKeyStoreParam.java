@@ -27,7 +27,7 @@ import java.io.InputStream;
  *
  * @author loach
  * @author echo
- * @since 2.11.0
+ * @since 2.12.0
  */
 public class CustomKeyStoreParam extends AbstractKeyStoreParam {
 

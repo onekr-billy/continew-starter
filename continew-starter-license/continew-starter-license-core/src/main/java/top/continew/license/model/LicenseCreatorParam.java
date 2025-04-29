@@ -24,7 +24,7 @@ import java.util.Date;
  * 许可证创建者参数
  *
  * @author loach
- * @since 2.11.0
+ * @since 2.12.0
  */
 public class LicenseCreatorParam implements Serializable {
 

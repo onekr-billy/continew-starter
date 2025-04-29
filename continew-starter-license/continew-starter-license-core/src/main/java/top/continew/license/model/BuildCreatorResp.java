@@ -25,7 +25,7 @@ import java.io.Serializable;
  * 生成创建者返回参数
  *
  * @author echo
- * @since 2.11.0
+ * @since 2.12.0
  */
 public class BuildCreatorResp implements Serializable {
 

@@ -25,7 +25,7 @@ import top.continew.starter.core.constant.PropertiesConstants;
  * license 校验模块配置属性
  *
  * @author loach
- * @since 2.11.0
+ * @since 2.12.0
  */
 @ConfigurationProperties(PropertiesConstants.LICENSE_VERIFIER)
 public class LicenseVerifyProperties {

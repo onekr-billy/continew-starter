@@ -32,7 +32,7 @@ import top.continew.starter.core.constant.PropertiesConstants;
  * license 生成模块 自动配置
  *
  * @author loach
- * @since 2.11.0
+ * @since 2.12.0
  */
 @AutoConfiguration
 @EnableConfigurationProperties(LicenseGenerateProperties.class)

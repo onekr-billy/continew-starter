@@ -42,7 +42,7 @@ import java.util.prefs.Preferences;
  * 证书生成接口 实现类
  *
  * @author loach
- * @since 2.11.0
+ * @since 2.12.0
  */
 public class LicenseCreateService {
 
