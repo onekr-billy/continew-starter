@@ -12,16 +12,16 @@
 
     <properties>
         <!-- 项目版本号 -->
-        <revision>2.11.0</revision>
-        <spring-boot.version>3.3.9</spring-boot.version>
+        <revision>2.12.0-SNAPSHOT</revision>
+        <spring-boot.version>3.3.11</spring-boot.version>
         <spring-cloud.version>2023.0.5</spring-cloud.version>
-        <redisson.version>3.45.0</redisson.version>
-        <jetcache.version>2.7.7</jetcache.version>
-        <cosid.version>2.11.0</cosid.version>
-        <sa-token.version>1.41.0</sa-token.version>
+        <redisson.version>3.46.0</redisson.version>
+        <jetcache.version>2.7.8</jetcache.version>
+        <cosid.version>2.12.3</cosid.version>
+        <sa-token.version>1.42.0</sa-token.version>
         <just-auth.version>1.16.7</just-auth.version>
         <mybatis-plus.version>3.5.8</mybatis-plus.version>
-        <mybatis-flex.version>1.10.8</mybatis-flex.version>
+        <mybatis-flex.version>1.10.9</mybatis-flex.version>
         <dynamic-datasource.version>4.3.1</dynamic-datasource.version>
         <p6spy.version>3.9.1</p6spy.version>
         <snail-job.version>1.4.0</snail-job.version>
@@ -31,18 +31,18 @@
         <nashorn.version>15.6</nashorn.version>
         <easy-excel.version>3.3.4</easy-excel.version>
         <x-file-storage.version>2.2.1</x-file-storage.version>
-        <aws-s3.version>1.12.782</aws-s3.version>
-        <s3.version>2.30.35</s3.version>
-        <s3-crt.version>0.36.1</s3-crt.version>
+        <aws-s3.version>1.12.783</aws-s3.version>
+        <s3.version>2.31.35</s3.version>
+        <s3-crt.version>0.38.1</s3-crt.version>
         <thumbnails.version>0.4.20</thumbnails.version>
-        <crane4j.version>2.9.0</crane4j.version>
         <graceful-response.version>5.0.5-boot3</graceful-response.version>
+        <crane4j.version>2.9.0</crane4j.version>
         <knife4j.version>4.5.0</knife4j.version>
         <tlog.version>1.5.2</tlog.version>
         <okhttp.version>4.12.0</okhttp.version>
         <ttl.version>2.14.5</ttl.version>
         <ip2region.version>3.3.6</ip2region.version>
-        <hutool.version>5.8.36</hutool.version>
+        <hutool.version>5.8.37</hutool.version>
         <snakeyaml.version>2.4</snakeyaml.version>
         <truelicense.version>1.33</truelicense.version>
         <zip4j.version>2.11.5</zip4j.version>
@@ -95,18 +95,10 @@
             <!-- CosId（通用、灵活、高性能的分布式 ID 生成器） -->
             <dependency>
                 <groupId>me.ahoo.cosid</groupId>
-                <artifactId>cosid-spring-boot-starter</artifactId>
+                <artifactId>cosid-bom</artifactId>
                 <version>${cosid.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>me.ahoo.cosid</groupId>
-                <artifactId>cosid-spring-redis</artifactId>
-                <version>${cosid.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>me.ahoo.cosid</groupId>
-                <artifactId>cosid-jdbc</artifactId>
-                <version>${cosid.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
 
             <!-- Sa-Token（轻量级 Java 权限认证框架，让鉴权变得简单、优雅） -->
@@ -259,19 +251,18 @@
                 <artifactId>s3</artifactId>
                 <version>${s3.version}</version>
             </dependency>
+            <!-- 基于 AWS CRT 的 S3 客户端的性能增强的 S3 传输管理器 -->
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>s3-transfer-manager</artifactId>
+                <version>${s3.version}</version>
+            </dependency>
 
             <!-- 使用 AWS 基于 CRT 的 S3 客户端 -->
             <dependency>
                 <groupId>software.amazon.awssdk.crt</groupId>
                 <artifactId>aws-crt</artifactId>
                 <version>${s3-crt.version}</version>
-            </dependency>
-
-            <!-- 基于 AWS CRT 的 S3 客户端的性能增强的 S3 传输管理器 -->
-            <dependency>
-                <groupId>software.amazon.awssdk</groupId>
-                <artifactId>s3-transfer-manager</artifactId>
-                <version>${s3.version}</version>
             </dependency>
 
             <!-- Thumbnailator（缩略图生成库） -->
