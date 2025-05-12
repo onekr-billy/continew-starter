@@ -89,6 +89,7 @@ public class ExcelUtils {
                 .doWrite(list);
         } catch (Exception e) {
             log.error("Export excel occurred an error: {}. fileName: {}.", e.getMessage(), fileName, e);
+            response.reset();
             throw new BaseException("导出 Excel 出现错误");
         }
     }
