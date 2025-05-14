@@ -37,8 +37,6 @@ public class R<T> implements Response {
 
     private static final ResponseStatusFactory RESPONSE_STATUS_FACTORY = SpringUtil
         .getBean(ResponseStatusFactory.class);
-    private static final ResponseStatus DEFAULT_STATUS_SUCCESS = RESPONSE_STATUS_FACTORY.defaultSuccess();
-    private static final ResponseStatus DEFAULT_STATUS_ERROR = RESPONSE_STATUS_FACTORY.defaultError();
 
     /**
      * 状态码
@@ -144,7 +142,7 @@ public class R<T> implements Response {
     }
 
     public boolean isSuccess() {
-        return Objects.equals(DEFAULT_STATUS_SUCCESS.getCode(), status.getCode());
+        return Objects.equals(RESPONSE_STATUS_FACTORY.defaultSuccess().getCode(), status.getCode());
     }
 
     public Long getTimestamp() {
@@ -157,7 +155,7 @@ public class R<T> implements Response {
      * @return R /
      */
     public static R ok() {
-        return new R(DEFAULT_STATUS_SUCCESS);
+        return new R(RESPONSE_STATUS_FACTORY.defaultSuccess());
     }
 
     /**
@@ -167,7 +165,7 @@ public class R<T> implements Response {
      * @return R /
      */
     public static R ok(Object data) {
-        return new R(DEFAULT_STATUS_SUCCESS, data);
+        return new R(RESPONSE_STATUS_FACTORY.defaultSuccess(), data);
     }
 
     /**
@@ -189,7 +187,7 @@ public class R<T> implements Response {
      * @return R /
      */
     public static R fail() {
-        return new R(DEFAULT_STATUS_ERROR);
+        return new R(RESPONSE_STATUS_FACTORY.defaultError());
     }
 
     /**
