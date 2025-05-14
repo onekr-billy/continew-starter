@@ -47,6 +47,58 @@ public class SortQuery implements Serializable {
     @Schema(description = "排序条件", example = "createTime,desc")
     private String[] sort;
 
+    public SortQuery() {
+    }
+
+    /**
+     * 构造方法
+     *
+     * <p>
+     * 示例：{@code new SortQuery("createTime,desc", "name,asc")}
+     * </p>
+     *
+     * @param sort 排序条件
+     * @since 2.12.0
+     */
+    public SortQuery(String... sort) {
+        this.sort = sort;
+    }
+
+    /**
+     * 构造方法
+     *
+     * <p>
+     * 示例：{@code new SortQuery("createTime", Sort.Direction.DESC)}
+     * </p>
+     *
+     * @param field     字段
+     * @param direction 排序方向
+     * @since 2.12.0
+     */
+    public SortQuery(String field, Sort.Direction direction) {
+        this(field + StringConstants.COMMA + direction.name().toLowerCase());
+    }
+
+    /**
+     * 构造方法
+     *
+     * <p>
+     * 示例：{@code new SortQuery(Sort.by(Sort.Order.desc("createTime")))}
+     * </p>
+     *
+     * @param sort 排序条件
+     * @since 2.12.0
+     */
+    public SortQuery(Sort sort) {
+        if (sort == null || sort.isUnsorted()) {
+            this.sort = null;
+            return;
+        }
+        this.sort = sort.stream()
+            .map(order -> order.getProperty() + StringConstants.COMMA + order.getDirection().name().toLowerCase())
+            .toArray(String[]::new);
+    }
+
     /**
      * 解析排序条件为 Spring 分页排序实体
      *
