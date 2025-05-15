@@ -123,7 +123,7 @@ public class SpringWebUtils {
         final ResourceHandlerRegistry resourceHandlerRegistry = new ResourceHandlerRegistry(applicationContext, servletContext, contentNegotiationManager, urlPathHelper);
         for (Map.Entry<String, String> entry : handlerMap.entrySet()) {
             // 移除之前注册的映射
-            String pathPattern = CharSequenceUtil.appendIfMissing(entry.getKey(), StringConstants.PATH_PATTERN);
+            String pathPattern = CharSequenceUtil.appendIfMissing(CharSequenceUtil.removeSuffix(entry.getKey(), StringConstants.SLASH), StringConstants.PATH_PATTERN);
             oldHandlerMap.remove(pathPattern);
             // 重新注册映射
             String resourceLocations = CharSequenceUtil.appendIfMissing(entry.getValue(), StringConstants.SLASH);
