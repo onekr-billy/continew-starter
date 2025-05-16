@@ -115,6 +115,11 @@ public class StringConstants {
     public static final String SLASH = "/";
 
     /**
+     * 双斜杠  {@code "//"}
+     */
+    public static final String DOUBLE_SLASH = "//";
+
+    /**
      * 反斜杠 {@code "\\"}
      */
     public static final String BACKSLASH = "\\";
