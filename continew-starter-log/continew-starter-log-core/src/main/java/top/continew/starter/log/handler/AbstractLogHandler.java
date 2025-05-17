@@ -20,6 +20,7 @@ import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.ttl.TransmittableThreadLocal;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
@@ -48,6 +49,29 @@ public abstract class AbstractLogHandler implements LogHandler {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractLogHandler.class);
     private final TransmittableThreadLocal<AccessLogContext> logContextThread = new TransmittableThreadLocal<>();
+
+    @Override
+    public boolean isRecord(Method targetMethod, Class<?> targetClass) {
+        // 如果接口被隐藏，不记录日志
+        Operation methodOperation = AnnotationUtil.getAnnotation(targetMethod, Operation.class);
+        if (null != methodOperation && methodOperation.hidden()) {
+            return false;
+        }
+        Hidden methodHidden = AnnotationUtil.getAnnotation(targetMethod, Hidden.class);
+        if (null != methodHidden) {
+            return false;
+        }
+        if (null != targetClass.getDeclaredAnnotation(Hidden.class)) {
+            return false;
+        }
+        // 如果接口方法或类上有 @Log 注解，且要求忽略该接口，则不记录日志
+        Log methodLog = AnnotationUtil.getAnnotation(targetMethod, Log.class);
+        if (null != methodLog && methodLog.ignore()) {
+            return false;
+        }
+        Log classLog = AnnotationUtil.getAnnotation(targetClass, Log.class);
+        return null == classLog || !classLog.ignore();
+    }
 
     @Override
     public LogRecord.Started start(Instant startTime) {

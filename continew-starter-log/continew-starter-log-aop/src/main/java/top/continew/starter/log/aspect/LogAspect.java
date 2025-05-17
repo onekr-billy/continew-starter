@@ -16,7 +16,6 @@
 
 package top.continew.starter.log.aspect;
 
-import cn.hutool.core.annotation.AnnotationUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -78,7 +77,7 @@ public class LogAspect {
         // 指定规则不记录
         Method targetMethod = this.getMethod(joinPoint);
         Class<?> targetClass = joinPoint.getTarget().getClass();
-        if (!isRequestRecord(targetMethod, targetClass)) {
+        if (!isRecord(targetMethod, targetClass)) {
             return joinPoint.proceed();
         }
         String errorMsg = null;
@@ -108,13 +107,13 @@ public class LogAspect {
     }
 
     /**
-     * 是否要记录日志
+     * 是否记录日志
      *
      * @param targetMethod 目标方法
      * @param targetClass  目标类
      * @return true：需要记录；false：不需要记录
      */
-    private boolean isRequestRecord(Method targetMethod, Class<?> targetClass) {
+    private boolean isRecord(Method targetMethod, Class<?> targetClass) {
         // 非 Web 环境不记录
         ServletRequestAttributes attributes = (ServletRequestAttributes)RequestContextHolder.getRequestAttributes();
         if (attributes == null || attributes.getResponse() == null) {
@@ -124,13 +123,7 @@ public class LogAspect {
         if (logProperties.isMatch(attributes.getRequest().getRequestURI())) {
             return false;
         }
-        // 如果接口方法或类上有 @Log 注解，且要求忽略该接口，则不记录日志
-        Log methodLog = AnnotationUtil.getAnnotation(targetMethod, Log.class);
-        if (null != methodLog && methodLog.ignore()) {
-            return false;
-        }
-        Log classLog = AnnotationUtil.getAnnotation(targetClass, Log.class);
-        return null == classLog || !classLog.ignore();
+        return logHandler.isRecord(targetMethod, targetClass);
     }
 
     /**

@@ -36,11 +36,6 @@ import java.net.URISyntaxException;
 /**
  * 日志过滤器
  *
- * @author Dave Syer（Spring Boot Actuator）
- * @author Wallace Wadge（Spring Boot Actuator）
- * @author Andy Wilkinson（Spring Boot Actuator）
- * @author Venil Noronha（Spring Boot Actuator）
- * @author Madhura Bhave（Spring Boot Actuator）
  * @author Charles7c
  * @author echo
  * @since 1.1.0

@@ -34,6 +34,15 @@ import java.util.Set;
 public interface LogHandler {
 
     /**
+     * 是否记录日志
+     *
+     * @param targetMethod 目标方法
+     * @param targetClass  目标类
+     * @return 是否记录日志
+     */
+    boolean isRecord(Method targetMethod, Class<?> targetClass);
+
+    /**
      * 开始日志记录
      *
      * @param startTime 开始时间

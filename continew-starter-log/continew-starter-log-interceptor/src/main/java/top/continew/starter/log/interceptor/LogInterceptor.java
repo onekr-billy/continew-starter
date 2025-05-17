@@ -17,8 +17,6 @@
 package top.continew.starter.log.interceptor;
 
 import com.alibaba.ttl.TransmittableThreadLocal;
-import io.swagger.v3.oas.annotations.Hidden;
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -26,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
-import top.continew.starter.log.annotation.Log;
 import top.continew.starter.log.dao.LogDao;
 import top.continew.starter.log.handler.LogHandler;
 import top.continew.starter.log.model.AccessLogContext;
@@ -48,7 +45,6 @@ public class LogInterceptor implements HandlerInterceptor {
     private final LogProperties logProperties;
     private final LogHandler logHandler;
     private final LogDao logDao;
-    private final TransmittableThreadLocal<Instant> timeTtl = new TransmittableThreadLocal<>();
     private final TransmittableThreadLocal<LogRecord.Started> logTtl = new TransmittableThreadLocal<>();
 
     public LogInterceptor(LogProperties logProperties, LogHandler logHandler, LogDao logDao) {
@@ -64,7 +60,7 @@ public class LogInterceptor implements HandlerInterceptor {
         Instant startTime = Instant.now();
         logHandler.accessLogStart(AccessLogContext.builder().startTime(startTime).properties(logProperties).build());
         // 开始日志记录
-        if (this.isRequestRecord(handler, request)) {
+        if (this.isRecord(handler)) {
             LogRecord.Started startedLogRecord = logHandler.start(startTime);
             logTtl.set(startedLogRecord);
         }
@@ -94,40 +90,20 @@ public class LogInterceptor implements HandlerInterceptor {
             log.error("Logging http log occurred an error: {}.", ex.getMessage(), ex);
             throw ex;
         } finally {
-            timeTtl.remove();
             logTtl.remove();
         }
     }
 
     /**
-     * 是否要记录日志
+     * 是否记录日志
      *
      * @param handler 处理器
      * @return true：需要记录；false：不需要记录
      */
-    private boolean isRequestRecord(Object handler, HttpServletRequest request) {
+    private boolean isRecord(Object handler) {
         if (!(handler instanceof HandlerMethod handlerMethod)) {
             return false;
         }
-        // 如果接口被隐藏，不记录日志
-        Operation methodOperation = handlerMethod.getMethodAnnotation(Operation.class);
-        if (null != methodOperation && methodOperation.hidden()) {
-            return false;
-        }
-        Hidden methodHidden = handlerMethod.getMethodAnnotation(Hidden.class);
-        if (null != methodHidden) {
-            return false;
-        }
-        Class<?> handlerBeanType = handlerMethod.getBeanType();
-        if (null != handlerBeanType.getDeclaredAnnotation(Hidden.class)) {
-            return false;
-        }
-        // 如果接口方法或类上有 @Log 注解，且要求忽略该接口，则不记录日志
-        Log methodLog = handlerMethod.getMethodAnnotation(Log.class);
-        if (null != methodLog && methodLog.ignore()) {
-            return false;
-        }
-        Log classLog = handlerBeanType.getDeclaredAnnotation(Log.class);
-        return null == classLog || !classLog.ignore();
+        return logHandler.isRecord(handlerMethod.getMethod(), handlerMethod.getBeanType());
     }
 }
