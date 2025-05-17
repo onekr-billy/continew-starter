@@ -1,3 +1,29 @@
+## [v2.12.0](https://github.com/continew-org/continew-starter/compare/v2.11.0...v2.12.0) (2025-05-17)
+
+### ✨ 新特性
+
+- 【security/password】添加密码编码器相关常量类 ([1b7f541](https://github.com/continew-org/continew-starter/commit/1b7f541e7d133cd431a9ca097bdac46ea85073be))
+
+- 【license】新增 License 模块 (Gitee#51@aiming317、dom-w、httpsjt) ([da4c815](https://github.com/continew-org/continew-starter/commit/da4c8154bf6ddae7c0d0c6719efcc36537ed5983)) ([1ce5c02](https://github.com/continew-org/continew-starter/commit/1ce5c023cf8fe78849fba9fe0f7c0fcfac09c491)) ([7d97026](https://github.com/continew-org/continew-starter/commit/7d97026480b244319fa322c854a5e2d2552cc786)) ([06f5a0f](https://github.com/continew-org/continew-starter/commit/06f5a0f34680c93efe525b8102d24622b8b20893)) ([5e9a3f3](https://github.com/continew-org/continew-starter/commit/5e9a3f3e93ab55a6bc09828e124705e23543f72e))
+- 【core】新增 JSON 格式字符串校验器 ([cf5ef36](https://github.com/continew-org/continew-starter/commit/cf5ef36af5179550e9c8cb75332497813488aee3))
+- 【extension/crud】PageQuery 和 SortQuery 完善带参构造方法 ([70f8fc0](https://github.com/continew-org/continew-starter/commit/70f8fc01c0cd5636316705f9f9c425cda3f1d736))
+- 【core】新增双斜杠 DOUBLE_SLASH 字符串常量 ([ef6621b](https://github.com/continew-org/continew-starter/commit/ef6621bf92e61def508d4c133c7c17c3c7327bf8))
+
+### 💎 功能优化
+
+- 【web】优化文件工具类下载文件逻辑，减少堆内存占用 (GitHub#12@BruceMaa) ([4e7cd51](https://github.com/continew-org/continew-starter/commit/4e7cd5186850b5229233a744bc06b02188849029))
+- 统一请求参数、响应参数注释 ([934a5f7](https://github.com/continew-org/continew-starter/commit/934a5f7b6d90e64ab070ff9067ff9a9b73e46f11))
+- 【log】抽取 isRecord 方法方便复用，移除已过期的 timeTtl ([49bd289](https://github.com/continew-org/continew-starter/commit/49bd289e29c6ff3b2f1553ea9bf787ade65df810))
+- 调整代码风格 null != xx => xx != null（更符合大众风格） ([ae7a267](https://github.com/continew-org/continew-starter/commit/ae7a267c1d5b4b0fafc54e08e915383b49e47b01))
+
+### 🐛 问题修复
+
+- 【cache/redisson】兼容redis没配置密码时出现redisson实例化失败的问题 (Gitee#54@muxuanya) ([335dc35](https://github.com/continew-org/continew-starter/commit/335dc35e2be11f7ebfa45e5334eb365f4ee229dc))
+- 【idempotent】修复幂等处理切面，未设置超时时间的问题 (Gitee#56@sheng_chao_111) ([5129fea](https://github.com/continew-org/continew-starter/commit/5129fea34dfedea9d5d6df50dd4e65e7bec7e651))
+- 【file/excel】修复导出时无法正确捕捉异常的问题 (Gitee#59@chengangi) ([d99a6a2](https://github.com/continew-org/continew-starter/commit/d99a6a2c2d7b8e513ad8cbb8b7deef6a6d4be04a))
+- 【web】修复默认 Response 类 msg 传递污染的问题 ([3bbd04a](https://github.com/continew-org/continew-starter/commit/3bbd04add2946a9619e8edbd94cb9bbb23c688a8))
+- 【web】修复 /file/ 注册资源映射时被解析为 /file//** 的问题 ([35e2cdc](https://github.com/continew-org/continew-starter/commit/35e2cdc3bf2c2137f86e72612b3572be148b5823))
+
 ## [v2.11.0](https://github.com/continew-org/continew-starter/compare/v2.10.0...v2.11.0) (2025-04-13)
 
 ### ✨ 新特性
