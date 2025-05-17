@@ -67,7 +67,7 @@ public abstract class AbstractMyBatisInterceptor {
     protected List<Field> getEncryptFields(Class<?> clazz) {
         return CLASS_FIELD_CACHE.computeIfAbsent(clazz, key -> Arrays.stream(ReflectUtil.getFields(clazz))
             .filter(field -> String.class.equals(field.getType()))
-            .filter(field -> null != field.getAnnotation(FieldEncrypt.class))
+            .filter(field -> field.getAnnotation(FieldEncrypt.class) != null)
             .toList());
     }
 
@@ -144,6 +144,6 @@ public abstract class AbstractMyBatisInterceptor {
      */
     public String getParameterName(Parameter parameter) {
         Param param = parameter.getAnnotation(Param.class);
-        return null != param ? param.value() : parameter.getName();
+        return param != null ? param.value() : parameter.getName();
     }
 }

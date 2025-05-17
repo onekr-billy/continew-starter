@@ -68,7 +68,7 @@ public class ExcelBigNumberConverter implements Converter<Long> {
     public WriteCellData<Object> convertToExcelData(Long value,
                                                     ExcelContentProperty contentProperty,
                                                     GlobalConfiguration globalConfiguration) {
-        if (null != value) {
+        if (value != null) {
             String str = Long.toString(value);
             if (str.length() > MAX_LENGTH) {
                 return new WriteCellData<>(str);

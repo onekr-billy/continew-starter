@@ -120,7 +120,7 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
                 default -> throw new IllegalArgumentException("暂不支持 [%s] 数据权限".formatted(dataScope));
             }
         }
-        return null != where ? new AndExpression(where, new ParenthesedExpressionList<>(expression)) : expression;
+        return where != null ? new AndExpression(where, new ParenthesedExpressionList<>(expression)) : expression;
     }
 
     /**
@@ -176,7 +176,7 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
         InExpression inExpression = new InExpression();
         inExpression.setLeftExpression(this.buildColumn(dataPermission.tableAlias(), dataPermission.deptId()));
         inExpression.setRightExpression(subSelect);
-        return null != expression ? new OrExpression(expression, inExpression) : inExpression;
+        return expression != null ? new OrExpression(expression, inExpression) : inExpression;
     }
 
     /**
@@ -197,7 +197,7 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
         EqualsTo equalsTo = new EqualsTo();
         equalsTo.setLeftExpression(this.buildColumn(dataPermission.tableAlias(), dataPermission.deptId()));
         equalsTo.setRightExpression(new LongValue(userContext.getDeptId()));
-        return null != expression ? new OrExpression(expression, equalsTo) : equalsTo;
+        return expression != null ? new OrExpression(expression, equalsTo) : equalsTo;
     }
 
     /**
@@ -218,7 +218,7 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
         EqualsTo equalsTo = new EqualsTo();
         equalsTo.setLeftExpression(this.buildColumn(dataPermission.tableAlias(), dataPermission.userId()));
         equalsTo.setRightExpression(new LongValue(userContext.getUserId()));
-        return null != expression ? new OrExpression(expression, equalsTo) : equalsTo;
+        return expression != null ? new OrExpression(expression, equalsTo) : equalsTo;
     }
 
     /**
@@ -250,7 +250,7 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
         InExpression inExpression = new InExpression();
         inExpression.setLeftExpression(this.buildColumn(dataPermission.tableAlias(), dataPermission.deptId()));
         inExpression.setRightExpression(subSelect);
-        return null != expression ? new OrExpression(expression, inExpression) : inExpression;
+        return expression != null ? new OrExpression(expression, inExpression) : inExpression;
     }
 
     /**

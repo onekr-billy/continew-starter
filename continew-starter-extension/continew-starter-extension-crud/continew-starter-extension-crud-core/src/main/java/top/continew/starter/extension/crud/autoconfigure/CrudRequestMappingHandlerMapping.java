@@ -64,13 +64,13 @@ public class CrudRequestMappingHandlerMapping extends RequestMappingHandlerMappi
                                                           @NonNull Class<?> handlerType,
                                                           CrudRequestMapping crudRequestMapping) {
         RequestMappingInfo info = this.buildRequestMappingInfo(method);
-        if (null != info) {
+        if (info != null) {
             RequestMappingInfo typeInfo = this.buildRequestMappingInfo(handlerType);
-            if (null != typeInfo) {
+            if (typeInfo != null) {
                 info = typeInfo.combine(info);
             }
             String prefix = crudRequestMapping.value();
-            if (null != prefix) {
+            if (prefix != null) {
                 RequestMappingInfo.BuilderConfiguration options = new RequestMappingInfo.BuilderConfiguration();
                 options.setPatternParser(PathPatternParser.defaultInstance);
                 info = RequestMappingInfo.paths(prefix).options(options).build().combine(info);

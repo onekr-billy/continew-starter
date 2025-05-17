@@ -96,11 +96,11 @@ public class MyBatisEncryptInterceptor extends AbstractMyBatisInterceptor implem
     private void encryptMap(Map<String, Object> parameterMap, MappedStatement mappedStatement) {
         Object parameter;
         // 别名带有 et（针对 MP 的 updateById、update 等方法）
-        if (parameterMap.containsKey(Constants.ENTITY) && null != (parameter = parameterMap.get(Constants.ENTITY))) {
+        if (parameterMap.containsKey(Constants.ENTITY) && (parameter = parameterMap.get(Constants.ENTITY)) != null) {
             this.encryptEntity(super.getEncryptFields(parameter), parameter);
         }
         // 别名带有 ew（针对 MP 的 UpdateWrapper、LambdaUpdateWrapper 等参数）
-        if (parameterMap.containsKey(Constants.WRAPPER) && null != (parameter = parameterMap.get(Constants.WRAPPER))) {
+        if (parameterMap.containsKey(Constants.WRAPPER) && (parameter = parameterMap.get(Constants.WRAPPER)) != null) {
             this.encryptUpdateWrapper(parameter, mappedStatement);
         }
     }
@@ -122,7 +122,7 @@ public class MyBatisEncryptInterceptor extends AbstractMyBatisInterceptor implem
             }
             if (parameterValue instanceof String str) {
                 FieldEncrypt fieldEncrypt = encryptParameterMap.get(parameterName);
-                if (null != fieldEncrypt) {
+                if (fieldEncrypt != null) {
                     parameterMap.put(parameterName, this.doEncrypt(str, fieldEncrypt));
                 }
             } else {

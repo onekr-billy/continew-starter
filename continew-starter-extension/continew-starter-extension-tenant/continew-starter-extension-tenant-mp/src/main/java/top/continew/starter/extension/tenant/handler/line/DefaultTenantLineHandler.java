@@ -41,7 +41,7 @@ public class DefaultTenantLineHandler implements TenantLineHandler {
     @Override
     public Expression getTenantId() {
         Long tenantId = TenantContextHolder.getTenantId();
-        if (null != tenantId) {
+        if (tenantId != null) {
             return new LongValue(tenantId);
         }
         return null;
@@ -55,7 +55,7 @@ public class DefaultTenantLineHandler implements TenantLineHandler {
     @Override
     public boolean ignoreTable(String tableName) {
         Long tenantId = TenantContextHolder.getTenantId();
-        if (null != tenantId && tenantId.equals(tenantProperties.getSuperTenantId())) {
+        if (tenantId != null && tenantId.equals(tenantProperties.getSuperTenantId())) {
             return true;
         }
         if (TenantIsolationLevel.DATASOURCE.equals(TenantContextHolder.getIsolationLevel())) {

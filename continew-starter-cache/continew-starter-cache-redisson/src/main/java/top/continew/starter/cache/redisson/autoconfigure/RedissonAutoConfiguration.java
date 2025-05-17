@@ -93,7 +93,7 @@ public class RedissonAutoConfiguration {
     private void buildClusterModeConfig(Config config, String protocolPrefix) {
         ClusterServersConfig clusterServersConfig = config.useClusterServers();
         ClusterServersConfig customClusterServersConfig = properties.getClusterServersConfig();
-        if (null != customClusterServersConfig) {
+        if (customClusterServersConfig != null) {
             BeanUtil.copyProperties(customClusterServersConfig, clusterServersConfig);
             clusterServersConfig.setNodeAddresses(customClusterServersConfig.getNodeAddresses());
         }
@@ -122,7 +122,7 @@ public class RedissonAutoConfiguration {
     private void buildSentinelModeConfig(Config config, String protocolPrefix) {
         SentinelServersConfig sentinelServersConfig = config.useSentinelServers();
         SentinelServersConfig customSentinelServersConfig = properties.getSentinelServersConfig();
-        if (null != customSentinelServersConfig) {
+        if (customSentinelServersConfig != null) {
             BeanUtil.copyProperties(customSentinelServersConfig, sentinelServersConfig);
             sentinelServersConfig.setSentinelAddresses(customSentinelServersConfig.getSentinelAddresses());
         }
@@ -154,7 +154,7 @@ public class RedissonAutoConfiguration {
     private void buildSingleModeConfig(Config config, String protocolPrefix) {
         SingleServerConfig singleServerConfig = config.useSingleServer();
         SingleServerConfig customSingleServerConfig = properties.getSingleServerConfig();
-        if (null != customSingleServerConfig) {
+        if (customSingleServerConfig != null) {
             BeanUtil.copyProperties(properties.getSingleServerConfig(), singleServerConfig);
         }
         // 下方配置如果为空，则使用 Redis 的配置

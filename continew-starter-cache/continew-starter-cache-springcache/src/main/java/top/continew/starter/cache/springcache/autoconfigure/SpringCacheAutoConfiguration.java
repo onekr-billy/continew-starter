@@ -72,7 +72,7 @@ public class SpringCacheAutoConfiguration implements CachingConfigurer {
             .serializeValuesWith(RedisSerializationContext.SerializationPair
                 .fromSerializer(new GenericJackson2JsonRedisSerializer(objectMapperCopy)));
         CacheProperties.Redis redisCacheProperties = cacheProperties.getRedis();
-        if (null != redisCacheProperties.getTimeToLive()) {
+        if (redisCacheProperties.getTimeToLive() != null) {
             redisCacheConfiguration = redisCacheConfiguration.entryTtl(redisCacheProperties.getTimeToLive());
         }
         if (!redisCacheProperties.isCacheNullValues()) {

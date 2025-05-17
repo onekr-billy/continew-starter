@@ -84,7 +84,7 @@ public class MybatisPlusAutoConfiguration {
         }
         // 分页插件
         MyBatisPlusExtensionProperties.PaginationProperties paginationProperties = properties.getPagination();
-        if (null != paginationProperties && paginationProperties.isEnabled()) {
+        if (paginationProperties != null && paginationProperties.isEnabled()) {
             interceptor.addInnerInterceptor(this.paginationInnerInterceptor(paginationProperties));
         }
         // 乐观锁插件

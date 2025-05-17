@@ -154,7 +154,7 @@ public class QueryWrapperHelper {
             }
             // 设置了 @QueryIgnore 注解，直接忽略
             QueryIgnore queryIgnoreAnnotation = AnnotationUtil.getAnnotation(field, QueryIgnore.class);
-            if (null != queryIgnoreAnnotation) {
+            if (queryIgnoreAnnotation != null) {
                 return Collections.emptyList();
             }
             // 建议：数据库表列建议采用下划线连接法命名，程序变量建议采用驼峰法命名

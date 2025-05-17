@@ -57,7 +57,7 @@ public class ExceptionUtils {
                 Thread.currentThread().interrupt();
             }
         }
-        if (null != throwable) {
+        if (throwable != null) {
             log.error(throwable.getMessage(), throwable);
         }
     }
@@ -120,7 +120,7 @@ public class ExceptionUtils {
         try {
             return exSupplier.get();
         } catch (Exception e) {
-            if (null != exConsumer) {
+            if (exConsumer != null) {
                 exConsumer.accept(e);
             }
             return defaultValue;

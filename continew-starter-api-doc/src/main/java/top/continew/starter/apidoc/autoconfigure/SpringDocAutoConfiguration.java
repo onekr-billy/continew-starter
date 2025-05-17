@@ -87,17 +87,17 @@ public class SpringDocAutoConfiguration implements WebMvcConfigurer {
             .version(projectProperties.getVersion())
             .description(projectProperties.getDescription());
         ProjectProperties.Contact contact = projectProperties.getContact();
-        if (null != contact) {
+        if (contact != null) {
             info.contact(new Contact().name(contact.getName()).email(contact.getEmail()).url(contact.getUrl()));
         }
         ProjectProperties.License license = projectProperties.getLicense();
-        if (null != license) {
+        if (license != null) {
             info.license(new License().name(license.getName()).url(license.getUrl()));
         }
         OpenAPI openApi = new OpenAPI();
         openApi.info(info);
         Components components = properties.getComponents();
-        if (null != components) {
+        if (components != null) {
             openApi.components(components);
             // 鉴权配置
             Map<String, SecurityScheme> securitySchemeMap = components.getSecuritySchemes();
@@ -118,11 +118,11 @@ public class SpringDocAutoConfiguration implements WebMvcConfigurer {
     @ConditionalOnMissingBean
     public GlobalOpenApiCustomizer globalOpenApiCustomizer(SpringDocExtensionProperties properties) {
         return openApi -> {
-            if (null != openApi.getPaths()) {
+            if (openApi.getPaths() != null) {
                 openApi.getPaths().forEach((s, pathItem) -> {
                     // 为所有接口添加鉴权
                     Components components = properties.getComponents();
-                    if (null != components && MapUtil.isNotEmpty(components.getSecuritySchemes())) {
+                    if (components != null && MapUtil.isNotEmpty(components.getSecuritySchemes())) {
                         Map<String, SecurityScheme> securitySchemeMap = components.getSecuritySchemes();
                         pathItem.readOperations().forEach(operation -> {
                             SecurityRequirement securityRequirement = new SecurityRequirement();

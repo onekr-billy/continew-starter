@@ -54,19 +54,19 @@ public abstract class AbstractLogHandler implements LogHandler {
     public boolean isRecord(Method targetMethod, Class<?> targetClass) {
         // 如果接口被隐藏，不记录日志
         Operation methodOperation = AnnotationUtil.getAnnotation(targetMethod, Operation.class);
-        if (null != methodOperation && methodOperation.hidden()) {
+        if (methodOperation != null && methodOperation.hidden()) {
             return false;
         }
         Hidden methodHidden = AnnotationUtil.getAnnotation(targetMethod, Hidden.class);
-        if (null != methodHidden) {
+        if (methodHidden != null) {
             return false;
         }
-        if (null != targetClass.getDeclaredAnnotation(Hidden.class)) {
+        if (targetClass.getDeclaredAnnotation(Hidden.class) != null) {
             return false;
         }
         // 如果接口方法或类上有 @Log 注解，且要求忽略该接口，则不记录日志
         Log methodLog = AnnotationUtil.getAnnotation(targetMethod, Log.class);
-        if (null != methodLog && methodLog.ignore()) {
+        if (methodLog != null && methodLog.ignore()) {
             return false;
         }
         Log classLog = AnnotationUtil.getAnnotation(targetClass, Log.class);
@@ -113,13 +113,13 @@ public abstract class AbstractLogHandler implements LogHandler {
         logRecord.setDescription("请在该接口方法上添加 @top.continew.starter.log.annotation.Log(value) 来指定日志描述");
         Log methodLog = AnnotationUtil.getAnnotation(targetMethod, Log.class);
         // 例如：@Log("新增部门") -> 新增部门
-        if (null != methodLog && CharSequenceUtil.isNotBlank(methodLog.value())) {
+        if (methodLog != null && CharSequenceUtil.isNotBlank(methodLog.value())) {
             logRecord.setDescription(methodLog.value());
             return;
         }
         // 例如：@Operation(summary="新增部门") -> 新增部门
         Operation methodOperation = AnnotationUtil.getAnnotation(targetMethod, Operation.class);
-        if (null != methodOperation && CharSequenceUtil.isNotBlank(methodOperation.summary())) {
+        if (methodOperation != null && CharSequenceUtil.isNotBlank(methodOperation.summary())) {
             logRecord.setDescription(methodOperation.summary());
         }
     }
@@ -137,18 +137,18 @@ public abstract class AbstractLogHandler implements LogHandler {
         Log methodLog = AnnotationUtil.getAnnotation(targetMethod, Log.class);
         // 例如：@Log(module = "部门管理") -> 部门管理
         // 方法级注解优先级高于类级注解
-        if (null != methodLog && CharSequenceUtil.isNotBlank(methodLog.module())) {
+        if (methodLog != null && CharSequenceUtil.isNotBlank(methodLog.module())) {
             logRecord.setModule(methodLog.module());
             return;
         }
         Log classLog = AnnotationUtil.getAnnotation(targetClass, Log.class);
-        if (null != classLog && CharSequenceUtil.isNotBlank(classLog.module())) {
+        if (classLog != null && CharSequenceUtil.isNotBlank(classLog.module())) {
             logRecord.setModule(classLog.module());
             return;
         }
         // 例如：@Tag(name = "部门管理") -> 部门管理
         Tag classTag = AnnotationUtil.getAnnotation(targetClass, Tag.class);
-        if (null != classTag && CharSequenceUtil.isNotBlank(classTag.name())) {
+        if (classTag != null && CharSequenceUtil.isNotBlank(classTag.name())) {
             logRecord.setModule(classTag.name());
         }
     }
@@ -157,12 +157,12 @@ public abstract class AbstractLogHandler implements LogHandler {
     public Set<Include> getIncludes(Set<Include> includes, Method targetMethod, Class<?> targetClass) {
         Log classLog = AnnotationUtil.getAnnotation(targetClass, Log.class);
         Set<Include> includeSet = new HashSet<>(includes);
-        if (null != classLog) {
+        if (classLog != null) {
             this.processInclude(includeSet, classLog);
         }
         // 方法级注解优先级高于类级注解
         Log methodLog = AnnotationUtil.getAnnotation(targetMethod, Log.class);
-        if (null != methodLog) {
+        if (methodLog != null) {
             this.processInclude(includeSet, methodLog);
         }
         return includeSet;
