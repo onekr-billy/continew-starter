@@ -186,6 +186,10 @@ continew-starter
 │  └─ continew-starter-file-excel（Easy Excel）
 ├─ continew-starter-storage（存储模块）
 │  └─ continew-starter-storage-local（本地存储）
+├─ continew-starter-license（License 模块）
+│  ├─ continew-starter-license-core（核心模块）
+│  ├─ continew-starter-license-generator（License 生成器）
+│  └─ continew-starter-license-verifier（License 校验器）
 └─ continew-starter-extension（扩展模块）
    ├─ continew-starter-extension-datapermission（数据权限模块）
    │  ├─ continew-starter-extension-datapermission-core（通用模块）

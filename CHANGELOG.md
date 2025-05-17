@@ -3,7 +3,6 @@
 ### ✨ 新特性
 
 - 【security/password】添加密码编码器相关常量类 ([1b7f541](https://github.com/continew-org/continew-starter/commit/1b7f541e7d133cd431a9ca097bdac46ea85073be))
-
 - 【license】新增 License 模块 (Gitee#51@aiming317、dom-w、httpsjt) ([da4c815](https://github.com/continew-org/continew-starter/commit/da4c8154bf6ddae7c0d0c6719efcc36537ed5983)) ([1ce5c02](https://github.com/continew-org/continew-starter/commit/1ce5c023cf8fe78849fba9fe0f7c0fcfac09c491)) ([7d97026](https://github.com/continew-org/continew-starter/commit/7d97026480b244319fa322c854a5e2d2552cc786)) ([06f5a0f](https://github.com/continew-org/continew-starter/commit/06f5a0f34680c93efe525b8102d24622b8b20893)) ([5e9a3f3](https://github.com/continew-org/continew-starter/commit/5e9a3f3e93ab55a6bc09828e124705e23543f72e))
 - 【core】新增 JSON 格式字符串校验器 ([cf5ef36](https://github.com/continew-org/continew-starter/commit/cf5ef36af5179550e9c8cb75332497813488aee3))
 - 【extension/crud】PageQuery 和 SortQuery 完善带参构造方法 ([70f8fc0](https://github.com/continew-org/continew-starter/commit/70f8fc01c0cd5636316705f9f9c425cda3f1d736))
@@ -24,6 +23,19 @@
 - 【web】修复默认 Response 类 msg 传递污染的问题 ([3bbd04a](https://github.com/continew-org/continew-starter/commit/3bbd04add2946a9619e8edbd94cb9bbb23c688a8))
 - 【web】修复 /file/ 注册资源映射时被解析为 /file//** 的问题 ([35e2cdc](https://github.com/continew-org/continew-starter/commit/35e2cdc3bf2c2137f86e72612b3572be148b5823))
 
+### 📦 依赖升级
+
+- spring-boot 3.3.9 => 3.3.11 ([62334d8](https://github.com/continew-org/continew-starter/commit/62334d882c174fd2de5fdeb081407356984d26bd))
+- redisson 3.45.0 => 3.46.0
+- jetcache 2.2.7 => 2.7.8
+- cosid 2.11.0 => 2.12.3
+- sa-token 1.41.0 => 1.42.0
+- mybatis-flex 1.10.8 => 1.10.9
+- aws-s3 1.12.782 => 1.12.783
+- s3 2.30.35 => 2.31.35
+- s3-crt 0.36.1 => 0.38.1
+- hutool 5.8.36 => 5.8.37
+
 ## [v2.11.0](https://github.com/continew-org/continew-starter/compare/v2.10.0...v2.11.0) (2025-04-13)
 
 ### ✨ 新特性
@@ -35,7 +47,6 @@
 ### 💎 功能优化
 
 - 【dependencies】采取 bom 方式来管理 JetCache 依赖 (Gitee#44@jiang4yu) ([e2d8f45](https://github.com/continew-org/continew-starter/commit/e2d8f45206a55e333c26a48c501efbb82c89beea)) ([f662b74](https://github.com/continew-org/continew-starter/commit/f662b740610da3e1ff4c0fadf2e5b2a188b06d73)) ([3e0dd83](https://github.com/continew-org/continew-starter/commit/3e0dd83e2664e57d61c37e4ea7afa618c322b984))
-
 - 替换 aspectjweaver 依赖为 Spring Boot Starter AOP ([ae2b898](https://github.com/continew-org/continew-starter/commit/ae2b898e57ca8e418289a2974c92447ec191e15f))
 - 【dependencies】调整 sa-token 版本锁定为 bom 方式（PR by iang4yu） ([e242568](https://github.com/continew-org/continew-starter/commit/e24256818d716c4c2bbc50d6e7bd0df394bbbd4f))
 - 【log】访问日志过滤资源路径 (Gitee#47@dom-w) ([a6a44cd](https://github.com/continew-org/continew-starter/commit/a6a44cd46131d41f8626fe67f6ad9e4d70f1d46c))
