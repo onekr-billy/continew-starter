@@ -18,6 +18,7 @@ package top.continew.starter.messaging.websocket.dao;
 
 import org.springframework.web.socket.WebSocketSession;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -44,5 +45,10 @@ public class WebSocketSessionDaoDefaultImpl implements WebSocketSessionDao {
     @Override
     public WebSocketSession get(String key) {
         return SESSION_MAP.get(key);
+    }
+
+    @Override
+    public Collection<WebSocketSession> listAll() {
+        return SESSION_MAP.values();
     }
 }

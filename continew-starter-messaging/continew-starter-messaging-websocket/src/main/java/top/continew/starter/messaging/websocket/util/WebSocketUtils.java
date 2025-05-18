@@ -63,6 +63,16 @@ public class WebSocketUtils {
     }
 
     /**
+     * 发送消息给所有客户端
+     *
+     * @param message 消息内容
+     * @since 2.12.1
+     */
+    public static void sendMessage(String message) {
+        SESSION_DAO.listAll().forEach(session -> sendMessage(session, message));
+    }
+
+    /**
      * 发送消息
      *
      * @param session 会话
