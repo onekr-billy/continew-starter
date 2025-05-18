@@ -20,6 +20,7 @@ import org.springframework.web.socket.WebSocketSession;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -50,5 +51,10 @@ public class WebSocketSessionDaoDefaultImpl implements WebSocketSessionDao {
     @Override
     public Collection<WebSocketSession> listAll() {
         return SESSION_MAP.values();
+    }
+
+    @Override
+    public Set<String> listAllSessionIds() {
+        return SESSION_MAP.keySet();
     }
 }

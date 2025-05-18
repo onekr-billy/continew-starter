@@ -19,6 +19,7 @@ package top.continew.starter.messaging.websocket.dao;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * WebSocket 会话 DAO
@@ -58,4 +59,12 @@ public interface WebSocketSessionDao {
      * @since 2.12.1
      */
     Collection<WebSocketSession> listAll();
+
+    /**
+     * 获取所有会话 ID
+     *
+     * @return 所有会话 ID
+     * @since 2.12.1
+     */
+    Set<String> listAllSessionIds();
 }

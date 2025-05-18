@@ -16,6 +16,7 @@
 
 package top.continew.starter.messaging.websocket.util;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,8 @@ import org.springframework.web.socket.WebSocketSession;
 import top.continew.starter.messaging.websocket.dao.WebSocketSessionDao;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * WebSocket 工具类
@@ -60,6 +63,18 @@ public class WebSocketUtils {
      */
     public static void sendMessage(WebSocketSession session, String message) {
         sendMessage(session, new TextMessage(message));
+    }
+
+    /**
+     * 批量发送消息
+     *
+     * @param clientIds 客户端 ID 列表
+     * @param message   消息内容
+     * @since 2.12.1
+     */
+    public static void sendMessage(List<String> clientIds, String message) {
+        Collection<String> sessionIds = CollUtil.intersection(SESSION_DAO.listAllSessionIds(), clientIds);
+        sessionIds.parallelStream().forEach(sessionId -> sendMessage(sessionId, message));
     }
 
     /**
