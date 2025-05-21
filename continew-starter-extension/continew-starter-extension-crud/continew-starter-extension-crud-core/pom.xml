@@ -24,10 +24,10 @@
             <artifactId>spring-data-commons</artifactId>
         </dependency>
 
-        <!-- Web 模块 -->
+        <!-- Web 模块 - 增强支持模块 -->
         <dependency>
             <groupId>top.continew</groupId>
-            <artifactId>continew-starter-web</artifactId>
+            <artifactId>continew-starter-web-support</artifactId>
         </dependency>
 
         <!-- 数据访问模块 - 核心模块 -->

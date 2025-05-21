@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>top.continew</groupId>
+        <artifactId>continew-starter-web</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>continew-starter-web-core</artifactId>
+    <description>ContiNew Starter Web 模块 - 核心模块</description>
+
+    <dependencies>
+
+        <!-- Spring Boot Web（提供 Spring MVC Web 开发能力，默认内置 Tomcat 服务器） -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <!-- 移除内置 Tomcat 服务器 -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Servlet API -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+        </dependency>
+
+        <!--核心模块-->
+        <dependency>
+            <groupId>top.continew</groupId>
+            <artifactId>continew-starter-core</artifactId>
+        </dependency>
+
+        <!-- JSON 模块 - Jackson -->
+        <dependency>
+            <groupId>top.continew</groupId>
+            <artifactId>continew-starter-json-jackson</artifactId>
+        </dependency>
+
+
+    </dependencies>
+
+
+</project>

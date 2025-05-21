@@ -23,7 +23,7 @@
         <!-- Web 模块 -->
         <dependency>
             <groupId>top.continew</groupId>
-            <artifactId>continew-starter-web</artifactId>
+            <artifactId>continew-starter-web-core</artifactId>
         </dependency>
     </dependencies>
 </project>
