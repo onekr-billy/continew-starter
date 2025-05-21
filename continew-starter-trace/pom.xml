@@ -13,16 +13,16 @@
     <description>ContiNew Starter 链路追踪模块</description>
 
     <dependencies>
-        <!-- Servlet API -->
-        <dependency>
-            <groupId>jakarta.servlet</groupId>
-            <artifactId>jakarta.servlet-api</artifactId>
-        </dependency>
-
         <!-- 核心模块 -->
         <dependency>
             <groupId>top.continew</groupId>
             <artifactId>continew-starter-core</artifactId>
+        </dependency>
+
+        <!-- Servlet API -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
         </dependency>
 
         <!-- TLog（轻量级的分布式日志标记追踪神器） -->

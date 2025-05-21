@@ -24,7 +24,6 @@ import cn.hutool.http.useragent.UserAgentUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -69,9 +68,6 @@ public class ServletUtils extends JakartaServletUtil {
      * @return 浏览器及其版本信息
      */
     public static String getBrowser(String userAgentString) {
-        if (StringUtils.isBlank(userAgentString)) {
-            return null;
-        }
         try {
             UserAgent userAgent = UserAgentUtil.parse(userAgentString);
             if (userAgent == null || userAgent.getBrowser() == null) {
@@ -79,9 +75,7 @@ public class ServletUtils extends JakartaServletUtil {
             }
             String browserName = userAgent.getBrowser().getName();
             String version = userAgent.getVersion();
-            return StringUtils.isBlank(version)
-                ? browserName
-                : browserName + StringConstants.SPACE + version;
+            return CharSequenceUtil.isBlank(version) ? browserName : browserName + StringConstants.SPACE + version;
         } catch (Exception e) {
             return null;
         }
@@ -107,9 +101,6 @@ public class ServletUtils extends JakartaServletUtil {
      * @return 操作系统
      */
     public static String getOs(String userAgentString) {
-        if (StringUtils.isEmpty(userAgentString)) {
-            return null;
-        }
         try {
             UserAgent userAgent = UserAgentUtil.parse(userAgentString);
             if (userAgent == null || userAgent.getOs() == null) {

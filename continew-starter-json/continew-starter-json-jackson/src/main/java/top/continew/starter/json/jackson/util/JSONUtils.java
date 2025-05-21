@@ -16,7 +16,6 @@
 
 package top.continew.starter.json.jackson.util;
 
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -61,7 +60,7 @@ public class JSONUtils {
      * @return {@link String }
      */
     public static String toJsonStr(Object object) {
-        if (ObjectUtil.isNull(object)) {
+        if (object == null) {
             return null;
         }
         try {

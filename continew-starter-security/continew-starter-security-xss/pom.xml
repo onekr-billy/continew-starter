@@ -13,7 +13,7 @@
     <description>ContiNew Starter 安全模块 - XSS 过滤模块</description>
 
     <dependencies>
-        <!-- Web 模块 -->
+        <!-- Web 模块 - 核心模块 -->
         <dependency>
             <groupId>top.continew</groupId>
             <artifactId>continew-starter-web-core</artifactId>

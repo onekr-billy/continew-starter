@@ -13,7 +13,7 @@
     <description>ContiNew Starter 认证模块 - SaToken</description>
 
     <dependencies>
-        <!-- Web 模块 -->
+        <!-- Web 模块 - 核心模块 -->
         <dependency>
             <groupId>top.continew</groupId>
             <artifactId>continew-starter-web-core</artifactId>

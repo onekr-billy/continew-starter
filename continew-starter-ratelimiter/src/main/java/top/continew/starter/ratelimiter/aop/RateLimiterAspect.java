@@ -18,7 +18,6 @@ package top.continew.starter.ratelimiter.aop;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.text.CharSequenceUtil;
-import cn.hutool.core.util.ObjectUtil;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -162,7 +161,7 @@ public class RateLimiterAspect {
         String key = rateLimiter.key();
         if (CharSequenceUtil.isNotBlank(key)) {
             Object eval = ExpressionUtils.eval(key, target, method, args);
-            if (ObjectUtil.isNull(eval)) {
+            if (eval == null) {
                 throw new RateLimiterException("限流 Key 解析错误");
             }
             key = Convert.toStr(eval);

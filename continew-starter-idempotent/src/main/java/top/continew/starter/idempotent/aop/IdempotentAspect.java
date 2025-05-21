@@ -18,7 +18,6 @@ package top.continew.starter.idempotent.aop;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.text.CharSequenceUtil;
-import cn.hutool.core.util.ObjectUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -98,7 +97,7 @@ public class IdempotentAspect {
         String key = idempotent.key();
         if (CharSequenceUtil.isNotBlank(key)) {
             Object eval = ExpressionUtils.eval(key, target, method, args);
-            if (ObjectUtil.isNull(eval)) {
+            if (eval == null) {
                 throw new IdempotentException("幂等 Key 解析错误");
             }
             key = Convert.toStr(eval);
