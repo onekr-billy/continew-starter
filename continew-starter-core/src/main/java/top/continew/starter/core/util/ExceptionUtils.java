@@ -24,6 +24,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * 异常工具类
@@ -108,6 +109,25 @@ public class ExceptionUtils {
     }
 
     /**
+     * 如果有异常，抛出自定义异常
+     *
+     * @param exSupplier      可能会出现异常的方法执行
+     * @param exceptionMapper 异常转换函数
+     * @param <T>             返回值类型
+     * @param <E>             自定义异常类型
+     * @return 执行结果
+     * @throws E 自定义异常
+     */
+    public static <T, E extends Exception> T exToThrow(ExSupplier<T> exSupplier,
+                                                       Function<Exception, E> exceptionMapper) throws E {
+        try {
+            return exSupplier.get();
+        } catch (Exception e) {
+            throw exceptionMapper.apply(e);
+        }
+    }
+
+    /**
      * 如果有异常，执行异常处理，返回默认值
      *
      * @param exSupplier   可能会出现异常的方法执行
@@ -140,5 +160,6 @@ public class ExceptionUtils {
          * @throws Exception /
          */
         T get() throws Exception;
+
     }
 }
