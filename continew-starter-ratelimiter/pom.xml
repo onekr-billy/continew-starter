@@ -11,10 +11,10 @@
     <description>ContiNew Starter 限流模块</description>
 
     <dependencies>
-        <!-- Web 模块 - 核心模块 -->
+        <!-- 核心模块 -->
         <dependency>
             <groupId>top.continew</groupId>
-            <artifactId>continew-starter-web-core</artifactId>
+            <artifactId>continew-starter-core</artifactId>
         </dependency>
 
         <!-- 缓存模块 - Redisson -->

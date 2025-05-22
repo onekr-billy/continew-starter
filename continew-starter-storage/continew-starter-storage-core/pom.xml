@@ -12,19 +12,16 @@
     <description>ContiNew Starter 存储模块 - 核心模块</description>
 
     <dependencies>
-
-        <!--redisson 缓存模块-->
+        <!-- 缓存模块 - Redisson -->
         <dependency>
             <groupId>top.continew</groupId>
             <artifactId>continew-starter-cache-redisson</artifactId>
         </dependency>
 
-        <!--图片处理工具-主要用做图片缩略处理-->
+        <!-- Thumbnailator（缩略图生成库） -->
         <dependency>
             <groupId>net.coobird</groupId>
             <artifactId>thumbnailator</artifactId>
         </dependency>
     </dependencies>
-
-
 </project>

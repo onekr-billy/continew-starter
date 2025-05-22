@@ -31,7 +31,7 @@ import top.continew.starter.log.model.AccessLogContext;
 import top.continew.starter.log.model.AccessLogProperties;
 import top.continew.starter.log.model.LogRecord;
 import top.continew.starter.log.util.AccessLogUtils;
-import top.continew.starter.web.util.ServletUtils;
+import top.continew.starter.core.util.ServletUtils;
 
 import java.lang.reflect.Method;
 import java.time.Duration;

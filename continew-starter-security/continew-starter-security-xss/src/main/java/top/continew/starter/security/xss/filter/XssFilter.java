@@ -22,7 +22,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.continew.starter.security.xss.autoconfigure.XssProperties;
-import top.continew.starter.web.util.SpringWebUtils;
+import top.continew.starter.core.util.SpringWebUtils;
 
 import java.io.IOException;
 import java.util.List;

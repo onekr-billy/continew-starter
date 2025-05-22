@@ -13,12 +13,6 @@
     <description>ContiNew Starter 认证模块 - SaToken</description>
 
     <dependencies>
-        <!-- Web 模块 - 核心模块 -->
-        <dependency>
-            <groupId>top.continew</groupId>
-            <artifactId>continew-starter-web-core</artifactId>
-        </dependency>
-
         <!-- 缓存模块 - Redisson -->
         <dependency>
             <groupId>top.continew</groupId>
@@ -30,12 +24,6 @@
         <dependency>
             <groupId>cn.dev33</groupId>
             <artifactId>sa-token-spring-boot3-starter</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-web</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <!-- Sa-Token 整合 JWT -->

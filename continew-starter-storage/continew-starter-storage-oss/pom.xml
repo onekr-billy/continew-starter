@@ -12,6 +12,12 @@
     <description>ContiNew Starter 存储模块 - 对象存储</description>
 
     <dependencies>
+        <!-- 存储模块 - 核心模块-->
+        <dependency>
+            <groupId>top.continew</groupId>
+            <artifactId>continew-starter-storage-core</artifactId>
+        </dependency>
+
         <!--  S3 SDK for Java 2.x  -->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
@@ -51,13 +57,5 @@
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>s3-transfer-manager</artifactId>
         </dependency>
-
-        <!--存储 - 核心模块-->
-        <dependency>
-            <groupId>top.continew</groupId>
-            <artifactId>continew-starter-storage-core</artifactId>
-        </dependency>
-
     </dependencies>
-
 </project>

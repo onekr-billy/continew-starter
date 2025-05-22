@@ -34,7 +34,7 @@ import top.continew.starter.ratelimiter.autoconfigure.RateLimiterProperties;
 import top.continew.starter.ratelimiter.generator.RateLimiterNameGenerator;
 import top.continew.starter.ratelimiter.enums.LimitType;
 import top.continew.starter.ratelimiter.exception.RateLimiterException;
-import top.continew.starter.web.util.ServletUtils;
+import top.continew.starter.core.util.ServletUtils;
 
 import java.lang.reflect.Method;
 import java.time.Duration;

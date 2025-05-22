@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.starter.web.util;
+package top.continew.starter.core.util;
 
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
@@ -43,6 +43,7 @@ import java.time.LocalDateTime;
  * @since 1.0.0
  */
 public class FileUploadUtils {
+
     private static final Logger log = LoggerFactory.getLogger(FileUploadUtils.class);
 
     private FileUploadUtils() {

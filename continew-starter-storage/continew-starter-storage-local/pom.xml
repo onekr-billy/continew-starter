@@ -13,7 +13,7 @@
     <description>ContiNew Starter 存储模块 - 本地存储</description>
 
     <dependencies>
-        <!--存储 - 核心模块-->
+        <!-- 存储模块 - 核心模块-->
         <dependency>
             <groupId>top.continew</groupId>
             <artifactId>continew-starter-storage-core</artifactId>

@@ -17,7 +17,7 @@
 package top.continew.starter.log.model;
 
 import top.continew.starter.log.enums.Include;
-import top.continew.starter.web.util.ServletUtils;
+import top.continew.starter.core.util.ServletUtils;
 
 import java.util.Map;
 import java.util.Set;

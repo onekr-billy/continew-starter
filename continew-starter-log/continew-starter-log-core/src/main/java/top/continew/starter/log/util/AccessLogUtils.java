@@ -18,12 +18,11 @@ package top.continew.starter.log.util;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.fasterxml.jackson.databind.JsonNode;
-import top.continew.starter.json.jackson.util.JSONUtils;
+import cn.hutool.json.JSONUtil;
 import top.continew.starter.log.model.AccessLogProperties;
 import top.continew.starter.log.model.LogProperties;
-import top.continew.starter.web.util.ServletUtils;
-import top.continew.starter.web.util.SpringWebUtils;
+import top.continew.starter.core.util.ServletUtils;
+import top.continew.starter.core.util.SpringWebUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -79,7 +78,7 @@ public class AccessLogUtils {
             params = processTruncateLongParams(params, properties.getLongParamThreshold(), properties
                 .getLongParamMaxLength(), properties.getLongParamSuffix());
         }
-        return JSONUtils.toJsonStr(params);
+        return JSONUtil.toJsonStr(params);
     }
 
     /**
@@ -192,13 +191,12 @@ public class AccessLogUtils {
      */
     private static Object getAccessLogReqParam() {
         String body = ServletUtils.getRequestBody();
-        if (CharSequenceUtil.isNotBlank(body) && JSONUtils.isTypeJSON(body)) {
+        if (CharSequenceUtil.isNotBlank(body) && JSONUtil.isTypeJSON(body)) {
             try {
-                JsonNode jsonNode = JSONUtils.getObjectMapper().readTree(body);
-                if (jsonNode.isArray()) {
-                    return JSONUtils.toBean(body, List.class);
+                if (JSONUtil.isTypeJSONArray(body)) {
+                    return JSONUtil.toBean(body, List.class);
                 } else {
-                    return JSONUtils.toBean(body, Map.class);
+                    return JSONUtil.toBean(body, Map.class);
                 }
             } catch (Exception e) {
                 return null;

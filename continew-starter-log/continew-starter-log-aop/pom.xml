@@ -11,7 +11,6 @@
     <artifactId>continew-starter-log-aop</artifactId>
     <description>ContiNew Starter 日志模块 - 基于 AOP 实现</description>
 
-
     <dependencies>
         <!-- 日志模块 - 核心模块 -->
         <dependency>

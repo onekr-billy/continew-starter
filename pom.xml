@@ -38,9 +38,9 @@
         <module>continew-starter-json</module>
         <module>continew-starter-api-doc</module>
         <module>continew-starter-web</module>
+        <module>continew-starter-cache</module>
         <module>continew-starter-auth</module>
         <module>continew-starter-data</module>
-        <module>continew-starter-cache</module>
         <module>continew-starter-security</module>
         <module>continew-starter-ratelimiter</module>
         <module>continew-starter-idempotent</module>

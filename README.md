@@ -153,6 +153,10 @@ continew-starter
 │  └─ continew-starter-json-jackson
 ├─ continew-starter-api-doc（接口文档模块：Spring Doc + Knife4j）
 ├─ continew-starter-web（Web 开发模块：包含跨域、全局异常+响应、链路追踪等自动配置）
+├─ continew-starter-cache（缓存模块）
+│  ├─ continew-starter-cache-redisson（Redisson）
+│  ├─ continew-starter-cache-jetcache（JetCache 多级缓存）
+│  └─ continew-starter-cache-springcache（Spring 缓存）
 ├─ continew-starter-auth（认证模块）
 │  ├─ continew-starter-auth-satoken（国产轻量认证鉴权）
 │  └─ continew-starter-auth-justauth（第三方登录）
@@ -160,10 +164,6 @@ continew-starter
 │  ├─ continew-starter-data-core（通用模块）
 │  ├─ continew-starter-data-mp（MyBatis Plus）
 │  └─ continew-starter-data-mf（MyBatis Flex）
-├─ continew-starter-cache（缓存模块）
-│  ├─ continew-starter-cache-redisson（Redisson）
-│  ├─ continew-starter-cache-jetcache（JetCache 多级缓存）
-│  └─ continew-starter-cache-springcache（Spring 缓存）
 ├─ continew-starter-security（安全模块）
 │  ├─ continew-starter-security-crypto（加密：字段加解密）
 │  ├─ continew-starter-security-xss（XSS 过滤）

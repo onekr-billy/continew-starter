@@ -20,7 +20,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import top.continew.starter.core.constant.PropertiesConstants;
 import top.continew.starter.log.enums.Include;
-import top.continew.starter.web.util.SpringWebUtils;
+import top.continew.starter.core.util.SpringWebUtils;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -37,17 +37,29 @@
                 <version>${revision}</version>
             </dependency>
 
-            <!-- Web 模块 - 核心模块 -->
+            <!-- Web 模块 -->
             <dependency>
                 <groupId>top.continew</groupId>
-                <artifactId>continew-starter-web-core</artifactId>
+                <artifactId>continew-starter-web</artifactId>
                 <version>${revision}</version>
             </dependency>
 
-            <!-- Web 模块 - 增强支持模块 -->
+            <!-- 缓存模块 - Redisson -->
             <dependency>
                 <groupId>top.continew</groupId>
-                <artifactId>continew-starter-web-support</artifactId>
+                <artifactId>continew-starter-cache-redisson</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <!-- 缓存模块 - Spring Cache -->
+            <dependency>
+                <groupId>top.continew</groupId>
+                <artifactId>continew-starter-cache-springcache</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <!-- 缓存模块 - JetCache -->
+            <dependency>
+                <groupId>top.continew</groupId>
+                <artifactId>continew-starter-cache-jetcache</artifactId>
                 <version>${revision}</version>
             </dependency>
 
@@ -80,25 +92,6 @@
             <dependency>
                 <groupId>top.continew</groupId>
                 <artifactId>continew-starter-data-core</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
-            <!-- 缓存模块 - Redisson -->
-            <dependency>
-                <groupId>top.continew</groupId>
-                <artifactId>continew-starter-cache-redisson</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <!-- 缓存模块 - Spring Cache -->
-            <dependency>
-                <groupId>top.continew</groupId>
-                <artifactId>continew-starter-cache-springcache</artifactId>
-                <version>${revision}</version>
-            </dependency>
-            <!-- 缓存模块 - JetCache -->
-            <dependency>
-                <groupId>top.continew</groupId>
-                <artifactId>continew-starter-cache-jetcache</artifactId>
                 <version>${revision}</version>
             </dependency>
 

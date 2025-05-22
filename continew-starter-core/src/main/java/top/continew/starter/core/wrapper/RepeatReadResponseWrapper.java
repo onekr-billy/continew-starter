@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.starter.web.util;
+package top.continew.starter.core.wrapper;
 
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.WriteListener;

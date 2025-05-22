@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package top.continew.starter.web.util;
+package top.continew.starter.core.util;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.extra.servlet.JakartaServletUtil;
 import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
+import cn.hutool.json.JSONUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -29,7 +30,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.UriUtils;
 import top.continew.starter.core.constant.StringConstants;
-import top.continew.starter.json.jackson.util.JSONUtils;
+import top.continew.starter.core.wrapper.RepeatReadRequestWrapper;
+import top.continew.starter.core.wrapper.RepeatReadResponseWrapper;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -204,7 +206,7 @@ public class ServletUtils extends JakartaServletUtil {
         HttpServletRequest request = getRequest();
         if (request instanceof RepeatReadRequestWrapper wrapper && !wrapper.isMultipartContent(request)) {
             String body = JakartaServletUtil.getBody(request);
-            return JSONUtils.isTypeJSON(body) ? body : null;
+            return JSONUtil.isTypeJSON(body) ? body : null;
         }
         return null;
     }
@@ -217,8 +219,8 @@ public class ServletUtils extends JakartaServletUtil {
      */
     public static Map<String, Object> getRequestParams() {
         String body = getRequestBody();
-        return CharSequenceUtil.isNotBlank(body) && JSONUtils.isTypeJSON(body)
-            ? JSONUtils.toBean(body, Map.class)
+        return CharSequenceUtil.isNotBlank(body) && JSONUtil.isTypeJSON(body)
+            ? JSONUtil.toBean(body, Map.class)
             : Collections.unmodifiableMap(JakartaServletUtil.getParamMap(Objects.requireNonNull(getRequest())));
     }
 
@@ -262,7 +264,7 @@ public class ServletUtils extends JakartaServletUtil {
         HttpServletResponse response = getResponse();
         if (response instanceof RepeatReadResponseWrapper wrapper && !wrapper.isStreamingResponse()) {
             String body = wrapper.getResponseContent();
-            return JSONUtils.isTypeJSON(body) ? body : null;
+            return JSONUtil.isTypeJSON(body) ? body : null;
         }
         return null;
     }
@@ -275,9 +277,7 @@ public class ServletUtils extends JakartaServletUtil {
      */
     public static Map<String, Object> getResponseParams() {
         String body = getResponseBody();
-        return CharSequenceUtil.isNotBlank(body) && JSONUtils.isTypeJSON(body)
-            ? JSONUtils.toBean(body, Map.class)
-            : null;
+        return CharSequenceUtil.isNotBlank(body) && JSONUtil.isTypeJSON(body) ? JSONUtil.toBean(body, Map.class) : null;
     }
 
     /**
