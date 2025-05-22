@@ -18,27 +18,28 @@ package top.continew.starter.json.jackson.autoconfigure;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import top.continew.starter.json.jackson.enums.BigNumberSerializeModeEnum;
+import top.continew.starter.json.jackson.enums.BigNumberSerializeMode;
 
 /**
- * jackson 配置属性
+ * Jackson 扩展配置属性
  *
  * @author Jasmine
  * @author Charles7c
- * @since 2.12.0
+ * @since 2.12.1
  */
 @ConfigurationProperties("spring.jackson")
-public class JacksonProperties {
-    /**
-     * 大数值类型序列化模式
-     */
-    private BigNumberSerializeModeEnum bigNumberSerializeMode;
+public class JacksonExtensionProperties {
 
-    public BigNumberSerializeModeEnum getBigNumberSerializeMode() {
+    /**
+     * 大数值序列化模式
+     */
+    private BigNumberSerializeMode bigNumberSerializeMode;
+
+    public BigNumberSerializeMode getBigNumberSerializeMode() {
         return bigNumberSerializeMode;
     }
 
-    public void setBigNumberSerializeMode(BigNumberSerializeModeEnum bigNumberSerializeMode) {
+    public void setBigNumberSerializeMode(BigNumberSerializeMode bigNumberSerializeMode) {
         this.bigNumberSerializeMode = bigNumberSerializeMode;
     }
 }

@@ -21,13 +21,29 @@ package top.continew.starter.json.jackson.enums;
  *
  * @author Jasmine
  * @author Charles7c
- * @since 2.12.0
+ * @since 2.12.1
  */
-public enum BigNumberSerializeModeEnum {
-    /** 超过js的最大值转字符串类型，否则保持原类型 */
+public enum BigNumberSerializeMode {
+
+    /**
+     * 超过 JS 范围的数值转为 {@link String} 类型，否则保持原类型
+     * <p>
+     * JS：Number.MIN_SAFE_INTEGER：-9007199254740991L <br />
+     * JS：Number.MAX_SAFE_INTEGER：9007199254740991L
+     * </p>
+     */
     FLEXIBLE,
-    /** 不操作 */
+
+    /**
+     * 统一转为 {@link String} 类型
+     */
+    TO_STRING,
+
+    /**
+     * 不操作（不建议）
+     * <p>
+     * 注意：超过 JS 范围的数值会损失精度，例如：8014753905961037835 会被转为 8014753905961038000
+     * </p>
+     */
     NO_OPERATE,
-    /** 统一转String类型 */
-    TO_STRING,;
 }

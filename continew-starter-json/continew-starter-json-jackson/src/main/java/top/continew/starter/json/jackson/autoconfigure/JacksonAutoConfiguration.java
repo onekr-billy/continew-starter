@@ -21,7 +21,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 import java.util.TimeZone;
 
 import org.slf4j.Logger;
@@ -45,7 +44,6 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import cn.hutool.core.date.DatePattern;
 import top.continew.starter.core.enums.BaseEnum;
 import top.continew.starter.core.util.GeneralPropertySourceFactory;
-import top.continew.starter.json.jackson.enums.BigNumberSerializeModeEnum;
 import top.continew.starter.json.jackson.serializer.BaseEnumDeserializer;
 import top.continew.starter.json.jackson.serializer.BaseEnumSerializer;
 import top.continew.starter.json.jackson.serializer.BigNumberSerializer;
@@ -55,30 +53,30 @@ import top.continew.starter.json.jackson.serializer.SimpleDeserializersWrapper;
  * Jackson 自动配置
  *
  * @author Charles7c
+ * @author Jasmine
  * @since 1.0.0
  */
 @AutoConfiguration
-@EnableConfigurationProperties(JacksonProperties.class)
+@EnableConfigurationProperties(JacksonExtensionProperties.class)
 @PropertySource(value = "classpath:default-json-jackson.yml", factory = GeneralPropertySourceFactory.class)
 public class JacksonAutoConfiguration {
+
     private static final Logger log = LoggerFactory.getLogger(JacksonAutoConfiguration.class);
+    private final JacksonExtensionProperties properties;
 
-    private final JacksonProperties jacksonProperties;
-
-    public JacksonAutoConfiguration(JacksonProperties jacksonProperties) {
-        this.jacksonProperties = jacksonProperties;
+    public JacksonAutoConfiguration(JacksonExtensionProperties properties) {
+        this.properties = properties;
     }
 
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer() {
         return builder -> {
-
-            JavaTimeModule javaTimeModule = this.timeModule();
-            SimpleModule enumModule = this.baseEnumModule();
+            JavaTimeModule javaTimeModule = this.javaTimeModule();
+            SimpleModule baseEnumModule = this.baseEnumModule();
             SimpleModule bigNumberModule = this.bigNumberModule();
 
             builder.timeZone(TimeZone.getDefault());
-            builder.modules(javaTimeModule, enumModule, bigNumberModule);
+            builder.modules(javaTimeModule, baseEnumModule, bigNumberModule);
             log.debug("[ContiNew Starter] - Auto Configuration 'Jackson' completed initialization.");
         };
     }
@@ -86,10 +84,10 @@ public class JacksonAutoConfiguration {
     /**
      * 日期时间序列化及反序列化配置
      *
-     * @return JavaTimeModule /
+     * @return {@link JavaTimeModule}
      * @since 1.0.0
      */
-    private JavaTimeModule timeModule() {
+    private JavaTimeModule javaTimeModule() {
         JavaTimeModule javaTimeModule = new JavaTimeModule();
         // 针对时间类型：LocalDateTime 的序列化和反序列化处理
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DatePattern.NORM_DATETIME_PATTERN);
@@ -125,21 +123,23 @@ public class JacksonAutoConfiguration {
      * 大数值序列化及反序列化配置
      *
      * @return SimpleModule /
-     * @since 2.12.0
+     * @since 2.12.1
      */
     private SimpleModule bigNumberModule() {
         SimpleModule bigNumberModule = new SimpleModule();
-        if (Objects.equals(jacksonProperties.getBigNumberSerializeMode(), BigNumberSerializeModeEnum.FLEXIBLE)) {
-            bigNumberModule.addSerializer(Long.class, BigNumberSerializer.SERIALIZER_INSTANCE);
-            bigNumberModule.addSerializer(Long.TYPE, BigNumberSerializer.SERIALIZER_INSTANCE);
-            bigNumberModule.addSerializer(BigInteger.class, BigNumberSerializer.SERIALIZER_INSTANCE);
-        } else if (Objects.equals(jacksonProperties
-            .getBigNumberSerializeMode(), BigNumberSerializeModeEnum.TO_STRING)) {
-            bigNumberModule.addSerializer(Long.class, ToStringSerializer.instance);
-            bigNumberModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
-            bigNumberModule.addSerializer(BigInteger.class, ToStringSerializer.instance);
+        switch (properties.getBigNumberSerializeMode()) {
+            case FLEXIBLE -> {
+                bigNumberModule.addSerializer(Long.class, BigNumberSerializer.SERIALIZER_INSTANCE);
+                bigNumberModule.addSerializer(Long.TYPE, BigNumberSerializer.SERIALIZER_INSTANCE);
+                bigNumberModule.addSerializer(BigInteger.class, BigNumberSerializer.SERIALIZER_INSTANCE);
+            }
+            case TO_STRING -> {
+                bigNumberModule.addSerializer(Long.class, ToStringSerializer.instance);
+                bigNumberModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
+                bigNumberModule.addSerializer(BigInteger.class, ToStringSerializer.instance);
+            }
+            default -> log.warn("[ContiNew Starter] - Jackson 大数值序列化模式：NO_OPERATE，超过 JS 范围的数值会损失精度");
         }
-
         return bigNumberModule;
     }
 }
