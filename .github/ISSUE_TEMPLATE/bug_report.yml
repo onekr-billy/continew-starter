@@ -16,7 +16,7 @@ body:
           required: true
         - label: 查阅过 [使用指南](https://continew.top/starter/guide/introduction.html) 和 [常见问题](https://continew.top/starter/faq.html) ，仍无解决方法
           required: true
-        - label: 根据报错信息（自行翻译英文）百度或 Google 后，仍无法解决
+        - label: 查看过控制台是否有报错，如果有报错，下拉控制台到最下查找过 Caused 提示（如果有 Caused 关键字，一般其后都有直观提示，请自行翻译英文），并百度或 Google 后，仍无法解决
           required: true
         - label: 尝试 [最新版本](https://central.sonatype.com/artifact/top.continew/continew-starter/versions)（还可以尝试本地编译安装 dev 分支的最新快照版本），仍有相同问题
           required: true
