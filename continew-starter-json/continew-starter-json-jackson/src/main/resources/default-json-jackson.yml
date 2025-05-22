@@ -21,3 +21,5 @@ spring:
     deserialization:
       # 允许反序列化不存在的属性
       fail-on-unknown-properties: false
+    # 大数值序列化类型的转换
+    big-number-serialize-mode: FLEXIBLE

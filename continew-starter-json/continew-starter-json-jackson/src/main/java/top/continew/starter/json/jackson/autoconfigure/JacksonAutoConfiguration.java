@@ -16,8 +16,24 @@
 
 package top.continew.starter.json.jackson.autoconfigure;
 
-import cn.hutool.core.date.DatePattern;
+import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
+import java.util.TimeZone;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.PropertySource;
+
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -25,25 +41,15 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.PropertySource;
+
+import cn.hutool.core.date.DatePattern;
 import top.continew.starter.core.enums.BaseEnum;
 import top.continew.starter.core.util.GeneralPropertySourceFactory;
+import top.continew.starter.json.jackson.enums.BigNumberSerializeModeEnum;
 import top.continew.starter.json.jackson.serializer.BaseEnumDeserializer;
 import top.continew.starter.json.jackson.serializer.BaseEnumSerializer;
 import top.continew.starter.json.jackson.serializer.BigNumberSerializer;
 import top.continew.starter.json.jackson.serializer.SimpleDeserializersWrapper;
-
-import java.math.BigInteger;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.TimeZone;
 
 /**
  * Jackson 自动配置
@@ -52,17 +58,27 @@ import java.util.TimeZone;
  * @since 1.0.0
  */
 @AutoConfiguration
+@EnableConfigurationProperties(JacksonProperties.class)
 @PropertySource(value = "classpath:default-json-jackson.yml", factory = GeneralPropertySourceFactory.class)
 public class JacksonAutoConfiguration {
     private static final Logger log = LoggerFactory.getLogger(JacksonAutoConfiguration.class);
 
+    private final JacksonProperties jacksonProperties;
+
+    public JacksonAutoConfiguration(JacksonProperties jacksonProperties) {
+        this.jacksonProperties = jacksonProperties;
+    }
+
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer() {
         return builder -> {
+
             JavaTimeModule javaTimeModule = this.timeModule();
-            SimpleModule simpleModule = this.simpleModule();
+            SimpleModule enumModule = this.baseEnumModule();
+            SimpleModule bigNumberModule = this.bigNumberModule();
+
             builder.timeZone(TimeZone.getDefault());
-            builder.modules(javaTimeModule, simpleModule);
+            builder.modules(javaTimeModule, enumModule, bigNumberModule);
             log.debug("[ContiNew Starter] - Auto Configuration 'Jackson' completed initialization.");
         };
     }
@@ -74,11 +90,7 @@ public class JacksonAutoConfiguration {
      * @since 1.0.0
      */
     private JavaTimeModule timeModule() {
-        // 针对大数值的序列化处理
         JavaTimeModule javaTimeModule = new JavaTimeModule();
-        javaTimeModule.addSerializer(Long.class, BigNumberSerializer.SERIALIZER_INSTANCE);
-        javaTimeModule.addSerializer(Long.TYPE, BigNumberSerializer.SERIALIZER_INSTANCE);
-        javaTimeModule.addSerializer(BigInteger.class, BigNumberSerializer.SERIALIZER_INSTANCE);
         // 针对时间类型：LocalDateTime 的序列化和反序列化处理
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DatePattern.NORM_DATETIME_PATTERN);
         javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(dateTimeFormatter));
@@ -100,12 +112,34 @@ public class JacksonAutoConfiguration {
      * @return SimpleModule /
      * @since 2.4.0
      */
-    private SimpleModule simpleModule() {
+    private SimpleModule baseEnumModule() {
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addSerializer(BaseEnum.class, BaseEnumSerializer.SERIALIZER_INSTANCE);
         SimpleDeserializersWrapper deserializers = new SimpleDeserializersWrapper();
         deserializers.addDeserializer(BaseEnum.class, BaseEnumDeserializer.SERIALIZER_INSTANCE);
         simpleModule.setDeserializers(deserializers);
         return simpleModule;
+    }
+
+    /**
+     * 大数值序列化及反序列化配置
+     *
+     * @return SimpleModule /
+     * @since 2.12.0
+     */
+    private SimpleModule bigNumberModule() {
+        SimpleModule bigNumberModule = new SimpleModule();
+        if (Objects.equals(jacksonProperties.getBigNumberSerializeMode(), BigNumberSerializeModeEnum.FLEXIBLE)) {
+            bigNumberModule.addSerializer(Long.class, BigNumberSerializer.SERIALIZER_INSTANCE);
+            bigNumberModule.addSerializer(Long.TYPE, BigNumberSerializer.SERIALIZER_INSTANCE);
+            bigNumberModule.addSerializer(BigInteger.class, BigNumberSerializer.SERIALIZER_INSTANCE);
+        } else if (Objects.equals(jacksonProperties
+            .getBigNumberSerializeMode(), BigNumberSerializeModeEnum.TO_STRING)) {
+            bigNumberModule.addSerializer(Long.class, ToStringSerializer.instance);
+            bigNumberModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
+            bigNumberModule.addSerializer(BigInteger.class, ToStringSerializer.instance);
+        }
+
+        return bigNumberModule;
     }
 }
