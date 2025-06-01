@@ -21,6 +21,7 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.digest.DigestUtil;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.exception.BusinessException;
 import top.continew.starter.core.validation.CheckUtils;
@@ -33,14 +34,12 @@ import top.continew.starter.storage.model.req.StorageProperties;
 import top.continew.starter.storage.model.resp.ThumbnailResp;
 import top.continew.starter.storage.model.resp.UploadResp;
 import top.continew.starter.storage.util.ImageThumbnailUtils;
-import top.continew.starter.storage.util.LocalUtils;
 import top.continew.starter.storage.util.StorageUtils;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.Base64;
 
@@ -147,12 +146,12 @@ public class LocalStorageStrategy implements StorageStrategy<LocalClient> {
             }
 
             // 构建文件 md5
-            String eTag = LocalUtils.calculateMD5(inputStream);
+            String eTag = DigestUtil.md5Hex(IoUtil.readBytes(inputStream));
             // 构建 上传后的文件路径地址 格式 xxx/xxx/xxx.jpg
             String filePath = Paths.get(path, formatFileName).toString();
             // 构建 文件上传记录 并返回
             return buildStorageRecord(bucketName, fileName, filePath, eTag, originalBytes.length, thumbnailResp);
-        } catch (NoSuchAlgorithmException | IOException e) {
+        } catch (IOException e) {
             throw new BusinessException("文件上传异常", e);
         }
 

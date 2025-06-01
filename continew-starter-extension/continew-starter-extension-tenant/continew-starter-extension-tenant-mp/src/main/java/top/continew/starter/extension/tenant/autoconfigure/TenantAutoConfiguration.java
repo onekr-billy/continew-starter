@@ -40,6 +40,8 @@ import top.continew.starter.extension.tenant.handler.datasource.TenantDataSource
 import top.continew.starter.extension.tenant.handler.datasource.TenantDataSourceInterceptor;
 import top.continew.starter.extension.tenant.handler.line.DefaultTenantLineHandler;
 
+import javax.sql.DataSource;
+
 /**
  * 租户自动配置
  *
@@ -72,8 +74,8 @@ public class TenantAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public TenantLineHandler tenantLineHandler(TenantProperties properties) {
-        return new DefaultTenantLineHandler(properties);
+    public TenantLineHandler tenantLineHandler() {
+        return new DefaultTenantLineHandler(tenantProperties);
     }
 
     /**
@@ -99,7 +101,7 @@ public class TenantAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public TenantDataSourceHandler tenantDataSourceHandler(javax.sql.DataSource dataSource,
+    public TenantDataSourceHandler tenantDataSourceHandler(DataSource dataSource,
                                                            DefaultDataSourceCreator dataSourceCreator) {
         return new DefaultTenantDataSourceHandler((DynamicRoutingDataSource)dataSource, dataSourceCreator);
     }

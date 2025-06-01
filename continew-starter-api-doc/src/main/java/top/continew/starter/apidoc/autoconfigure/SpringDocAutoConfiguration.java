@@ -66,6 +66,7 @@ import java.util.concurrent.TimeUnit;
 @EnableConfigurationProperties(SpringDocExtensionProperties.class)
 @PropertySource(value = "classpath:default-api-doc.yml", factory = GeneralPropertySourceFactory.class)
 public class SpringDocAutoConfiguration implements WebMvcConfigurer {
+
     private static final Logger log = LoggerFactory.getLogger(SpringDocAutoConfiguration.class);
 
     @Override

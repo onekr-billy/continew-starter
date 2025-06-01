@@ -24,7 +24,6 @@ import java.lang.reflect.Method;
  * @author Charles7c
  * @since 2.2.0
  */
-@FunctionalInterface
 public interface RateLimiterNameGenerator {
 
     /**
