@@ -19,16 +19,15 @@ package top.continew.starter.idempotent.autoconfigure;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.ResolvableType;
 import top.continew.starter.cache.redisson.autoconfigure.RedissonAutoConfiguration;
 import top.continew.starter.core.constant.PropertiesConstants;
 import top.continew.starter.idempotent.aop.IdempotentAspect;
+import top.continew.starter.idempotent.generator.DefaultIdempotentNameGenerator;
 import top.continew.starter.idempotent.generator.IdempotentNameGenerator;
 
 /**
@@ -60,11 +59,7 @@ public class IdempotentAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public IdempotentNameGenerator idempotentNameGenerator() {
-        if (log.isErrorEnabled()) {
-            log.error("Consider defining a bean of type '{}' in your configuration.", ResolvableType
-                .forClass(IdempotentNameGenerator.class));
-        }
-        throw new NoSuchBeanDefinitionException(IdempotentNameGenerator.class);
+        return new DefaultIdempotentNameGenerator();
     }
 
     @PostConstruct
