@@ -43,7 +43,7 @@ public class DataPermissionDialect extends CommonsDialectImpl {
             return super.buildSelectSql(queryWrapper);
         }
         DataPermission dataPermission = DataPermissionAspect.currentDataPermission();
-        if (null == dataPermission) {
+        if (dataPermission == null) {
             return super.buildSelectSql(queryWrapper);
         }
         DataPermissionCurrentUser currentUser = dataPermissionFilter.getCurrentUser();

@@ -93,7 +93,7 @@ public class LogRequest {
         this.address = (includes.contains(Include.IP_ADDRESS))
             ? ExceptionUtils.exToNull(() -> IpUtils.getIpv4Address(this.ip))
             : null;
-        if (null == this.headers) {
+        if (this.headers == null) {
             return;
         }
         String userAgentString = this.headers.entrySet()

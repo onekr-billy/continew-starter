@@ -57,7 +57,7 @@ public class ServletUtils extends JakartaServletUtil {
      * @return 浏览器及其版本信息
      */
     public static String getBrowser(HttpServletRequest request) {
-        if (null == request) {
+        if (request == null) {
             return null;
         }
         return getBrowser(request.getHeader("User-Agent"));
@@ -90,7 +90,7 @@ public class ServletUtils extends JakartaServletUtil {
      * @return 操作系统
      */
     public static String getOs(HttpServletRequest request) {
-        if (null == request) {
+        if (request == null) {
             return null;
         }
         return getOs(request.getHeader("User-Agent"));

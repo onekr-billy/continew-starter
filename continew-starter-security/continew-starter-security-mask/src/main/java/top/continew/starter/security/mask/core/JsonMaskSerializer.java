@@ -68,7 +68,7 @@ public class JsonMaskSerializer extends JsonSerializer<String> implements Contex
     @Override
     public JsonSerializer<?> createContextual(SerializerProvider serializerProvider,
                                               BeanProperty beanProperty) throws JsonMappingException {
-        if (null == beanProperty) {
+        if (beanProperty == null) {
             return serializerProvider.findNullValueSerializer(null);
         }
         if (!Objects.equals(beanProperty.getType().getRawClass(), String.class)) {
@@ -76,7 +76,7 @@ public class JsonMaskSerializer extends JsonSerializer<String> implements Contex
         }
         JsonMask jsonMaskAnnotation = ObjectUtil.defaultIfNull(beanProperty.getAnnotation(JsonMask.class), beanProperty
             .getContextAnnotation(JsonMask.class));
-        if (null == jsonMaskAnnotation) {
+        if (jsonMaskAnnotation == null) {
             return serializerProvider.findValueSerializer(beanProperty.getType(), beanProperty);
         }
         return new JsonMaskSerializer(jsonMaskAnnotation);

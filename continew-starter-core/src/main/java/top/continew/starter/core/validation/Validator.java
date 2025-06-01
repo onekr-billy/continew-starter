@@ -48,7 +48,7 @@ public class Validator {
      * @param exceptionType 异常类型
      */
     protected static void throwIfNull(Object obj, String message, Class<? extends RuntimeException> exceptionType) {
-        throwIf(null == obj, message, exceptionType);
+        throwIf(obj == null, message, exceptionType);
     }
 
     /**

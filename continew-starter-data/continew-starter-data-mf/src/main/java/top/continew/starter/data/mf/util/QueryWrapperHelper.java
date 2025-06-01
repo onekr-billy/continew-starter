@@ -65,7 +65,7 @@ public class QueryWrapperHelper {
     public static <Q> QueryWrapper build(Q query) {
         QueryWrapper queryWrapper = QueryWrapper.create();
         // 没有查询条件，直接返回
-        if (null == query) {
+        if (query == null) {
             return queryWrapper;
         }
         // 获取查询条件中所有的字段
@@ -85,7 +85,7 @@ public class QueryWrapperHelper {
     public static <Q> QueryWrapper build(Q query, Sort sort) {
         QueryWrapper queryWrapper = QueryWrapper.create();
         // 没有查询条件，直接返回
-        if (null == query) {
+        if (query == null) {
             return queryWrapper;
         }
         // 设置排序条件
@@ -112,7 +112,7 @@ public class QueryWrapperHelper {
      */
     public static <Q> QueryWrapper build(Q query, List<Field> fields, QueryWrapper queryWrapper) {
         // 没有查询条件，直接返回
-        if (null == query) {
+        if (query == null) {
             return queryWrapper;
         }
         // 解析并拼接查询条件
@@ -150,7 +150,7 @@ public class QueryWrapperHelper {
             String fieldName = ReflectUtil.getFieldName(field);
             // 没有 @Query 注解，默认等值查询
             Query queryAnnotation = AnnotationUtil.getAnnotation(field, Query.class);
-            if (null == queryAnnotation) {
+            if (queryAnnotation == null) {
                 return Collections.singletonList(q -> q.eq(CharSequenceUtil.toUnderlineCase(fieldName), fieldValue));
             }
             // 解析单列查询

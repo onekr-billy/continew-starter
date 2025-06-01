@@ -61,7 +61,7 @@ public class ExcelBaseEnumConverter implements Converter<BaseEnum<?>> {
     public WriteCellData<String> convertToExcelData(BaseEnum<?> value,
                                                     ExcelContentProperty contentProperty,
                                                     GlobalConfiguration globalConfiguration) {
-        if (null == value) {
+        if (value == null) {
             return new WriteCellData<>(StringConstants.EMPTY);
         }
         return new WriteCellData<>(value.getDescription());

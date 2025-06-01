@@ -56,7 +56,7 @@ public class PageResp<L> extends BasePageResp<L> {
      * @return 分页信息
      */
     public static <T, L> PageResp<L> build(Page<T> page, Class<L> targetClass) {
-        if (null == page) {
+        if (page == null) {
             return empty();
         }
         return new PageResp<>(BeanUtil.copyToList(page.getRecords(), targetClass), page.getTotalRow());
@@ -70,7 +70,7 @@ public class PageResp<L> extends BasePageResp<L> {
      * @return 分页信息
      */
     public static <L> PageResp<L> build(Page<L> page) {
-        if (null == page) {
+        if (page == null) {
             return empty();
         }
         return new PageResp<>(page.getRecords(), page.getTotalRow());

@@ -121,7 +121,7 @@ public class MybatisBaseEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandl
     @Override
     public E getNullableResult(ResultSet rs, String columnName) throws SQLException {
         Object value = rs.getObject(columnName, this.propertyType);
-        if (null == value || rs.wasNull()) {
+        if (value == null || rs.wasNull()) {
             return null;
         }
         return this.valueOf(value);
@@ -130,7 +130,7 @@ public class MybatisBaseEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandl
     @Override
     public E getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
         Object value = rs.getObject(columnIndex, this.propertyType);
-        if (null == value || rs.wasNull()) {
+        if (value == null || rs.wasNull()) {
             return null;
         }
         return this.valueOf(value);
@@ -139,7 +139,7 @@ public class MybatisBaseEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandl
     @Override
     public E getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
         Object value = cs.getObject(columnIndex, this.propertyType);
-        if (null == value || cs.wasNull()) {
+        if (value == null || cs.wasNull()) {
             return null;
         }
         return this.valueOf(value);

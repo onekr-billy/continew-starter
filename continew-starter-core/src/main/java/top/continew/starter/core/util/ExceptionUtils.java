@@ -45,7 +45,7 @@ public class ExceptionUtils {
      * @param throwable 异常
      */
     public static void printException(Runnable runnable, Throwable throwable) {
-        if (null == throwable && runnable instanceof Future<?> future) {
+        if (throwable == null && runnable instanceof Future<?> future) {
             try {
                 if (future.isDone()) {
                     future.get();

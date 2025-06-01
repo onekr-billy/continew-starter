@@ -70,7 +70,7 @@ public abstract class AbstractLogHandler implements LogHandler {
             return false;
         }
         Log classLog = AnnotationUtil.getAnnotation(targetClass, Log.class);
-        return null == classLog || !classLog.ignore();
+        return classLog == null || !classLog.ignore();
     }
 
     @Override

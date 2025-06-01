@@ -76,7 +76,7 @@ public class LogInterceptor implements HandlerInterceptor {
             Instant endTime = Instant.now();
             logHandler.accessLogFinish(AccessLogContext.builder().endTime(endTime).build());
             LogRecord.Started startedLogRecord = logTtl.get();
-            if (null == startedLogRecord) {
+            if (startedLogRecord == null) {
                 return;
             }
             // 结束日志记录

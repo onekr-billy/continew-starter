@@ -57,7 +57,7 @@ public class MetaUtils {
      */
     public static DatabaseType getDatabaseTypeOrDefault(DataSource dataSource, DatabaseType defaultValue) {
         DatabaseType databaseType = getDatabaseType(dataSource);
-        return null == databaseType ? defaultValue : databaseType;
+        return databaseType == null ? defaultValue : databaseType;
     }
 
     /**

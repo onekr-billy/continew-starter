@@ -311,7 +311,7 @@ public abstract class BaseServiceImpl<M extends BaseMapper<T>, T extends BaseIdD
      * @param obj 待填充信息
      */
     protected void fill(Object obj) {
-        if (null == obj) {
+        if (obj == null) {
             return;
         }
         OperateTemplate operateTemplate = SpringUtil.getBean(OperateTemplate.class);

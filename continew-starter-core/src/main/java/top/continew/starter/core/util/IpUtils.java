@@ -50,7 +50,7 @@ public class IpUtils {
         }
         Ip2regionSearcher ip2regionSearcher = SpringUtil.getBean(Ip2regionSearcher.class);
         IpInfo ipInfo = ip2regionSearcher.memorySearch(ip);
-        if (null == ipInfo) {
+        if (ipInfo == null) {
             return null;
         }
         Set<String> regionSet = CollUtil.newLinkedHashSet(ipInfo.getCountry(), ipInfo.getRegion(), ipInfo

@@ -82,7 +82,7 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
             for (Method method : methodArr) {
                 DataPermission dataPermission = method.getAnnotation(DataPermission.class);
                 String name = method.getName();
-                if (null == dataPermission || !CharSequenceUtil.equalsAny(methodName, name, name + "_COUNT")) {
+                if (dataPermission == null || !CharSequenceUtil.equalsAny(methodName, name, name + "_COUNT")) {
                     continue;
                 }
                 if (dataPermissionUserContextProvider.isFilter()) {

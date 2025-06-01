@@ -52,7 +52,7 @@ public abstract class AbstractMyBatisInterceptor {
      * @return 字段列表
      */
     protected List<Field> getEncryptFields(Object obj) {
-        if (null == obj) {
+        if (obj == null) {
             return Collections.emptyList();
         }
         return this.getEncryptFields(obj.getClass());
@@ -98,7 +98,7 @@ public abstract class AbstractMyBatisInterceptor {
         String mappedStatementId = mappedStatement.getId();
         return ENCRYPT_PARAM_CACHE.computeIfAbsent(mappedStatementId, key -> {
             Method method = this.getMethod(mappedStatementId);
-            if (null == method) {
+            if (method == null) {
                 return Collections.emptyMap();
             }
             Map<String, FieldEncrypt> encryptMap = new HashMap<>();
@@ -106,7 +106,7 @@ public abstract class AbstractMyBatisInterceptor {
             for (int i = 0; i < parameters.length; i++) {
                 Parameter parameter = parameters[i];
                 FieldEncrypt fieldEncrypt = parameter.getAnnotation(FieldEncrypt.class);
-                if (null == fieldEncrypt) {
+                if (fieldEncrypt == null) {
                     continue;
                 }
                 String parameterName = this.getParameterName(parameter);
