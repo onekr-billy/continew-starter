@@ -28,8 +28,9 @@ import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.continew.starter.core.constant.StringConstants;
-import top.continew.starter.core.exception.BaseException;
 import top.continew.starter.security.crypto.annotation.FieldEncrypt;
 import top.continew.starter.security.crypto.autoconfigure.CryptoProperties;
 import top.continew.starter.security.crypto.encryptor.IEncryptor;
@@ -50,6 +51,7 @@ import java.util.regex.Pattern;
  */
 public class MyBatisEncryptInterceptor extends AbstractMyBatisInterceptor implements InnerInterceptor {
 
+    private static final Logger log = LoggerFactory.getLogger(MyBatisEncryptInterceptor.class);
     private static final Pattern PARAM_PAIRS_PATTERN = Pattern
         .compile("#\\{ew\\.paramNameValuePairs\\.(" + Constants.WRAPPER_PARAM + "\\d+)\\}");
     private final CryptoProperties properties;
@@ -65,7 +67,7 @@ public class MyBatisEncryptInterceptor extends AbstractMyBatisInterceptor implem
                             RowBounds rowBounds,
                             ResultHandler resultHandler,
                             BoundSql boundSql) {
-        if (null == parameterObject) {
+        if (parameterObject == null) {
             return;
         }
         if (parameterObject instanceof Map parameterMap) {
@@ -75,7 +77,7 @@ public class MyBatisEncryptInterceptor extends AbstractMyBatisInterceptor implem
 
     @Override
     public void beforeUpdate(Executor executor, MappedStatement mappedStatement, Object parameterObject) {
-        if (null == parameterObject) {
+        if (parameterObject == null) {
             return;
         }
         if (parameterObject instanceof Map parameterMap) {
@@ -84,6 +86,60 @@ public class MyBatisEncryptInterceptor extends AbstractMyBatisInterceptor implem
         } else {
             // 无别名方法（例如：MP insert 等方法）
             this.encryptEntity(super.getEncryptFields(parameterObject), parameterObject);
+        }
+    }
+
+    /**
+     * 加密查询参数（针对 Map 类型参数）
+     *
+     * @param parameterMap    参数
+     * @param mappedStatement 映射语句
+     */
+    private void encryptQueryParameter(Map<String, Object> parameterMap, MappedStatement mappedStatement) {
+        Map<String, FieldEncrypt> encryptParameterMap = super.getEncryptParameters(mappedStatement);
+        for (Map.Entry<String, Object> parameterEntrySet : parameterMap.entrySet()) {
+            String parameterName = parameterEntrySet.getKey();
+            Object parameterValue = parameterEntrySet.getValue();
+            if (parameterValue == null || ClassUtil.isBasicType(parameterValue
+                .getClass()) || parameterValue instanceof AbstractWrapper) {
+                continue;
+            }
+            if (parameterValue instanceof String str) {
+                FieldEncrypt fieldEncrypt = encryptParameterMap.get(parameterName);
+                if (fieldEncrypt != null) {
+                    parameterMap.put(parameterName, this.doEncrypt(str, fieldEncrypt));
+                }
+            } else {
+                // 实体参数
+                this.encryptEntity(super.getEncryptFields(parameterValue), parameterValue);
+            }
+        }
+    }
+
+    /**
+     * 处理实体加密
+     *
+     * @param fieldList 加密字段列表
+     * @param entity    实体
+     */
+    private void encryptEntity(List<Field> fieldList, Object entity) {
+        for (Field field : fieldList) {
+            IEncryptor encryptor = super.getEncryptor(field.getAnnotation(FieldEncrypt.class));
+            Object fieldValue = ReflectUtil.getFieldValue(entity, field);
+            if (fieldValue == null) {
+                continue;
+            }
+            // 优先获取自定义对称加密算法密钥，获取不到时再获取全局配置
+            String password = ObjectUtil.defaultIfBlank(field.getAnnotation(FieldEncrypt.class).password(), properties
+                .getPassword());
+            String ciphertext = fieldValue.toString();
+            try {
+                ciphertext = encryptor.encrypt(fieldValue.toString(), password, properties.getPublicKey());
+            } catch (Exception e) {
+                // 加密失败时保留原值，避免影响正常业务流程
+                log.warn("加密失败，请检查加密配置", e);
+            }
+            ReflectUtil.setFieldValue(entity, field, ciphertext);
         }
     }
 
@@ -102,33 +158,6 @@ public class MyBatisEncryptInterceptor extends AbstractMyBatisInterceptor implem
         // 别名带有 ew（针对 MP 的 UpdateWrapper、LambdaUpdateWrapper 等参数）
         if (parameterMap.containsKey(Constants.WRAPPER) && (parameter = parameterMap.get(Constants.WRAPPER)) != null) {
             this.encryptUpdateWrapper(parameter, mappedStatement);
-        }
-    }
-
-    /**
-     * 加密查询参数（针对 Map 类型参数）
-     *
-     * @param parameterMap    参数
-     * @param mappedStatement 映射语句
-     */
-    private void encryptQueryParameter(Map<String, Object> parameterMap, MappedStatement mappedStatement) {
-        Map<String, FieldEncrypt> encryptParameterMap = super.getEncryptParameters(mappedStatement);
-        for (Map.Entry<String, Object> parameterEntrySet : parameterMap.entrySet()) {
-            String parameterName = parameterEntrySet.getKey();
-            Object parameterValue = parameterEntrySet.getValue();
-            if (null == parameterValue || ClassUtil.isBasicType(parameterValue
-                .getClass()) || parameterValue instanceof AbstractWrapper) {
-                continue;
-            }
-            if (parameterValue instanceof String str) {
-                FieldEncrypt fieldEncrypt = encryptParameterMap.get(parameterName);
-                if (fieldEncrypt != null) {
-                    parameterMap.put(parameterName, this.doEncrypt(str, fieldEncrypt));
-                }
-            } else {
-                // 实体参数
-                this.encryptEntity(super.getEncryptFields(parameterValue), parameterValue);
-            }
         }
     }
 
@@ -156,7 +185,7 @@ public class MyBatisEncryptInterceptor extends AbstractMyBatisInterceptor implem
                 propMap.put(elPart[0], elPart[1]);
             });
             // 获取加密字段
-            Class<?> entityClass = mappedStatement.getParameterMap().getType();
+            Class<?> entityClass = this.getEntityClass(updateWrapper, mappedStatement);
             List<Field> encryptFieldList = super.getEncryptFields(entityClass);
             for (Field field : encryptFieldList) {
                 FieldEncrypt fieldEncrypt = field.getAnnotation(FieldEncrypt.class);
@@ -176,39 +205,13 @@ public class MyBatisEncryptInterceptor extends AbstractMyBatisInterceptor implem
     }
 
     /**
-     * 处理实体加密
-     *
-     * @param fieldList 加密字段列表
-     * @param entity    实体
-     */
-    private void encryptEntity(List<Field> fieldList, Object entity) {
-        for (Field field : fieldList) {
-            IEncryptor encryptor = super.getEncryptor(field.getAnnotation(FieldEncrypt.class));
-            Object fieldValue = ReflectUtil.getFieldValue(entity, field);
-            if (null == fieldValue) {
-                continue;
-            }
-            // 优先获取自定义对称加密算法密钥，获取不到时再获取全局配置
-            String password = ObjectUtil.defaultIfBlank(field.getAnnotation(FieldEncrypt.class).password(), properties
-                .getPassword());
-            String ciphertext;
-            try {
-                ciphertext = encryptor.encrypt(fieldValue.toString(), password, properties.getPublicKey());
-            } catch (Exception e) {
-                throw new BaseException(e);
-            }
-            ReflectUtil.setFieldValue(entity, field, ciphertext);
-        }
-    }
-
-    /**
      * 处理加密
      *
      * @param parameterValue 参数值
      * @param fieldEncrypt   字段加密注解
      */
     private Object doEncrypt(Object parameterValue, FieldEncrypt fieldEncrypt) {
-        if (null == parameterValue) {
+        if (parameterValue == null) {
             return null;
         }
         IEncryptor encryptor = super.getEncryptor(fieldEncrypt);
@@ -217,7 +220,26 @@ public class MyBatisEncryptInterceptor extends AbstractMyBatisInterceptor implem
         try {
             return encryptor.encrypt(parameterValue.toString(), password, properties.getPublicKey());
         } catch (Exception e) {
-            throw new BaseException(e);
+            // 加密失败时保留原值，避免影响正常业务流程
+            log.warn("加密失败，请检查加密配置", e);
         }
+        return parameterValue;
+    }
+
+    /**
+     * 获取实体类
+     *
+     * @param wrapper         查询或更新包装器
+     * @param mappedStatement 映射语句
+     * @return 实体类
+     */
+    private Class<?> getEntityClass(AbstractWrapper wrapper, MappedStatement mappedStatement) {
+        // 尝试从 Wrapper 中获取实体类
+        Class<?> entityClass = wrapper.getEntityClass();
+        if (entityClass != null) {
+            return entityClass;
+        }
+        // 从映射语句中获取实体类
+        return mappedStatement.getParameterMap().getType();
     }
 }

@@ -16,6 +16,7 @@
 
 package top.continew.starter.security.crypto.core;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
@@ -24,6 +25,8 @@ import org.apache.ibatis.plugin.Intercepts;
 import org.apache.ibatis.plugin.Invocation;
 import org.apache.ibatis.plugin.Signature;
 import org.apache.ibatis.type.SimpleTypeRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.continew.starter.security.crypto.annotation.FieldEncrypt;
 import top.continew.starter.security.crypto.autoconfigure.CryptoProperties;
 import top.continew.starter.security.crypto.encryptor.IEncryptor;
@@ -41,6 +44,7 @@ import java.util.List;
 @Intercepts({@Signature(type = ResultSetHandler.class, method = "handleResultSets", args = {Statement.class})})
 public class MyBatisDecryptInterceptor extends AbstractMyBatisInterceptor implements Interceptor {
 
+    private static final Logger log = LoggerFactory.getLogger(MyBatisDecryptInterceptor.class);
     private CryptoProperties properties;
 
     public MyBatisDecryptInterceptor(CryptoProperties properties) {
@@ -53,31 +57,73 @@ public class MyBatisDecryptInterceptor extends AbstractMyBatisInterceptor implem
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
         Object obj = invocation.proceed();
-        if (null == obj || !(invocation.getTarget() instanceof ResultSetHandler)) {
+        if (obj == null) {
+            return null;
+        }
+        // 确保目标是 ResultSetHandler
+        if (!(invocation.getTarget() instanceof ResultSetHandler)) {
             return obj;
         }
-        List<?> resultList = (List<?>)obj;
+        // 处理查询结果
+        if (obj instanceof List<?> resultList) {
+            // 处理列表结果
+            this.decryptList(resultList);
+        } else {
+            // 处理单个对象结果
+            this.decryptObject(obj);
+        }
+        return obj;
+    }
+
+    /**
+     * 解密列表结果
+     *
+     * @param resultList 结果列表
+     */
+    private void decryptList(List<?> resultList) {
+        if (CollUtil.isEmpty(resultList)) {
+            return;
+        }
         for (Object result : resultList) {
-            // String、Integer、Long 等简单类型对象无需处理
-            if (SimpleTypeRegistry.isSimpleType(result.getClass())) {
+            decryptObject(result);
+        }
+    }
+
+    /**
+     * 解密单个对象结果
+     *
+     * @param result 结果对象
+     */
+    private void decryptObject(Object result) {
+        if (result == null) {
+            return;
+        }
+        // String、Integer、Long 等简单类型对象无需处理
+        if (SimpleTypeRegistry.isSimpleType(result.getClass())) {
+            return;
+        }
+        // 获取所有字符串类型、需要解密的、有值字段
+        List<Field> fieldList = super.getEncryptFields(result);
+        if (fieldList.isEmpty()) {
+            return;
+        }
+        // 解密处理
+        for (Field field : fieldList) {
+            IEncryptor encryptor = super.getEncryptor(field.getAnnotation(FieldEncrypt.class));
+            Object fieldValue = ReflectUtil.getFieldValue(result, field);
+            if (fieldValue == null) {
                 continue;
             }
-            // 获取所有字符串类型、需要解密的、有值字段
-            List<Field> fieldList = super.getEncryptFields(result);
-            // 解密处理
-            for (Field field : fieldList) {
-                IEncryptor encryptor = super.getEncryptor(field.getAnnotation(FieldEncrypt.class));
-                Object fieldValue = ReflectUtil.getFieldValue(result, field);
-                if (null == fieldValue) {
-                    continue;
-                }
-                // 优先获取自定义对称加密算法密钥，获取不到时再获取全局配置
-                String password = ObjectUtil.defaultIfBlank(field.getAnnotation(FieldEncrypt.class)
-                    .password(), properties.getPassword());
+            // 优先获取自定义对称加密算法密钥，获取不到时再获取全局配置
+            String password = ObjectUtil.defaultIfBlank(field.getAnnotation(FieldEncrypt.class).password(), properties
+                .getPassword());
+            try {
                 String ciphertext = encryptor.decrypt(fieldValue.toString(), password, properties.getPrivateKey());
                 ReflectUtil.setFieldValue(result, field, ciphertext);
+            } catch (Exception e) {
+                // 解密失败时保留原值，避免影响正常业务流程
+                log.warn("解密失败，请检查加密配置", e);
             }
         }
-        return resultList;
     }
 }
