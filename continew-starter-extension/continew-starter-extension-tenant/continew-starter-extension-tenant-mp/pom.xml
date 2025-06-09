@@ -10,6 +10,9 @@
     </parent>
 
     <artifactId>continew-starter-extension-tenant-mp</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
     <description>ContiNew Starter 扩展模块 - 多租户 - MyBatis Plus ORM 模块</description>
 
     <dependencies>

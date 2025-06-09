@@ -11,6 +11,8 @@
 
     <artifactId>continew-starter-extension-datapermission</artifactId>
     <packaging>pom</packaging>
+
+    <name>${project.artifactId}</name>
     <description>ContiNew Starter 扩展模块 - 数据权限</description>
 
     <modules>

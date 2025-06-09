@@ -8,11 +8,13 @@
     <artifactId>continew-starter-dependencies</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
+
+    <name>${project.artifactId}</name>
     <description>ContiNew Starter 依赖模块</description>
 
     <properties>
         <!-- 项目版本号 -->
-        <revision>2.12.0</revision>
+        <revision>2.12.1</revision>
         <spring-boot.version>3.3.11</spring-boot.version>
         <spring-cloud.version>2023.0.5</spring-cloud.version>
         <redisson.version>3.46.0</redisson.version>

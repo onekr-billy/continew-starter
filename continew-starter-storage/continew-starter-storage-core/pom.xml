@@ -9,6 +9,9 @@
     </parent>
 
     <artifactId>continew-starter-storage-core</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
     <description>ContiNew Starter 存储模块 - 核心模块</description>
 
     <dependencies>

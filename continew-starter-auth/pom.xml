@@ -11,6 +11,8 @@
 
     <artifactId>continew-starter-auth</artifactId>
     <packaging>pom</packaging>
+
+    <name>${project.artifactId}</name>
     <description>ContiNew Starter 认证模块</description>
 
     <modules>

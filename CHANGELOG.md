@@ -1,3 +1,25 @@
+## [v2.12.1](https://github.com/continew-org/continew-starter/compare/v2.12.0...v2.12.1) (2025-06-09)
+
+### ✨ 新特性
+
+- 【messaging/websocket】新增发送消息给所有客户端方法 ([fa2cdf4](https://github.com/continew-org/continew-starter/commit/fa2cdf4f80bf4ca8656b658657398908894dfa40))
+- 【messaging/websocket】新增批量发送消息方法 ([b543b2f](https://github.com/continew-org/continew-starter/commit/b543b2f94d09658a276e3a77d3091e1ec32360f9))
+- 【core】ExceptionUtils 新增 exToThrow 方法 ([4a6b462](https://github.com/continew-org/continew-starter/commit/4a6b4624c2ed769bba6c50efd90592f7719247e5))
+- 【json/jackson】Jackson 大数值序列化增加多模式支持  (Gitee#63@httpsjt) ([918a0ab](https://github.com/continew-org/continew-starter/commit/918a0abfda61bda8199256e4d4ecd5e20564569e)) ([73e2b16](https://github.com/continew-org/continew-starter/commit/73e2b169f7bc4a02140f963fd7b90037be8ff2b8))
+- 【idempotent】新增默认幂等名称生成器 ([6b95083](https://github.com/continew-org/continew-starter/commit/6b95083c63de6a8eb7a7d08e6d537ec7afdb32f8))
+- 【cache/redisson】新增 RedisQueueUtils 队列工具类 ([c08b57c](https://github.com/continew-org/continew-starter/commit/c08b57cb489e29b44ae99ec5bd725b72ec9a83a3))
+
+### 💎 功能优化
+
+- 调整代码风格 null == xx => xx == null（更符合大众风格） ([265d90f](https://github.com/continew-org/continew-starter/commit/265d90fa4ca0db8ed2bada22bd2881d364efde6e))
+- 调整 Web 工具类到 core 模块 ([f83a901](https://github.com/continew-org/continew-starter/commit/f83a90162623208d3be75b03450d7ca29780c2b9))
+- 【security/crypto】优化字段加解密相关代码 ([a4823dc](https://github.com/continew-org/continew-starter/commit/a4823dcb0bf211e26ccb8816928b5332b2bfe216))
+
+### 🐛 问题修复
+
+- 【web】添加 Servlet 工具类对 getOs 和 getBrowser 方法中User-Agent 为空或解析失败时的非空判断 (Gitee#61@beginner_b) ([abc005e](https://github.com/continew-org/continew-starter/commit/abc005e69022e7e08a580cd8027a5a3fb73ba929))
+- 【core】修复 application/x-www-form-urlencoded 请求体数据无法在 Controller 层获取的问题 (Gitee#65@httpsjt) ([eb7dfd4](https://github.com/continew-org/continew-starter/commit/eb7dfd4ed706ed6b72364e316c4278364a4d4af4))
+
 ## [v2.12.0](https://github.com/continew-org/continew-starter/compare/v2.11.0...v2.12.0) (2025-05-17)
 
 ### ✨ 新特性

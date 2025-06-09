@@ -10,6 +10,9 @@
     </parent>
 
     <artifactId>continew-starter-messaging-websocket</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
     <description>ContiNew Starter 消息模块 - WebSocket</description>
 
     <dependencies>

@@ -8,10 +8,12 @@
     <artifactId>continew-starter-bom</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
+
+    <name>${project.artifactId}</name>
     <description>ContiNew Starter BOM</description>
 
     <properties>
-        <revision>2.12.0</revision>
+        <revision>2.12.1</revision>
     </properties>
 
     <dependencyManagement>
@@ -117,6 +119,7 @@
             <dependency>
                 <groupId>top.continew</groupId>
                 <artifactId>continew-starter-security-xss</artifactId>
+                <version>${revision}</version>
             </dependency>
             <!-- 安全模块 - 敏感词 -->
             <dependency>

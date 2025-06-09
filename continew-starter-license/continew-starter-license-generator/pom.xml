@@ -10,6 +10,9 @@
     </parent>
 
     <artifactId>continew-starter-license-generator</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
     <description>ContiNew Starter License 模块 - 生成器</description>
 
     <dependencies>

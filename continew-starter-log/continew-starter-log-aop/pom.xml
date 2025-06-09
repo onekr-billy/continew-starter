@@ -9,6 +9,9 @@
     </parent>
 
     <artifactId>continew-starter-log-aop</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
     <description>ContiNew Starter 日志模块 - 基于 AOP 实现</description>
 
     <dependencies>

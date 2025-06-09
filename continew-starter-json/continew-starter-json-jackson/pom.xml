@@ -10,6 +10,9 @@
     </parent>
 
     <artifactId>continew-starter-json-jackson</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
     <description>ContiNew Starter JSON 模块 - Jackson</description>
 
     <dependencies>

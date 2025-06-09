@@ -10,6 +10,9 @@
     </parent>
 
     <artifactId>continew-starter-security-password</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
     <description>ContiNew Starter 安全模块 - 密码编码器</description>
 
     <dependencies>

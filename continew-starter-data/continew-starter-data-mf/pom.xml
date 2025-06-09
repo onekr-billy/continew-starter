@@ -10,6 +10,9 @@
     </parent>
 
     <artifactId>continew-starter-data-mf</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
     <description>ContiNew Starter 数据访问模块 - MyBatis Flex</description>
 
     <dependencies>

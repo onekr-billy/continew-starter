@@ -10,5 +10,8 @@
     </parent>
 
     <artifactId>continew-starter-security-mask</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
     <description>ContiNew Starter 安全模块 - 脱敏</description>
 </project>

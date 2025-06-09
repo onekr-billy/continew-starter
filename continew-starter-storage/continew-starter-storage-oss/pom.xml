@@ -9,6 +9,9 @@
     </parent>
 
     <artifactId>continew-starter-storage-oss</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
     <description>ContiNew Starter 存储模块 - 对象存储</description>
 
     <dependencies>

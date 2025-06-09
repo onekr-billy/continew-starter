@@ -10,6 +10,9 @@
     </parent>
 
     <artifactId>continew-starter-extension-datapermission-mp</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
     <description>ContiNew Starter 扩展模块 - 数据权限 - MyBatis Plus ORM 模块</description>
 
     <dependencies>

@@ -10,6 +10,9 @@
     </parent>
 
     <artifactId>continew-starter-trace</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
     <description>ContiNew Starter 链路追踪模块</description>
 
     <dependencies>

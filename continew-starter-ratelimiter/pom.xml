@@ -8,6 +8,9 @@
     </parent>
 
     <artifactId>continew-starter-ratelimiter</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
     <description>ContiNew Starter 限流模块</description>
 
     <dependencies>

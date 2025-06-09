@@ -11,6 +11,8 @@
 
     <artifactId>continew-starter-cache</artifactId>
     <packaging>pom</packaging>
+
+    <name>${project.artifactId}</name>
     <description>ContiNew Starter 缓存模块</description>
 
     <modules>

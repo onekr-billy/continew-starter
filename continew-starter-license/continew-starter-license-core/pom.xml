@@ -9,6 +9,9 @@
     </parent>
 
     <artifactId>continew-starter-license-core</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
     <description>ContiNew Starter License 模块 - 核心模块</description>
 
     <dependencies>

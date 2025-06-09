@@ -10,6 +10,9 @@
     </parent>
 
     <artifactId>continew-starter-license-verifier</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
     <description>ContiNew Starter License 模块 - 校验器</description>
 
     <dependencies>
