@@ -42,6 +42,15 @@ public class RedisUtils {
     }
 
     /**
+     * 获取 Redisson 客户端实例
+     *
+     * @return Redisson 客户端实例
+     */
+    public static RedissonClient getClient() {
+        return CLIENT;
+    }
+
+    /**
      * 设置缓存
      *
      * @param key   键
