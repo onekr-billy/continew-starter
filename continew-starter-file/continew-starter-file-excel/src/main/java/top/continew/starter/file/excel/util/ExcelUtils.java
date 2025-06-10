@@ -19,8 +19,8 @@ package top.continew.starter.file.excel.util;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.URLUtil;
-import com.alibaba.excel.EasyExcelFactory;
-import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
+import cn.idev.excel.FastExcelFactory;
+import cn.idev.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,7 +78,7 @@ public class ExcelUtils {
                 .format(new Date(), DatePattern.PURE_DATETIME_PATTERN)));
             response.setHeader("Content-disposition", "attachment;filename=" + exportFileName);
             response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
-            EasyExcelFactory.write(response.getOutputStream(), clazz)
+            FastExcelFactory.write(response.getOutputStream(), clazz)
                 .autoCloseStream(false)
                 // 自动适配宽度
                 .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())

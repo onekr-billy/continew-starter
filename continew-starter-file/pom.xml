@@ -17,6 +17,7 @@
 
     <modules>
         <module>continew-starter-file-excel</module>
+        <module>continew-starter-file-poi</module>
     </modules>
 
     <dependencies>

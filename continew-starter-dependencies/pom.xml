@@ -31,7 +31,7 @@
         <aj-captcha.version>1.4.0</aj-captcha.version>
         <easy-captcha.version>1.6.2</easy-captcha.version>
         <nashorn.version>15.6</nashorn.version>
-        <easy-excel.version>3.3.4</easy-excel.version>
+        <fastexcel.version>1.2.0</fastexcel.version>
         <x-file-storage.version>2.2.1</x-file-storage.version>
         <aws-s3.version>1.12.783</aws-s3.version>
         <s3.version>2.31.35</s3.version>
@@ -228,9 +228,9 @@
 
             <!-- Easy Excel（基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具） -->
             <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>easyexcel</artifactId>
-                <version>${easy-excel.version}</version>
+                <groupId>cn.idev.excel</groupId>
+                <artifactId>fastexcel</artifactId>
+                <version>${fastexcel.version}</version>
             </dependency>
 
             <!-- X File Storage（一行代码将文件存储到本地、FTP、SFTP、WebDAV、阿里云 OSS、华为云 OBS...等其它兼容 S3 协议的存储平台） -->
