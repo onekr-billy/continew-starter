@@ -1,3 +1,9 @@
+## [v2.12.2](https://github.com/continew-org/continew-starter/compare/v2.12.1...v2.12.2) (2025-06-13)
+
+### 🐛 问题修复
+
+- 【extension/datapermission】修复构建本部门及以下数据权限表达式问题。 (Gitee#65@httpsjt) ([c0aa863](https://github.com/continew-org/continew-starter/commit/c0aa86327acac94b55e2f7c4fa193da4e38af986))
+
 ## [v2.12.1](https://github.com/continew-org/continew-starter/compare/v2.12.0...v2.12.1) (2025-06-09)
 
 ### ✨ 新特性

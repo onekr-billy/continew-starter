@@ -36,11 +36,7 @@ import net.sf.jsqlparser.expression.LongValue;
 import net.sf.jsqlparser.expression.StringValue;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
 import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
-import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
-import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
-import net.sf.jsqlparser.expression.operators.relational.InExpression;
-import net.sf.jsqlparser.expression.operators.relational.LikeExpression;
-import net.sf.jsqlparser.expression.operators.relational.ParenthesedExpressionList;
+import net.sf.jsqlparser.expression.operators.relational.*;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.select.ParenthesedSelect;
@@ -153,8 +149,8 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
         if (DatabaseType.MYSQL.getDatabase().equalsIgnoreCase(databaseType.getDatabase())) {
             Function findInSetFunction = new Function();
             findInSetFunction.setName("find_in_set");
-            findInSetFunction.setParameters(new ExpressionList<>(new LongValue(userContext
-                .getDeptId()), new StringValue(new Column("ancestors") + ",")));
+            findInSetFunction.setParameters(new ExpressionList(new LongValue(userContext
+                .getDeptId()), new Column("ancestors")));
             inSetExpression = findInSetFunction;
         } else if (DatabaseType.POSTGRE_SQL.getDatabase().equalsIgnoreCase(databaseType.getDatabase())) {
             // 构建 concat 函数
