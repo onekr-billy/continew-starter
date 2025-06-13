@@ -150,7 +150,7 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
             Function findInSetFunction = new Function();
             findInSetFunction.setName("find_in_set");
             findInSetFunction.setParameters(new ExpressionList(new LongValue(userContext
-                    .getDeptId()), new Column("ancestors")));
+                .getDeptId()), new Column("ancestors")));
             inSetExpression = findInSetFunction;
         } else if (DatabaseType.POSTGRE_SQL.getDatabase().equalsIgnoreCase(databaseType.getDatabase())) {
             // 构建 concat 函数
