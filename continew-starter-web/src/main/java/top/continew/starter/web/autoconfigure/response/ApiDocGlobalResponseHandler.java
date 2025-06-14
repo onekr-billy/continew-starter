@@ -20,7 +20,7 @@ import cn.hutool.core.util.ClassUtil;
 import org.apache.commons.lang3.reflect.TypeUtils;
 import org.springdoc.core.parsers.ReturnTypeParser;
 import org.springframework.core.MethodParameter;
-import top.continew.starter.apidoc.util.DocUtils;
+import top.continew.starter.apidoc.util.ApiDocUtils;
 
 import java.lang.reflect.Type;
 
@@ -54,7 +54,7 @@ public class ApiDocGlobalResponseHandler implements ReturnTypeParser {
         // 获取返回类型
         Type returnType = ReturnTypeParser.super.getReturnType(methodParameter);
         // 判断是否具有 RestController 注解
-        if (!DocUtils.hasRestControllerAnnotation(methodParameter.getContainingClass())) {
+        if (!ApiDocUtils.hasRestControllerAnnotation(methodParameter.getContainingClass())) {
             return returnType;
         }
         // 如果为响应类型，则直接返回

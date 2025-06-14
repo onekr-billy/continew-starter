@@ -26,7 +26,7 @@ import io.swagger.v3.oas.models.parameters.Parameter;
 import org.springdoc.core.customizers.ParameterCustomizer;
 import org.springdoc.core.customizers.PropertyCustomizer;
 import org.springframework.core.MethodParameter;
-import top.continew.starter.apidoc.util.DocUtils;
+import top.continew.starter.apidoc.util.ApiDocUtils;
 import top.continew.starter.core.enums.BaseEnum;
 
 import java.lang.reflect.Type;
@@ -84,9 +84,9 @@ public class BaseEnumParameterHandler implements ParameterCustomizer, PropertyCu
         BaseEnum[] enums = (BaseEnum[])enumClass.getEnumConstants();
         List<String> valueList = Arrays.stream(enums).map(e -> e.getValue().toString()).toList();
         schema.setEnum(valueList);
-        String enumValueType = DocUtils.getEnumValueTypeAsString(enumClass);
+        String enumValueType = ApiDocUtils.getEnumValueTypeAsString(enumClass);
         schema.setType(enumValueType);
-        schema.setFormat(DocUtils.resolveFormat(enumValueType));
+        schema.setFormat(ApiDocUtils.resolveFormat(enumValueType));
     }
 
     /**
@@ -97,7 +97,7 @@ public class BaseEnumParameterHandler implements ParameterCustomizer, PropertyCu
      * @return 追加后的描述字符串
      */
     private String appendEnumDescription(String originalDescription, Class<?> enumClass) {
-        return originalDescription + "<span style='color:red'>" + DocUtils.getDescMap(enumClass) + "</span>";
+        return originalDescription + "<span style='color:red'>" + ApiDocUtils.getDescMap(enumClass) + "</span>";
     }
 
     /**

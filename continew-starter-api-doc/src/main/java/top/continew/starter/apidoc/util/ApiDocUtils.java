@@ -16,6 +16,7 @@
 
 package top.continew.starter.apidoc.util;
 
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.web.bind.annotation.RestController;
 import top.continew.starter.core.enums.BaseEnum;
 
@@ -30,11 +31,37 @@ import java.util.stream.Collectors;
  * 接口文档工具类
  *
  * @author echo
+ * @author Charles7c
  * @since 2.5.2
  */
-public class DocUtils {
+public class ApiDocUtils {
 
-    private DocUtils() {
+    private ApiDocUtils() {
+    }
+
+    /**
+     * 构建分组接口文档
+     *
+     * @param group        分组名称
+     * @param pathsToMatch 路径匹配
+     * @return GroupedOpenApi
+     * @since 2.13.0
+     */
+    public static GroupedOpenApi buildGroupedOpenApi(String group, String... pathsToMatch) {
+        return buildGroupedOpenApi(group, group, pathsToMatch);
+    }
+
+    /**
+     * 构建分组接口文档
+     *
+     * @param group        分组名称
+     * @param displayName  分组显示名称
+     * @param pathsToMatch 路径匹配
+     * @return GroupedOpenApi
+     * @since 2.13.0
+     */
+    public static GroupedOpenApi buildGroupedOpenApi(String group, String displayName, String... pathsToMatch) {
+        return GroupedOpenApi.builder().group(group).displayName(displayName).pathsToMatch(pathsToMatch).build();
     }
 
     /**
