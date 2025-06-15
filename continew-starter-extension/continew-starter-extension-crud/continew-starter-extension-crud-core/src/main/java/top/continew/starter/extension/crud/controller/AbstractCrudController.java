@@ -33,23 +33,23 @@ import top.continew.starter.extension.crud.model.query.SortQuery;
 import top.continew.starter.extension.crud.model.req.IdsReq;
 import top.continew.starter.extension.crud.model.resp.IdResp;
 import top.continew.starter.extension.crud.model.resp.BasePageResp;
-import top.continew.starter.extension.crud.service.BaseService;
+import top.continew.starter.extension.crud.service.CrudService;
 import top.continew.starter.extension.crud.validation.CrudValidationGroup;
 
 import java.util.List;
 
 /**
- * 控制器抽象基类
+ * CRUD 控制器抽象基类
  *
  * @param <S> 业务接口
  * @param <L> 列表类型
  * @param <D> 详情类型
- * @param <Q> 查询条件
+ * @param <Q> 查询条件类型
  * @param <C> 创建或修改请求参数类型
  * @author Charles7c
  * @since 1.0.0
  */
-public abstract class AbstractBaseController<S extends BaseService<L, D, Q, C>, L, D, Q, C> implements CrudApiHandler {
+public abstract class AbstractCrudController<S extends CrudService<L, D, Q, C>, L, D, Q, C> implements CrudApiHandler {
 
     @Autowired
     protected S baseService;

@@ -23,7 +23,7 @@ import org.springframework.core.BridgeMethodResolver;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.util.ClassUtils;
 import top.continew.starter.extension.crud.annotation.CrudApi;
-import top.continew.starter.extension.crud.controller.AbstractBaseController;
+import top.continew.starter.extension.crud.controller.AbstractCrudController;
 
 import java.lang.reflect.Method;
 import java.util.Objects;
@@ -46,8 +46,8 @@ public class CrudApiAnnotationInterceptor implements MethodInterceptor {
         // 获取 @CrudApi 注解
         CrudApi crudApi = AnnotatedElementUtils.findMergedAnnotation(targetMethod, CrudApi.class);
         // 执行处理
-        AbstractBaseController controller = (AbstractBaseController)invocation.getThis();
-        controller.preHandle(crudApi, invocation.getArguments(), targetMethod, targetClass);
+        AbstractCrudController crudController = (AbstractCrudController)invocation.getThis();
+        crudController.preHandle(crudApi, invocation.getArguments(), targetMethod, targetClass);
         return invocation.proceed();
     }
 }

@@ -16,6 +16,8 @@
 
 package top.continew.starter.data.mp.service;
 
+import com.baomidou.mybatisplus.extension.repository.IRepository;
+
 /**
  * 通用业务接口
  *
@@ -23,4 +25,4 @@ package top.continew.starter.data.mp.service;
  * @author Charles7c
  * @since 1.2.0
  */
-public interface IService<T> extends com.baomidou.mybatisplus.extension.service.IService<T> {}
+public interface IService<T> extends IRepository<T> {}

@@ -17,9 +17,10 @@
 package top.continew.starter.data.mp.service.impl;
 
 import cn.hutool.core.util.ClassUtil;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.repository.CrudRepository;
 import top.continew.starter.core.util.ReflectUtils;
 import top.continew.starter.core.validation.CheckUtils;
-import top.continew.starter.data.mp.base.BaseMapper;
 import top.continew.starter.data.mp.service.IService;
 
 import java.io.Serializable;
@@ -34,7 +35,7 @@ import java.util.List;
  * @author Charles7c
  * @since 1.5.0
  */
-public class ServiceImpl<M extends BaseMapper<T>, T> extends com.baomidou.mybatisplus.extension.service.impl.ServiceImpl<M, T> implements IService<T> {
+public class ServiceImpl<M extends BaseMapper<T>, T> extends CrudRepository<M, T> implements IService<T> {
 
     private List<Field> entityFields;
 

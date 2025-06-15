@@ -26,16 +26,16 @@ import top.continew.starter.extension.crud.model.resp.LabelValueResp;
 import java.util.List;
 
 /**
- * 业务接口基类
+ * CRUD 业务接口
  *
  * @param <L> 列表类型
  * @param <D> 详情类型
- * @param <Q> 查询条件
+ * @param <Q> 查询条件类型
  * @param <C> 创建或修改请求参数类型
  * @author Charles7c
  * @since 1.0.0
  */
-public interface BaseService<L, D, Q, C> {
+public interface CrudService<L, D, Q, C> {
 
     /**
      * 分页查询列表
