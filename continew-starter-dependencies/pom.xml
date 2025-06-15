@@ -15,39 +15,39 @@
     <properties>
         <!-- 项目版本号 -->
         <revision>2.13.0-SNAPSHOT</revision>
-        <spring-boot.version>3.3.11</spring-boot.version>
+        <spring-boot.version>3.3.12</spring-boot.version>
         <spring-cloud.version>2023.0.5</spring-cloud.version>
-        <redisson.version>3.46.0</redisson.version>
+        <redisson.version>3.49.0</redisson.version>
         <jetcache.version>2.7.8</jetcache.version>
-        <cosid.version>2.12.3</cosid.version>
-        <sa-token.version>1.42.0</sa-token.version>
+        <cosid.version>2.13.0</cosid.version>
+        <sa-token.version>1.44.0</sa-token.version>
         <just-auth.version>1.16.7</just-auth.version>
-        <mybatis-plus.version>3.5.8</mybatis-plus.version>
+        <mybatis-plus.version>3.5.12</mybatis-plus.version>
         <mybatis-flex.version>1.10.9</mybatis-flex.version>
         <dynamic-datasource.version>4.3.1</dynamic-datasource.version>
         <p6spy.version>3.9.1</p6spy.version>
-        <snail-job.version>1.4.0</snail-job.version>
-        <sms4j.version>3.3.4</sms4j.version>
+        <snail-job.version>1.5.0</snail-job.version>
+        <sms4j.version>3.3.5</sms4j.version>
         <aj-captcha.version>1.4.0</aj-captcha.version>
         <easy-captcha.version>1.6.2</easy-captcha.version>
         <nashorn.version>15.6</nashorn.version>
         <fastexcel.version>1.2.0</fastexcel.version>
         <x-file-storage.version>2.2.1</x-file-storage.version>
-        <aws-s3.version>1.12.783</aws-s3.version>
-        <s3.version>2.31.35</s3.version>
-        <s3-crt.version>0.38.1</s3-crt.version>
+        <aws-s3-v1.version>1.12.783</aws-s3-v1.version>
+        <aws-sdk.version>2.31.63</aws-sdk.version>
+        <aws-crt.version>0.38.5</aws-crt.version>
         <thumbnails.version>0.4.20</thumbnails.version>
         <graceful-response.version>5.0.5-boot3</graceful-response.version>
         <crane4j.version>2.9.0</crane4j.version>
         <knife4j.version>4.5.0</knife4j.version>
         <tlog.version>1.5.2</tlog.version>
+        <truelicense.version>1.33</truelicense.version>
+        <zip4j.version>2.11.5</zip4j.version>
         <okhttp.version>4.12.0</okhttp.version>
         <ttl.version>2.14.5</ttl.version>
         <ip2region.version>3.3.6</ip2region.version>
-        <hutool.version>5.8.37</hutool.version>
+        <hutool.version>5.8.38</hutool.version>
         <snakeyaml.version>2.4</snakeyaml.version>
-        <truelicense.version>1.33</truelicense.version>
-        <zip4j.version>2.11.5</zip4j.version>
         <!-- 解决部分传递依赖漏洞问题 -->
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
         <commons-io.version>2.17.0</commons-io.version>
@@ -131,31 +131,12 @@
             </dependency>
 
             <!-- MyBatis Plus（MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率） -->
-            <!-- 注意:
-                1、此注释在升级到 mybatis-plus 3.5.9 之后的版本时才进行启用,同时删掉后续相对应的mybatis-plus依赖
-                2、不升级版本可忽略不计,此处仅为了后续升级,做准备
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-bom</artifactId>
                 <version>${mybatis-plus.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            -->
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
-                <version>${mybatis-plus.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-core</artifactId>
-                <version>${mybatis-plus.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-extension</artifactId>
-                <version>${mybatis-plus.version}</version>
             </dependency>
 
             <!-- MyBatis Flex（MyBatis 的增强工具，在 MyBatis 的基础上只做增强不做改变，简化开发、提高效率） -->
@@ -244,27 +225,23 @@
             <dependency>
                 <groupId>com.amazonaws</groupId>
                 <artifactId>aws-java-sdk-s3</artifactId>
-                <version>${aws-s3.version}</version>
+                <version>${aws-s3-v1.version}</version>
             </dependency>
 
-            <!--  S3  for Java 2.x  -->
+            <!-- Amazon SDK -->
             <dependency>
                 <groupId>software.amazon.awssdk</groupId>
-                <artifactId>s3</artifactId>
-                <version>${s3.version}</version>
-            </dependency>
-            <!-- 基于 AWS CRT 的 S3 客户端的性能增强的 S3 传输管理器 -->
-            <dependency>
-                <groupId>software.amazon.awssdk</groupId>
-                <artifactId>s3-transfer-manager</artifactId>
-                <version>${s3.version}</version>
+                <artifactId>bom</artifactId>
+                <version>${aws-sdk.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
 
             <!-- 使用 AWS 基于 CRT 的 S3 客户端 -->
             <dependency>
                 <groupId>software.amazon.awssdk.crt</groupId>
                 <artifactId>aws-crt</artifactId>
-                <version>${s3-crt.version}</version>
+                <version>${aws-crt.version}</version>
             </dependency>
 
             <!-- Thumbnailator（缩略图生成库） -->
@@ -304,11 +281,17 @@
                 <version>${tlog.version}</version>
             </dependency>
 
-            <!-- SnakeYAML（适用于 Java 的 YAML 1.1 解析器和发射器） -->
+            <!-- TrueLicense (开源的证书管理引擎) -->
             <dependency>
-                <groupId>org.yaml</groupId>
-                <artifactId>snakeyaml</artifactId>
-                <version>${snakeyaml.version}</version>
+                <groupId>de.schlichtherle.truelicense</groupId>
+                <artifactId>truelicense-core</artifactId>
+                <version>${truelicense.version}</version>
+            </dependency>
+            <!-- Zip4j (开源的 Java 处理 zip 压缩文件的开发包) -->
+            <dependency>
+                <groupId>net.lingala.zip4j</groupId>
+                <artifactId>zip4j</artifactId>
+                <version>${zip4j.version}</version>
             </dependency>
 
             <!-- OkHTTP（默认高效的 HTTP 客户端） -->
@@ -346,17 +329,11 @@
                 <version>${hutool.version}</version>
             </dependency>
 
-            <!-- TrueLicense (开源的证书管理引擎) -->
+            <!-- SnakeYAML（适用于 Java 的 YAML 1.1 解析器和发射器） -->
             <dependency>
-                <groupId>de.schlichtherle.truelicense</groupId>
-                <artifactId>truelicense-core</artifactId>
-                <version>${truelicense.version}</version>
-            </dependency>
-            <!-- Zip4j (开源的 Java 处理 zip 压缩文件的开发包) -->
-            <dependency>
-                <groupId>net.lingala.zip4j</groupId>
-                <artifactId>zip4j</artifactId>
-                <version>${zip4j.version}</version>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${snakeyaml.version}</version>
             </dependency>
 
             <!-- 解决部分传递依赖漏洞问题 -->

@@ -21,7 +21,7 @@
             <artifactId>continew-starter-storage-core</artifactId>
         </dependency>
 
-        <!--  S3 SDK for Java 2.x  -->
+        <!-- Amazon S3 V2（Amazon Simple Storage Service，亚马逊简单存储服务，通用存储协议 S3，兼容主流云厂商对象存储） -->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>s3</artifactId>
@@ -49,16 +49,16 @@
             </exclusions>
         </dependency>
 
-        <!-- 使用AWS基于 CRT 的 S3 客户端 -->
-        <dependency>
-            <groupId>software.amazon.awssdk.crt</groupId>
-            <artifactId>aws-crt</artifactId>
-        </dependency>
-
         <!-- 基于 AWS CRT 的 S3 客户端的性能增强的 S3 传输管理器 -->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>s3-transfer-manager</artifactId>
+        </dependency>
+
+        <!-- 使用 AWS 基于 CRT 的 S3 客户端 -->
+        <dependency>
+            <groupId>software.amazon.awssdk.crt</groupId>
+            <artifactId>aws-crt</artifactId>
         </dependency>
     </dependencies>
 </project>
