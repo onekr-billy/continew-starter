@@ -25,6 +25,7 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.util.pattern.PathPatternParser;
 import top.continew.starter.core.util.ExceptionUtils;
+import top.continew.starter.extension.crud.annotation.CrudApi;
 import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.continew.starter.extension.crud.enums.Api;
 
@@ -52,8 +53,9 @@ public class CrudRequestMappingHandlerMapping extends RequestMappingHandlerMappi
         CrudRequestMapping crudRequestMapping = handlerType.getDeclaredAnnotation(CrudRequestMapping.class);
         // 过滤 API，如果非本类中定义，且 API 列表中不包含，则忽略
         Api[] apiArr = crudRequestMapping.api();
-        Api api = ExceptionUtils.exToNull(() -> Api.valueOf(method.getName().toUpperCase()));
-        if (method.getDeclaringClass() != handlerType && !ArrayUtil.contains(apiArr, api)) {
+        CrudApi crudApi = AnnotatedElementUtils.findMergedAnnotation(method, CrudApi.class);
+        if (method.getDeclaringClass() != handlerType && !ArrayUtil.contains(apiArr, ExceptionUtils
+            .exToNull(crudApi::value))) {
             return null;
         }
         // 拼接路径（合并了 @RequestMapping 的部分能力）

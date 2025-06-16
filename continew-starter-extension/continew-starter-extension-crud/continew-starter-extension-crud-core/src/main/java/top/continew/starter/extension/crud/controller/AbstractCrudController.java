@@ -146,13 +146,27 @@ public abstract class AbstractCrudController<S extends CrudService<L, D, Q, C>, 
     /**
      * 删除
      *
-     * @param req 删除请求参数
+     * @param id ID
      */
     @CrudApi(Api.DELETE)
     @Operation(summary = "删除数据", description = "删除数据")
+    @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
+    @ResponseBody
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable("id") Long id) {
+        baseService.delete(List.of(id));
+    }
+
+    /**
+     * 批量删除
+     *
+     * @param req 删除请求参数
+     */
+    @CrudApi(Api.BATCH_DELETE)
+    @Operation(summary = "批量删除数据", description = "批量删除数据")
     @ResponseBody
     @DeleteMapping
-    public void delete(@Validated @RequestBody IdsReq req) {
+    public void batchDelete(@Validated @RequestBody IdsReq req) {
         baseService.delete(req.getIds());
     }
 

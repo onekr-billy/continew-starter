@@ -63,4 +63,9 @@ public enum Api {
      * 导出
      */
     EXPORT,
+
+    /**
+     * 批量删除
+     */
+    BATCH_DELETE,
 }
