@@ -34,12 +34,8 @@ import org.springframework.context.annotation.PropertySource;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.*;
+import com.fasterxml.jackson.datatype.jsr310.ser.*;
 
 import cn.hutool.core.date.DatePattern;
 import top.continew.starter.core.enums.BaseEnum;
@@ -101,6 +97,12 @@ public class JacksonAutoConfiguration {
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(DatePattern.NORM_TIME_PATTERN);
         javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(timeFormatter));
         javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer(timeFormatter));
+        // 针对时间类型：Instant 的序列化和反序列化处理
+        javaTimeModule.addSerializer(Instant.class, InstantSerializer.INSTANCE);
+        javaTimeModule.addDeserializer(Instant.class, InstantDeserializer.INSTANT);
+        // 针对时间类型：Duration 的序列化和反序列化处理
+        javaTimeModule.addSerializer(Duration.class, DurationSerializer.INSTANCE);
+        javaTimeModule.addDeserializer(Duration.class, DurationDeserializer.INSTANCE);
         return javaTimeModule;
     }
 
