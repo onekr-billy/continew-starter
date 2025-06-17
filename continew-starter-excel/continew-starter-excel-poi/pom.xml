@@ -1,0 +1,35 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>top.continew</groupId>
+        <artifactId>continew-starter-excel</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>continew-starter-excel-poi</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
+    <description>ContiNew Starter Excel 文件处理模块 - POI</description>
+
+    <dependencies>
+        <!-- Excel 文件处理模块 - 核心模块 -->
+        <dependency>
+            <groupId>top.continew</groupId>
+            <artifactId>continew-starter-excel-core</artifactId>
+        </dependency>
+
+        <!-- Apache POI（适用于 Microsoft 文档的 Java API） -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+        </dependency>
+
+        <!-- 文件上传 -->
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+        </dependency>
+    </dependencies>
+</project>

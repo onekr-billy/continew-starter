@@ -196,13 +196,24 @@
                 <version>${revision}</version>
             </dependency>
 
-            <!-- 文件处理模块 - Excel -->
+            <!-- Excel 文件处理模块 - FastExcel -->
             <dependency>
                 <groupId>top.continew</groupId>
-                <artifactId>continew-starter-file-excel</artifactId>
+                <artifactId>continew-starter-excel-fastexcel</artifactId>
                 <version>${revision}</version>
             </dependency>
-
+            <!-- Excel 文件处理模块 - POI -->
+            <dependency>
+                <groupId>top.continew</groupId>
+                <artifactId>continew-starter-excel-poi</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <!-- Excel 文件处理模块 - 核心模块 -->
+            <dependency>
+                <groupId>top.continew</groupId>
+                <artifactId>continew-starter-excel-core</artifactId>
+                <version>${revision}</version>
+            </dependency>
 
             <!-- 存储模块 - 本地存储 -->
             <dependency>

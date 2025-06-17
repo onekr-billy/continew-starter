@@ -32,6 +32,7 @@
         <easy-captcha.version>1.6.2</easy-captcha.version>
         <nashorn.version>15.6</nashorn.version>
         <fastexcel.version>1.2.0</fastexcel.version>
+        <poi.version>5.4.1</poi.version>
         <x-file-storage.version>2.2.1</x-file-storage.version>
         <aws-s3-v1.version>1.12.783</aws-s3-v1.version>
         <aws-sdk.version>2.31.63</aws-sdk.version>
@@ -207,11 +208,18 @@
                 <version>${nashorn.version}</version>
             </dependency>
 
-            <!-- Easy Excel（基于 Java 的、快速、简洁、解决大文件内存溢出的 Excel 处理工具） -->
+            <!-- FastExcel（基于 Java 的快速、简洁、解决大文件内存溢出的 Excel 处理工具） -->
             <dependency>
                 <groupId>cn.idev.excel</groupId>
                 <artifactId>fastexcel</artifactId>
                 <version>${fastexcel.version}</version>
+            </dependency>
+
+            <!-- Apache POI（适用于 Microsoft 文档的 Java API） -->
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${poi.version}</version>
             </dependency>
 
             <!-- X File Storage（一行代码将文件存储到本地、FTP、SFTP、WebDAV、阿里云 OSS、华为云 OBS...等其它兼容 S3 协议的存储平台） -->
