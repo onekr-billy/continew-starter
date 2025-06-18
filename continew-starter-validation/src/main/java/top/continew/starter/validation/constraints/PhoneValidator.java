@@ -24,19 +24,19 @@ import jakarta.validation.ConstraintValidatorContext;
  * 手机号校验器
  *
  * <p>
- * 校验中国大陆手机号码
+ * 校验座机号码、手机号码（中国大陆）、手机号码（中国香港）、手机号码（中国台湾）、手机号码（中国澳门）
  * </p>
  *
  * @author Charles7c
- * @since 2.10.0
+ * @since 2.13.0
  */
-public class MobileValidator implements ConstraintValidator<Mobile, String> {
+public class PhoneValidator implements ConstraintValidator<Mobile, String> {
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         if (value == null) {
             return true;
         }
-        return PhoneUtil.isMobile(value);
+        return PhoneUtil.isPhone(value);
     }
 }
