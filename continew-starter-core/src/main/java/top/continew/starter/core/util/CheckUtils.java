@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.starter.core.validation;
+package top.continew.starter.core.util;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import top.continew.starter.core.constant.StringConstants;

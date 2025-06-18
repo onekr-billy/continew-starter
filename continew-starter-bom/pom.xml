@@ -39,6 +39,13 @@
                 <version>${revision}</version>
             </dependency>
 
+            <!-- 校验模块 -->
+            <dependency>
+                <groupId>top.continew</groupId>
+                <artifactId>continew-starter-validation</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
             <!-- Web 模块 -->
             <dependency>
                 <groupId>top.continew</groupId>

@@ -20,8 +20,8 @@ import cn.hutool.core.util.ClassUtil;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.repository.CrudRepository;
 import top.continew.starter.core.util.ReflectUtils;
-import top.continew.starter.core.validation.CheckUtils;
 import top.continew.starter.data.mp.service.IService;
+import top.continew.starter.core.util.CheckUtils;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;

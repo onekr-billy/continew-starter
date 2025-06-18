@@ -39,6 +39,7 @@
         <aws-crt.version>0.38.5</aws-crt.version>
         <thumbnails.version>0.4.20</thumbnails.version>
         <graceful-response.version>5.0.5-boot3</graceful-response.version>
+        <spel-validator.version>0.5.0-beta</spel-validator.version>
         <crane4j.version>2.9.0</crane4j.version>
         <knife4j.version>4.5.0</knife4j.version>
         <tlog.version>1.5.2</tlog.version>
@@ -264,6 +265,13 @@
                 <groupId>com.feiniaojin</groupId>
                 <artifactId>graceful-response</artifactId>
                 <version>${graceful-response.version}</version>
+            </dependency>
+
+            <!-- SpEL Validator（基于 SpEL 的 jakarta.validation-api 扩展增强包） -->
+            <dependency>
+                <groupId>cn.sticki</groupId>
+                <artifactId>spel-validator-javax</artifactId>
+                <version>${spel-validator.version}</version>
             </dependency>
 
             <!-- Crane4j（基于注解的，用于完成一切 “根据 A 的 key 值拿到 B，再把 B 的属性映射到 A” 这类需求的字段填充框架） -->

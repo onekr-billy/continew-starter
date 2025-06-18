@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.starter.core.validation.constraints;
+package top.continew.starter.validation.constraints;
 
 import cn.hutool.json.JSONUtil;
 import jakarta.validation.ConstraintValidator;

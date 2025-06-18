@@ -38,6 +38,7 @@
         <module>continew-starter-core</module>
         <module>continew-starter-json</module>
         <module>continew-starter-api-doc</module>
+        <module>continew-starter-validation</module>
         <module>continew-starter-web</module>
         <module>continew-starter-cache</module>
         <module>continew-starter-auth</module>

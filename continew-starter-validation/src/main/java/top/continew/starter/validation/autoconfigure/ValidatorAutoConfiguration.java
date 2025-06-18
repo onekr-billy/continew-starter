@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.starter.core.autoconfigure;
+package top.continew.starter.validation.autoconfigure;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.validation.Validator;
