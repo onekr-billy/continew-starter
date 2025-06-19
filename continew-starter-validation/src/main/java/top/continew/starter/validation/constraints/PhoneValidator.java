@@ -30,7 +30,7 @@ import jakarta.validation.ConstraintValidatorContext;
  * @author Charles7c
  * @since 2.13.0
  */
-public class PhoneValidator implements ConstraintValidator<Mobile, String> {
+public class PhoneValidator implements ConstraintValidator<Phone, String> {
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
