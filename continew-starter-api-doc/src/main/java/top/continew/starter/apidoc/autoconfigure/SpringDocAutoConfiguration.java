@@ -47,7 +47,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import top.continew.starter.apidoc.handler.BaseEnumParameterHandler;
 import top.continew.starter.apidoc.handler.OpenApiHandler;
-import top.continew.starter.core.autoconfigure.project.ProjectProperties;
+import top.continew.starter.core.autoconfigure.application.ApplicationProperties;
 import top.continew.starter.core.util.GeneralPropertySourceFactory;
 
 import java.util.List;
@@ -83,15 +83,15 @@ public class SpringDocAutoConfiguration implements WebMvcConfigurer {
      */
     @Bean
     @ConditionalOnMissingBean
-    public OpenAPI openApi(ProjectProperties projectProperties, SpringDocExtensionProperties properties) {
-        Info info = new Info().title("%s %s".formatted(projectProperties.getName(), "API 文档"))
-            .version(projectProperties.getVersion())
-            .description(projectProperties.getDescription());
-        ProjectProperties.Contact contact = projectProperties.getContact();
+    public OpenAPI openApi(ApplicationProperties applicationProperties, SpringDocExtensionProperties properties) {
+        Info info = new Info().title("%s %s".formatted(applicationProperties.getName(), "API 文档"))
+            .version(applicationProperties.getVersion())
+            .description(applicationProperties.getDescription());
+        ApplicationProperties.Contact contact = applicationProperties.getContact();
         if (contact != null) {
             info.contact(new Contact().name(contact.getName()).email(contact.getEmail()).url(contact.getUrl()));
         }
-        ProjectProperties.License license = projectProperties.getLicense();
+        ApplicationProperties.License license = applicationProperties.getLicense();
         if (license != null) {
             info.license(new License().name(license.getName()).url(license.getUrl()));
         }

@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-package top.continew.starter.core.autoconfigure.project;
+package top.continew.starter.core.autoconfigure.application;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * 项目配置属性
+ * 应用配置属性
  *
  * @author Charles7c
  * @since 1.0.0
  */
-@ConfigurationProperties("project")
-public class ProjectProperties {
+@ConfigurationProperties("application")
+public class ApplicationProperties {
+
+    /**
+     * ID
+     */
+    private String id;
 
     /**
      * 名称
@@ -33,19 +38,14 @@ public class ProjectProperties {
     private String name;
 
     /**
-     * 应用名称
+     * 描述
      */
-    private String appName;
+    private String description;
 
     /**
      * 版本
      */
     private String version;
-
-    /**
-     * 描述
-     */
-    private String description;
 
     /**
      * URL
@@ -147,6 +147,14 @@ public class ProjectProperties {
         }
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
@@ -155,12 +163,12 @@ public class ProjectProperties {
         this.name = name;
     }
 
-    public String getAppName() {
-        return appName;
+    public String getDescription() {
+        return description;
     }
 
-    public void setAppName(String appName) {
-        this.appName = appName;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getVersion() {
@@ -169,14 +177,6 @@ public class ProjectProperties {
 
     public void setVersion(String version) {
         this.version = version;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getUrl() {

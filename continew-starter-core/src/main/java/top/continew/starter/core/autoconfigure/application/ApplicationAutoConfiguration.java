@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.starter.core.autoconfigure.project;
+package top.continew.starter.core.autoconfigure.application;
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -22,7 +22,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
 /**
- * 项目自动配置
+ * 应用自动配置
  *
  * @author Charles7c
  * @since 1.0.0
@@ -30,5 +30,5 @@ import org.springframework.context.annotation.Import;
 @AutoConfiguration
 @ComponentScan("cn.hutool.extra.spring")
 @Import(cn.hutool.extra.spring.SpringUtil.class)
-@EnableConfigurationProperties(ProjectProperties.class)
-public class ProjectAutoConfiguration {}
+@EnableConfigurationProperties(ApplicationProperties.class)
+public class ApplicationAutoConfiguration {}
