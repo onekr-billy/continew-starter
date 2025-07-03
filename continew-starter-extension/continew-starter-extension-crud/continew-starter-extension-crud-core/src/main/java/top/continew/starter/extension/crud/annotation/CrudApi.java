@@ -23,6 +23,8 @@ import java.lang.annotation.*;
 /**
  * CRUD（增删改查）API
  *
+ * <p>{@link CrudRequestMapping#apis} 优先级高于方法上的 @CrudApi</p>
+ *
  * @author Charles7c
  * @since 2.7.5
  */
@@ -35,4 +37,14 @@ public @interface CrudApi {
      * API 类型
      */
     Api value() default Api.LIST;
+
+    /**
+     * 是否忽略认证
+     */
+    boolean ignoreAuth() default false;
+
+    /**
+     * 是否忽略权限校验
+     */
+    boolean ignorePermission() default false;
 }

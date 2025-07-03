@@ -16,6 +16,7 @@
 
 package top.continew.starter.extension.crud.aop;
 
+import cn.hutool.core.util.ArrayUtil;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.support.AopUtils;
@@ -23,9 +24,11 @@ import org.springframework.core.BridgeMethodResolver;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.util.ClassUtils;
 import top.continew.starter.extension.crud.annotation.CrudApi;
+import top.continew.starter.extension.crud.annotation.CrudRequestMapping;
 import top.continew.starter.extension.crud.controller.AbstractCrudController;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -44,10 +47,28 @@ public class CrudApiAnnotationInterceptor implements MethodInterceptor {
         Method specificMethod = ClassUtils.getMostSpecificMethod(invocation.getMethod(), targetClass);
         Method targetMethod = BridgeMethodResolver.findBridgedMethod(specificMethod);
         // 获取 @CrudApi 注解
-        CrudApi crudApi = AnnotatedElementUtils.findMergedAnnotation(targetMethod, CrudApi.class);
+        CrudApi crudApi = this.getCrudApi(targetMethod, targetClass);
         // 执行处理
         AbstractCrudController crudController = (AbstractCrudController)invocation.getThis();
         crudController.preHandle(crudApi, invocation.getArguments(), targetMethod, targetClass);
         return invocation.proceed();
+    }
+
+    /**
+     * 获取 @CrudApi 注解
+     *
+     * @param targetMethod 目标方法
+     * @param targetClass  目标类
+     * @return @CrudApi 注解
+     */
+    private CrudApi getCrudApi(Method targetMethod, Class<?> targetClass) {
+        CrudRequestMapping crudRequestMapping = AnnotatedElementUtils
+            .findMergedAnnotation(targetClass, CrudRequestMapping.class);
+        CrudApi[] crudApis = crudRequestMapping.apis();
+        CrudApi crudApi = AnnotatedElementUtils.findMergedAnnotation(targetMethod, CrudApi.class);
+        if (ArrayUtil.isEmpty(crudApis)) {
+            return crudApi;
+        }
+        return Arrays.stream(crudApis).filter(api -> api.value() == crudApi.value()).findFirst().orElse(null);
     }
 }

@@ -31,6 +31,7 @@ import top.continew.starter.extension.crud.enums.Api;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 /**
  * CRUD 请求映射器处理器映射器
@@ -51,10 +52,10 @@ public class CrudRequestMappingHandlerMapping extends RequestMappingHandlerMappi
             return requestMappingInfo;
         }
         CrudRequestMapping crudRequestMapping = handlerType.getDeclaredAnnotation(CrudRequestMapping.class);
-        // 过滤 API，如果非本类中定义，且 API 列表中不包含，则忽略
-        Api[] apiArr = crudRequestMapping.api();
         CrudApi crudApi = AnnotatedElementUtils.findMergedAnnotation(method, CrudApi.class);
-        if (method.getDeclaringClass() != handlerType && !ArrayUtil.contains(apiArr, ExceptionUtils
+        // 过滤 API：如果非本类中定义，且 API 列表中不包含，则忽略
+        Api[] apis = this.getApis(crudRequestMapping);
+        if (method.getDeclaringClass() != handlerType && !ArrayUtil.contains(apis, ExceptionUtils
             .exToNull(crudApi::value))) {
             return null;
         }
@@ -62,6 +63,29 @@ public class CrudRequestMappingHandlerMapping extends RequestMappingHandlerMappi
         return this.getMappingForMethodWrapper(method, handlerType, crudRequestMapping);
     }
 
+    /**
+     * 获取 API 列表
+     *
+     * @param crudRequestMapping CRUD 请求映射
+     * @return API 列表
+     */
+    private Api[] getApis(CrudRequestMapping crudRequestMapping) {
+        Api[] apiArr = crudRequestMapping.api();
+        CrudApi[] crudApiArr = crudRequestMapping.apis();
+        if (ArrayUtil.isEmpty(crudApiArr)) {
+            return apiArr;
+        }
+        return Arrays.stream(crudApiArr).map(CrudApi::value).toArray(Api[]::new);
+    }
+
+    /**
+     * 获取请求映射信息
+     *
+     * @param method             方法
+     * @param handlerType        处理程序类型
+     * @param crudRequestMapping CRUD 请求映射
+     * @return 请求映射信息
+     */
     private RequestMappingInfo getMappingForMethodWrapper(@NonNull Method method,
                                                           @NonNull Class<?> handlerType,
                                                           CrudRequestMapping crudRequestMapping) {
@@ -81,6 +105,12 @@ public class CrudRequestMappingHandlerMapping extends RequestMappingHandlerMappi
         return info;
     }
 
+    /**
+     * 构建请求映射信息
+     *
+     * @param element 元素
+     * @return 请求映射信息
+     */
     private RequestMappingInfo buildRequestMappingInfo(AnnotatedElement element) {
         RequestMapping requestMapping = AnnotatedElementUtils.findMergedAnnotation(element, RequestMapping.class);
         RequestCondition<?> condition = (element instanceof Class<?> clazz

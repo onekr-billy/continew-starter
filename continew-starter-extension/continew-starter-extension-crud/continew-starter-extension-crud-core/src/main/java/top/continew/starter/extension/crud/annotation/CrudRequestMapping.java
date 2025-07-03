@@ -38,6 +38,24 @@ public @interface CrudRequestMapping {
 
     /**
      * API 列表
+     * <p>优先级高于 {@link #api}</p>
+     */
+    CrudApi[] apis() default {};
+
+    /**
+     * API 列表
      */
     Api[] api() default {Api.PAGE, Api.GET, Api.CREATE, Api.UPDATE, Api.DELETE, Api.EXPORT};
+
+    /**
+     * 是否忽略认证
+     * <p>全部忽略，优先级低于 {@link CrudApi#ignoreAuth}</p>
+     */
+    boolean ignoreAuth() default false;
+
+    /**
+     * 是否忽略权限校验
+     * <p>全部忽略，优先级低于 {@link CrudApi#ignorePermission}</p>
+     */
+    boolean ignorePermission() default false;
 }
