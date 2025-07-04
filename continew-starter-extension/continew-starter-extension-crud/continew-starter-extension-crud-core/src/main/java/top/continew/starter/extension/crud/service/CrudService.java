@@ -18,10 +18,14 @@ package top.continew.starter.extension.crud.service;
 
 import cn.hutool.core.lang.tree.Tree;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import org.springframework.validation.annotation.Validated;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.query.SortQuery;
 import top.continew.starter.extension.crud.model.resp.BasePageResp;
 import top.continew.starter.extension.crud.model.resp.LabelValueResp;
+import top.continew.starter.extension.crud.validation.CrudValidationGroup;
 
 import java.util.List;
 
@@ -44,7 +48,7 @@ public interface CrudService<L, D, Q, C> {
      * @param pageQuery 分页查询条件
      * @return 分页列表信息
      */
-    BasePageResp<L> page(Q query, PageQuery pageQuery);
+    BasePageResp<L> page(@Valid Q query, @Valid PageQuery pageQuery);
 
     /**
      * 查询列表
@@ -53,7 +57,7 @@ public interface CrudService<L, D, Q, C> {
      * @param sortQuery 排序查询条件
      * @return 列表信息
      */
-    List<L> list(Q query, SortQuery sortQuery);
+    List<L> list(@Valid Q query, @Valid SortQuery sortQuery);
 
     /**
      * 查询树列表
@@ -67,7 +71,7 @@ public interface CrudService<L, D, Q, C> {
      * @param isSimple  是否为简单树结构（不包含基本树结构之外的扩展字段，简单树（下拉列表）使用全局配置结构，复杂树（表格）使用 @DictField 局部配置）
      * @return 树列表信息
      */
-    List<Tree<Long>> tree(Q query, SortQuery sortQuery, boolean isSimple);
+    List<Tree<Long>> tree(@Valid Q query, @Valid SortQuery sortQuery, boolean isSimple);
 
     /**
      * 查询详情
@@ -85,7 +89,7 @@ public interface CrudService<L, D, Q, C> {
      * @return 字典列表信息
      * @since 2.1.0
      */
-    List<LabelValueResp> listDict(Q query, SortQuery sortQuery);
+    List<LabelValueResp> listDict(@Valid Q query, @Valid SortQuery sortQuery);
 
     /**
      * 创建
@@ -93,7 +97,8 @@ public interface CrudService<L, D, Q, C> {
      * @param req 创建请求参数
      * @return 自增 ID
      */
-    Long create(C req);
+    @Validated(CrudValidationGroup.Create.class)
+    Long create(@Valid C req);
 
     /**
      * 修改
@@ -101,14 +106,15 @@ public interface CrudService<L, D, Q, C> {
      * @param req 修改请求参数
      * @param id  ID
      */
-    void update(C req, Long id);
+    @Validated(CrudValidationGroup.Update.class)
+    void update(@Valid C req, Long id);
 
     /**
      * 删除
      *
      * @param ids ID 列表
      */
-    void delete(List<Long> ids);
+    void delete(@NotEmpty(message = "ID 不能为空") List<Long> ids);
 
     /**
      * 导出
@@ -117,5 +123,5 @@ public interface CrudService<L, D, Q, C> {
      * @param sortQuery 排序查询条件
      * @param response  响应对象
      */
-    void export(Q query, SortQuery sortQuery, HttpServletResponse response);
+    void export(@Valid Q query, @Valid SortQuery sortQuery, HttpServletResponse response);
 }

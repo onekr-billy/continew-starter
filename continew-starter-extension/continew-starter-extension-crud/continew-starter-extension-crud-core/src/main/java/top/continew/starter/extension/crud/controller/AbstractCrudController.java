@@ -22,6 +22,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -65,7 +66,7 @@ public abstract class AbstractCrudController<S extends CrudService<L, D, Q, C>, 
     @Operation(summary = "分页查询列表", description = "分页查询列表")
     @ResponseBody
     @GetMapping
-    public BasePageResp<L> page(@Validated Q query, @Validated PageQuery pageQuery) {
+    public BasePageResp<L> page(@Valid Q query, @Valid PageQuery pageQuery) {
         return baseService.page(query, pageQuery);
     }
 
@@ -80,7 +81,7 @@ public abstract class AbstractCrudController<S extends CrudService<L, D, Q, C>, 
     @Operation(summary = "查询列表", description = "查询列表")
     @ResponseBody
     @GetMapping("/list")
-    public List<L> list(@Validated Q query, @Validated SortQuery sortQuery) {
+    public List<L> list(@Valid Q query, @Valid SortQuery sortQuery) {
         return baseService.list(query, sortQuery);
     }
 
@@ -95,7 +96,7 @@ public abstract class AbstractCrudController<S extends CrudService<L, D, Q, C>, 
     @Operation(summary = "查询树列表", description = "查询树列表")
     @ResponseBody
     @GetMapping("/tree")
-    public List<Tree<Long>> tree(@Validated Q query, @Validated SortQuery sortQuery) {
+    public List<Tree<Long>> tree(@Valid Q query, @Valid SortQuery sortQuery) {
         return baseService.tree(query, sortQuery, false);
     }
 
@@ -124,7 +125,8 @@ public abstract class AbstractCrudController<S extends CrudService<L, D, Q, C>, 
     @Operation(summary = "创建数据", description = "创建数据")
     @ResponseBody
     @PostMapping
-    public IdResp<Long> create(@Validated(CrudValidationGroup.Create.class) @RequestBody C req) {
+    @Validated(CrudValidationGroup.Create.class)
+    public IdResp<Long> create(@RequestBody @Valid C req) {
         return new IdResp<>(baseService.create(req));
     }
 
@@ -139,7 +141,8 @@ public abstract class AbstractCrudController<S extends CrudService<L, D, Q, C>, 
     @Parameter(name = "id", description = "ID", example = "1", in = ParameterIn.PATH)
     @ResponseBody
     @PutMapping("/{id}")
-    public void update(@Validated(CrudValidationGroup.Update.class) @RequestBody C req, @PathVariable("id") Long id) {
+    @Validated(CrudValidationGroup.Update.class)
+    public void update(@RequestBody @Valid C req, @PathVariable("id") Long id) {
         baseService.update(req, id);
     }
 
@@ -166,7 +169,7 @@ public abstract class AbstractCrudController<S extends CrudService<L, D, Q, C>, 
     @Operation(summary = "批量删除数据", description = "批量删除数据")
     @ResponseBody
     @DeleteMapping
-    public void batchDelete(@Validated @RequestBody IdsReq req) {
+    public void batchDelete(@RequestBody @Valid IdsReq req) {
         baseService.delete(req.getIds());
     }
 
@@ -181,7 +184,7 @@ public abstract class AbstractCrudController<S extends CrudService<L, D, Q, C>, 
     @ExcludeFromGracefulResponse
     @Operation(summary = "导出数据", description = "导出数据")
     @GetMapping("/export")
-    public void export(@Validated Q query, @Validated SortQuery sortQuery, HttpServletResponse response) {
+    public void export(@Valid Q query, @Valid SortQuery sortQuery, HttpServletResponse response) {
         baseService.export(query, sortQuery, response);
     }
 }
