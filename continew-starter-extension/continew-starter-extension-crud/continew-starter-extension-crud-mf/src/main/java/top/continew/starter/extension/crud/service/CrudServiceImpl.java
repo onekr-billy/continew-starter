@@ -33,7 +33,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.ReflectUtils;
-import top.continew.starter.core.util.ValidationUtils;
+import top.continew.starter.core.util.validation.ValidationUtils;
 import top.continew.starter.data.mf.base.BaseMapper;
 import top.continew.starter.data.mf.service.impl.ServiceImpl;
 import top.continew.starter.data.mf.util.QueryWrapperHelper;

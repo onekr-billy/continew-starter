@@ -17,7 +17,7 @@
 package top.continew.starter.messaging.mail.core;
 
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import top.continew.starter.core.util.ValidationUtils;
+import top.continew.starter.core.util.validation.ValidationUtils;
 
 /**
  * 邮件配置
