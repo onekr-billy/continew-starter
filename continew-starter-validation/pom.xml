@@ -31,7 +31,7 @@
         <!-- SpEL Validator（基于 SpEL 的 jakarta.validation-api 扩展增强包） -->
         <dependency>
             <groupId>cn.sticki</groupId>
-            <artifactId>spel-validator-javax</artifactId>
+            <artifactId>spel-validator-jakarta</artifactId>
         </dependency>
     </dependencies>
 </project>
