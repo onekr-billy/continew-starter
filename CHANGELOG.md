@@ -1,3 +1,40 @@
+## [v2.13.0](https://github.com/continew-org/continew-starter/compare/v2.12.2...v2.13.0) (2025-07-05)
+
+### ✨ 新特性
+
+- 【excel/poi】新增 continew-starter-excel-poi 模块，并使用 FastExcel 替换 EasyExcel (Gitee#64@jiang4yu)
+- 【api-doc】ApiDocUtils 新增 buildGroupedOpenApi（构建分组接口文档） 方法 ([08abe94](https://github.com/continew-org/continew-starter/commit/08abe94c85f098c3a797fa5b3255136654dc2720))
+- 【extension/crud】新增 Api.BATCH_DELETE 批量删除枚举，拆分单个删除和批量删除接口 ([bc53d5b](https://github.com/continew-org/continew-starter/commit/bc53d5bfffda10ace055817f0249995296675ac1))
+- 【json/jackson】添加对Instant、Duration的序列化和反序列化处理 (Gitee#68@jiang4yu) ([ffa484d](https://github.com/continew-org/continew-starter/commit/ffa484d9452c176489b77d1bea892b33d35a7019)) ([df9255c](https://github.com/continew-org/continew-starter/commit/df9255ca3de2452f0de68e4ae35282a1a7727b65))
+- 【validation】新增校验模块并引入 SpEL Validator 用于复杂校验场景 ([5ae5b26](https://github.com/continew-org/continew-starter/commit/5ae5b2602aaa8e08c03fa8881c8109b0a1831966)) ([68f1f41](https://github.com/continew-org/continew-starter/commit/68f1f41cc991e81179f475111403d8917b17c55f))
+- 【validation】新增 Phone 手机号校验注解，支持校验座机号码、手机号码（中国大陆）、手机号码（中国香港）、手机号码（中国台湾）、手机号码（中国澳门） ([fa7af8e](https://github.com/continew-org/continew-starter/commit/fa7af8e7b7eed91d2917688817885349a2965f16)) ([8d5d97d](https://github.com/continew-org/continew-starter/commit/8d5d97dcf6c102217aa9a8b745f891b388da8a10))
+- 【extension/crud】CrudService 增加 Valid 校验注解，Controller 层使用 Valid 替换部分 Validated 注解 ([cce1b55](https://github.com/continew-org/continew-starter/commit/cce1b5560b3f468998d38609fc30a01ebcb9aa20))
+
+### 💎 功能优化
+
+- 【extension/crud】AbstractBaseController => AbstractCrudController，BaseService => CrudService ([a7d1e71](https://github.com/continew-org/continew-starter/commit/a7d1e71ab39652a93653e127bfe4a1c167342743))
+- 【excel】file 模块重命名为 excel ([5a53d95](https://github.com/continew-org/continew-starter/commit/5a53d953da8d0bb158bd94820a45c7b26887328f))
+- 【core】ProjectProperties => ApplicationProperties ([27dc229](https://github.com/continew-org/continew-starter/commit/27dc2294e6a90c2a6b0e95b58e816ab6cb5cce26))
+- 【core】调整 CheckUtils 等校验类到 util.validation 包下 ([78a7904](https://github.com/continew-org/continew-starter/commit/78a7904c2fba7c18869afb3f089b23b79666a3a7))
+- 简化 package，对于互斥包不再单独命名，例如：data.mp、data.mf，统一为 data ([223236a](https://github.com/continew-org/continew-starter/commit/223236aad31c32a8e2c49802dbd1f2f34a3ca275))
+- 【data/mp】将 MP 的 CrudRepository 迁移至 ServiceImpl 类中，减少两层继承，解决层级过多出现 Sonar 警告的问题 ([e1c9a91](https://github.com/continew-org/continew-starter/commit/e1c9a91c77127a1f2a87f6c2effa813a82fc1877))
+
+### 📦 依赖升级
+
+- 调整 groupId top.continew => top.continew.starter ([a0ace7d](https://github.com/continew-org/continew-starter/commit/a0ace7d60c06b38a2535a5f48e3dbd1f87e9faa7))
+- commons-beanutils 1.9.4 => 1.11.0 ([f84a1dd](https://github.com/continew-org/continew-starter/commit/f84a1dddfd27e6d4c1ddd3469866e01f6ddd2931))
+- spring-boot 3.3.11 => 3.3.12 ([1d47cc6](https://github.com/continew-org/continew-starter/commit/1d47cc6f9ccf9c0ed6e02744e56063876f9a1200))
+- redisson 3.46.0 => 3.49.0
+- cosid 2.12.3 => 2.13.0
+- sa-token 1.42.0 => 1.44.0
+- mybatis-plus 3.5.8 => 3.5.12 ([1d47cc6](https://github.com/continew-org/continew-starter/commit/1d47cc6f9ccf9c0ed6e02744e56063876f9a1200)) ([8806eb9](https://github.com/continew-org/continew-starter/commit/8806eb9942df210788510489e24cc5636b0fb77a))
+- mybatis-flex 1.10.8 => 1.10.9
+- snail-job 1.4.0 => 1.5.0
+- sms4j 3.3.4 => 3.3.5
+- aws-sdk 2.31.35 => 2.31.63
+- aws-crt 0.36.1 => 0.38.1
+- hutool 5.8.37 => 5.8.38
+
 ## [v2.12.2](https://github.com/continew-org/continew-starter/compare/v2.12.1...v2.12.2) (2025-06-13)
 
 ### 🐛 问题修复
