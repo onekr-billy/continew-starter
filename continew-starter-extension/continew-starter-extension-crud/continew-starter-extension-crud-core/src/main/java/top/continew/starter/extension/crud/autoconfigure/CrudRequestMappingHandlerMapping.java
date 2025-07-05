@@ -31,7 +31,6 @@ import top.continew.starter.extension.crud.enums.Api;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
 /**
  * CRUD 请求映射器处理器映射器
@@ -54,28 +53,13 @@ public class CrudRequestMappingHandlerMapping extends RequestMappingHandlerMappi
         CrudRequestMapping crudRequestMapping = handlerType.getDeclaredAnnotation(CrudRequestMapping.class);
         CrudApi crudApi = AnnotatedElementUtils.findMergedAnnotation(method, CrudApi.class);
         // 过滤 API：如果非本类中定义，且 API 列表中不包含，则忽略
-        Api[] apis = this.getApis(crudRequestMapping);
+        Api[] apis = crudRequestMapping.api();
         if (method.getDeclaringClass() != handlerType && !ArrayUtil.contains(apis, ExceptionUtils
             .exToNull(crudApi::value))) {
             return null;
         }
         // 拼接路径（合并了 @RequestMapping 的部分能力）
         return this.getMappingForMethodWrapper(method, handlerType, crudRequestMapping);
-    }
-
-    /**
-     * 获取 API 列表
-     *
-     * @param crudRequestMapping CRUD 请求映射
-     * @return API 列表
-     */
-    private Api[] getApis(CrudRequestMapping crudRequestMapping) {
-        Api[] apiArr = crudRequestMapping.api();
-        CrudApi[] crudApiArr = crudRequestMapping.apis();
-        if (ArrayUtil.isEmpty(crudApiArr)) {
-            return apiArr;
-        }
-        return Arrays.stream(crudApiArr).map(CrudApi::value).toArray(Api[]::new);
     }
 
     /**
