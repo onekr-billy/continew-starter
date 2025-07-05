@@ -83,7 +83,7 @@ ContiNew Starter 就是将脚手架项目中的通用基础配置进行了封装
 
 ```xml
 <parent>
-    <groupId>top.continew</groupId>
+    <groupId>top.continew.starter</groupId>
     <artifactId>continew-starter</artifactId>
     <version>{latest-version}</version>
 </parent>
@@ -103,7 +103,7 @@ ContiNew Starter 就是将脚手架项目中的通用基础配置进行了封装
     <dependencies>
         <!-- ContiNew Starter Dependencies -->
         <dependency>
-            <groupId>top.continew</groupId>
+            <groupId>top.continew.starter</groupId>
             <artifactId>continew-starter-dependencies</artifactId>
             <version>{latest-version}</version>
             <type>pom</type>
@@ -119,7 +119,7 @@ ContiNew Starter 就是将脚手架项目中的通用基础配置进行了封装
 <dependencies>
     <!-- Web 模块 -->
     <dependency>
-        <groupId>top.continew</groupId>
+        <groupId>top.continew.starter</groupId>
         <artifactId>continew-starter-web</artifactId>
     </dependency>
 </dependencies>

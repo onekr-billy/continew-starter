@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>top.continew</groupId>
+        <groupId>top.continew.starter</groupId>
         <artifactId>continew-starter</artifactId>
         <version>${revision}</version>
     </parent>
@@ -16,13 +16,13 @@
     <dependencies>
         <!-- 核心模块 -->
         <dependency>
-            <groupId>top.continew</groupId>
+            <groupId>top.continew.starter</groupId>
             <artifactId>continew-starter-core</artifactId>
         </dependency>
 
         <!-- 缓存模块 - Redisson -->
         <dependency>
-            <groupId>top.continew</groupId>
+            <groupId>top.continew.starter</groupId>
             <artifactId>continew-starter-cache-redisson</artifactId>
         </dependency>
     </dependencies>
