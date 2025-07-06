@@ -18,15 +18,13 @@ package top.continew.starter.validation.autoconfigure;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.validation.Validator;
-import org.hibernate.validator.HibernateValidator;
+import org.hibernate.validator.BaseHibernateValidatorConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
-
-import java.util.Properties;
 
 /**
  * JSR 303 校验器自动配置
@@ -34,10 +32,10 @@ import java.util.Properties;
  * @author Charles7c
  * @since 2.3.0
  */
-@AutoConfiguration
-public class ValidatorAutoConfiguration {
+@AutoConfigureBefore
+public class ValidationAutoConfiguration {
 
-    private static final Logger log = LoggerFactory.getLogger(ValidatorAutoConfiguration.class);
+    private static final Logger log = LoggerFactory.getLogger(ValidationAutoConfiguration.class);
 
     /**
      * Validator 失败立即返回模式配置
@@ -51,10 +49,9 @@ public class ValidatorAutoConfiguration {
         try (LocalValidatorFactoryBean factoryBean = new LocalValidatorFactoryBean()) {
             // 国际化
             factoryBean.setValidationMessageSource(messageSource);
-            factoryBean.setProviderClass(HibernateValidator.class);
-            Properties properties = new Properties();
-            properties.setProperty("hibernate.validator.fail_fast", "true");
-            factoryBean.setValidationProperties(properties);
+            // 快速失败
+            factoryBean.getValidationPropertyMap()
+                .put(BaseHibernateValidatorConfiguration.FAIL_FAST, Boolean.TRUE.toString());
             factoryBean.afterPropertiesSet();
             return factoryBean.getValidator();
         }
@@ -62,6 +59,6 @@ public class ValidatorAutoConfiguration {
 
     @PostConstruct
     public void postConstruct() {
-        log.debug("[ContiNew Starter] - Auto Configuration 'Validator' completed initialization.");
+        log.debug("[ContiNew Starter] - Auto Configuration 'Validation' completed initialization.");
     }
 }

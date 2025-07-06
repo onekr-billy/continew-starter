@@ -22,10 +22,10 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.continew.starter.core.enums.BaseEnum;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.function.Function;
 
 /**
  * 枚举校验器
@@ -53,17 +53,53 @@ public class EnumValueValidator implements ConstraintValidator<EnumValue, Object
         if (value == null) {
             return true;
         }
+
+        // 处理数组场景
+        if (value.getClass().isArray()) {
+            Object[] array = (Object[])value;
+            for (Object element : array) {
+                if (!isValidElement(element)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // 处理集合场景
+        if (value instanceof Iterable<?> iterable) {
+            for (Object element : iterable) {
+                if (!isValidElement(element)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // 处理单个值场景
+        return isValidElement(value);
+    }
+
+    /**
+     * 校验单个元素是否有效
+     *
+     * @param value 待校验的值
+     * @return 是否有效
+     */
+    private boolean isValidElement(Object value) {
         // 优先校验 enumValues
         if (enumValues.length > 0) {
             return Arrays.asList(enumValues).contains(Convert.toStr(value));
         }
+
         Enum[] enumConstants = enumClass.getEnumConstants();
         if (enumConstants.length == 0) {
             return false;
         }
+
         if (CharSequenceUtil.isBlank(enumMethod)) {
-            return findEnumValue(enumConstants, Enum::toString, Convert.toStr(value));
+            return findEnumValue(enumConstants, Convert.toStr(value));
         }
+
         try {
             // 枚举类指定了方法名，则调用指定方法获取枚举值
             Method method = enumClass.getMethod(enumMethod);
@@ -82,13 +118,16 @@ public class EnumValueValidator implements ConstraintValidator<EnumValue, Object
      * 遍历枚举类，判断是否包含指定值
      *
      * @param enumConstants 枚举类数组
-     * @param function      获取枚举值的函数
      * @param value         待校验的值
      * @return 是否包含指定值
      */
-    private boolean findEnumValue(Enum[] enumConstants, Function<Enum, Object> function, Object value) {
+    private boolean findEnumValue(Enum[] enumConstants, Object value) {
         for (Enum enumConstant : enumConstants) {
-            if (function.apply(enumConstant).equals(value)) {
+            if (enumConstant instanceof BaseEnum<?> baseEnum) {
+                if (baseEnum.getValue().toString().equals(value)) {
+                    return true;
+                }
+            } else if (enumConstant.toString().equals(value)) {
                 return true;
             }
         }
