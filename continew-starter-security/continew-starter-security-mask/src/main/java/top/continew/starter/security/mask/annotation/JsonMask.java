@@ -56,7 +56,7 @@ public @interface JsonMask {
     /**
      * 左侧保留位数
      * <p>
-     * 仅在脱敏类型为 {@code DesensitizedType.CUSTOM } 时使用
+     * 仅在脱敏类型为 {@code MaskType.CUSTOM } 时使用
      * </p>
      */
     int left() default 0;
@@ -64,7 +64,7 @@ public @interface JsonMask {
     /**
      * 右侧保留位数
      * <p>
-     * 仅在脱敏类型为 {@code DesensitizedType.CUSTOM } 时使用
+     * 仅在脱敏类型为 {@code MaskType.CUSTOM } 时使用
      * </p>
      */
     int right() default 0;
