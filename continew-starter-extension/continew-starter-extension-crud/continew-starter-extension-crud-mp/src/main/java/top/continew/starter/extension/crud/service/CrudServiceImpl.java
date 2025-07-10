@@ -16,7 +16,6 @@
 
 package top.continew.starter.extension.crud.service;
 
-import cn.crane4j.core.support.OperateTemplate;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.collection.CollUtil;
@@ -305,19 +304,6 @@ public abstract class CrudServiceImpl<M extends BaseMapper<T>, T extends BaseIdD
     }
 
     /**
-     * 填充数据
-     *
-     * @param obj 待填充信息
-     */
-    protected void fill(Object obj) {
-        if (obj == null) {
-            return;
-        }
-        OperateTemplate operateTemplate = SpringUtil.getBean(OperateTemplate.class);
-        operateTemplate.execute(obj);
-    }
-
-    /**
      * 构建 QueryWrapper
      *
      * @param query 查询条件
@@ -327,6 +313,14 @@ public abstract class CrudServiceImpl<M extends BaseMapper<T>, T extends BaseIdD
         QueryWrapper<T> queryWrapper = new QueryWrapper<>();
         // 解析并拼接查询条件
         return QueryWrapperHelper.build(query, this.getQueryFields(), queryWrapper);
+    }
+
+    /**
+     * 填充数据
+     *
+     * @param obj 待填充信息
+     */
+    protected void fill(Object obj) {
     }
 
     /**
