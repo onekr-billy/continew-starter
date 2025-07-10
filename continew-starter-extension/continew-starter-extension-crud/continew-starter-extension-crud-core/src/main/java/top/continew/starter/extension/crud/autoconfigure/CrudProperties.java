@@ -31,6 +31,7 @@ public class CrudProperties {
 
     /**
      * 树配置
+     * <p>用于简单树场景，例如：树选择（下拉）</p>
      */
     @NestedConfigurationProperty
     private CrudTreeProperties tree = new CrudTreeProperties();

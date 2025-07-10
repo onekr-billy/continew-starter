@@ -23,6 +23,11 @@ import top.continew.starter.extension.crud.annotation.TreeField;
 /**
  * CRUD 树列表配置属性
  *
+ * <p>
+ * 用于简单树场景，例如：树选择（下拉）
+ * </p>
+ *
+ * @see TreeField
  * @author Charles7c
  * @since 2.7.2
  */
