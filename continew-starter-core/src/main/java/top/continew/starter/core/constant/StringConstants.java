@@ -19,9 +19,10 @@ package top.continew.starter.core.constant;
 /**
  * 字符串相关常量
  *
+ * @see cn.hutool.core.text.StrPool
+ *
  * @author looly（<a href="https://gitee.com/dromara/hutool">Hutool</a>）
  * @author Charles7c
- * @see cn.hutool.core.text.StrPool
  * @since 1.0.0
  */
 public class StringConstants {

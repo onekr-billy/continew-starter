@@ -25,8 +25,9 @@ import java.util.function.BooleanSupplier;
 /**
  * 业务参数校验工具类（抛出 500 ServiceException）
  *
- * @author Charles7c
  * @see BusinessException
+ *
+ * @author Charles7c
  * @since 1.0.0
  */
 public class CheckUtils extends Validator {

@@ -32,8 +32,9 @@ import java.util.Objects;
 /**
  * 枚举接口 BaseEnum 反序列化器
  *
- * @author Charles7c
  * @see BaseEnum
+ *
+ * @author Charles7c
  * @since 2.4.0
  */
 @JacksonStdImpl

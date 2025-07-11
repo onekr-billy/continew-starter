@@ -28,8 +28,9 @@ import top.continew.starter.core.enums.BaseEnum;
 /**
  * Easy Excel 枚举接口转换器
  *
- * @author Charles7c
  * @see BaseEnum
+ *
+ * @author Charles7c
  * @since 1.2.0
  */
 public class ExcelBaseEnumConverter implements Converter<BaseEnum<?>> {

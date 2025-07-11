@@ -33,9 +33,10 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 复合枚举类型处理器（扩展 BaseEnum 支持）
  *
+ * @see com.baomidou.mybatisplus.core.handlers.CompositeEnumTypeHandler
+ *
  * @author miemie（<a href="https://gitee.com/baomidou/mybatis-plus">MyBatis Plus</a>）
  * @author Charles7c
- * @see com.baomidou.mybatisplus.core.handlers.CompositeEnumTypeHandler
  * @since 2.7.3
  */
 public class CompositeBaseEnumTypeHandler<E extends Enum<E>> implements TypeHandler<E> {

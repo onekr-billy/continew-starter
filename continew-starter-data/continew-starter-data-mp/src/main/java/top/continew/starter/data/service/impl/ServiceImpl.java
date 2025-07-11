@@ -55,6 +55,7 @@ import java.util.function.Function;
  * <p>将 MP 的 {@link CrudRepository} 迁移至本类中，减少两层继承，解决层级过多出现 Sonar 警告的问题</p>
  *
  * @see CrudRepository
+ *
  * @param <M> Mapper 接口
  * @param <T> 实体类型
  * @author hubin （<a href="https://gitee.com/baomidou/mybatis-plus">MyBatis Plus</a>）

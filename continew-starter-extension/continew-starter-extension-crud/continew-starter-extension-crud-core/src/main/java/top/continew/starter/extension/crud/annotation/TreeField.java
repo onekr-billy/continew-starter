@@ -29,6 +29,7 @@ import java.lang.annotation.*;
  *
  * @see cn.hutool.core.lang.tree.TreeNodeConfig
  * @see CrudTreeProperties
+ *
  * @author Charles7c
  * @since 1.0.0
  */

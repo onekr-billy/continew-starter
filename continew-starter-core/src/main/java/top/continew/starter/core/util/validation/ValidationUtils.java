@@ -24,8 +24,9 @@ import java.util.function.BooleanSupplier;
 /**
  * 基本参数校验工具类（抛出 400 BadRequestException）
  *
+ * @see top.continew.starter.core.exception.BadRequestException
+ *
  * @author Charles7c
- * @see BadRequestException
  * @since 1.0.0
  */
 public class ValidationUtils extends Validator {
