@@ -197,7 +197,7 @@ continew-starter
    ├─ continew-starter-extension-datapermission（数据权限模块）
    │  ├─ continew-starter-extension-datapermission-core（核心模块）
    │  └─ continew-starter-extension-datapermission-mp（MyBatis Plus）
-   ├─ continew-starter-extension-tenant（多租户模块）
+   ├─ continew-starter-extension-tenant（租户模块）
    │  ├─ continew-starter-extension-tenant-core（核心模块）
    │  └─ continew-starter-extension-tenant-mp（MyBatis Plus）
    └─ continew-starter-extension-crud（CRUD 模块）

@@ -25,7 +25,7 @@ import top.continew.starter.core.constant.PropertiesConstants;
 import top.continew.starter.extension.tenant.config.TenantProvider;
 
 /**
- * 多租户 Web MVC 自动配置
+ * 租户 Web MVC 自动配置
  *
  * @author Charles7c
  * @since 2.7.0

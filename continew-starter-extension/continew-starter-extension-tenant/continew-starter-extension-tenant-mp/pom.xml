@@ -13,10 +13,10 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>ContiNew Starter 扩展模块 - 多租户 - MyBatis Plus ORM 模块</description>
+    <description>ContiNew Starter 扩展模块 - 租户 - MyBatis Plus ORM 模块</description>
 
     <dependencies>
-        <!-- 多租户 - 核心模块 -->
+        <!-- 租户 - 核心模块 -->
         <dependency>
             <groupId>top.continew.starter</groupId>
             <artifactId>continew-starter-extension-tenant-core</artifactId>

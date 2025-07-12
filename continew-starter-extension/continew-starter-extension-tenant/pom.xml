@@ -13,7 +13,7 @@
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
-    <description>ContiNew Starter 扩展模块 - 多租户</description>
+    <description>ContiNew Starter 扩展模块 - 租户</description>
 
     <modules>
         <module>continew-starter-extension-tenant-core</module>

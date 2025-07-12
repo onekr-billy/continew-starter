@@ -150,7 +150,7 @@ public class PropertiesConstants {
     public static final String DATA_PERMISSION = CONTINEW_STARTER + StringConstants.DOT + "data-permission";
 
     /**
-     * 多租户配置
+     * 租户配置
      */
     public static final String TENANT = CONTINEW_STARTER + StringConstants.DOT + "tenant";
 

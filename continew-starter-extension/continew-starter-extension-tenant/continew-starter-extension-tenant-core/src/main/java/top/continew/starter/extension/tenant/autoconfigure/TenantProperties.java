@@ -57,7 +57,7 @@ public class TenantProperties {
     private Long superTenantId = 1L;
 
     /**
-     * 忽略表（忽略拼接多租户条件）
+     * 忽略表（忽略拼接租户条件）
      */
     private List<String> ignoreTables;
 
