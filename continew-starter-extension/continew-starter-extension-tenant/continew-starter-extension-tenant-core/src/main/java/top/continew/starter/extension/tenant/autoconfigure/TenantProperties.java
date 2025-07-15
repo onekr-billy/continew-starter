@@ -52,9 +52,9 @@ public class TenantProperties {
     private String tenantIdHeader = "X-Tenant-Id";
 
     /**
-     * 超级租户 ID
+     * 超级/默认租户 ID
      */
-    private Long superTenantId = 1L;
+    private Long superTenantId = 0L;
 
     /**
      * 忽略表（忽略拼接租户条件）

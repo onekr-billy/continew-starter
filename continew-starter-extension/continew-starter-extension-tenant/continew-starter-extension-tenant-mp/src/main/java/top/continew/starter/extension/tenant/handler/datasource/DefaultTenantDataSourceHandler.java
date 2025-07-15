@@ -17,6 +17,7 @@
 package top.continew.starter.extension.tenant.handler.datasource;
 
 import cn.hutool.core.text.CharSequenceUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.creator.DataSourceProperty;
 import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
@@ -40,10 +41,9 @@ public class DefaultTenantDataSourceHandler implements TenantDataSourceHandler {
     private final DynamicRoutingDataSource dynamicRoutingDataSource;
     private final DefaultDataSourceCreator dataSourceCreator;
 
-    public DefaultTenantDataSourceHandler(DynamicRoutingDataSource dynamicRoutingDataSource,
-                                          DefaultDataSourceCreator dataSourceCreator) {
-        this.dynamicRoutingDataSource = dynamicRoutingDataSource;
-        this.dataSourceCreator = dataSourceCreator;
+    public DefaultTenantDataSourceHandler(DataSource dataSource) {
+        this.dynamicRoutingDataSource = (DynamicRoutingDataSource)dataSource;
+        this.dataSourceCreator = SpringUtil.getBean(DefaultDataSourceCreator.class);
     }
 
     @Override

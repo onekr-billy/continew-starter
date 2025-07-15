@@ -16,6 +16,7 @@
 
 package top.continew.starter.extension.tenant.handler;
 
+import cn.hutool.extra.spring.SpringUtil;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import top.continew.starter.extension.tenant.TenantDataSourceHandler;
 import top.continew.starter.extension.tenant.TenantHandler;
@@ -34,14 +35,10 @@ import top.continew.starter.extension.tenant.enums.TenantIsolationLevel;
 public class DefaultTenantHandler implements TenantHandler {
 
     private final TenantProperties tenantProperties;
-    private final TenantDataSourceHandler dataSourceHandler;
     private final TenantProvider tenantProvider;
 
-    public DefaultTenantHandler(TenantProperties tenantProperties,
-                                TenantDataSourceHandler dataSourceHandler,
-                                TenantProvider tenantProvider) {
+    public DefaultTenantHandler(TenantProperties tenantProperties, TenantProvider tenantProvider) {
         this.tenantProperties = tenantProperties;
-        this.dataSourceHandler = dataSourceHandler;
         this.tenantProvider = tenantProvider;
     }
 
@@ -50,16 +47,16 @@ public class DefaultTenantHandler implements TenantHandler {
         if (!tenantProperties.isEnabled()) {
             return;
         }
-        TenantContext tenantHandler = tenantProvider.getByTenantId(tenantId.toString(), false);
+        TenantContext tenantContext = tenantProvider.getByTenantId(tenantId.toString(), false);
         // 保存当前的租户上下文
         TenantContext originalContext = TenantContextHolder.getContext();
         boolean isPush = false;
         try {
             // 设置新的租户上下文
-            TenantContextHolder.setContext(tenantHandler);
+            TenantContextHolder.setContext(tenantContext);
             // 切换数据源
-            if (TenantIsolationLevel.DATASOURCE.equals(tenantHandler.getIsolationLevel())) {
-                dataSourceHandler.changeDataSource(tenantHandler.getDataSource());
+            if (TenantIsolationLevel.DATASOURCE.equals(tenantContext.getIsolationLevel())) {
+                SpringUtil.getBean(TenantDataSourceHandler.class).changeDataSource(tenantContext.getDataSource());
                 isPush = true;
             }
             // 执行业务逻辑

@@ -16,8 +16,6 @@
 
 package top.continew.starter.extension.tenant.autoconfigure;
 
-import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
-import com.baomidou.dynamic.datasource.creator.DefaultDataSourceCreator;
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
 import jakarta.annotation.PostConstruct;
@@ -25,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -83,6 +82,7 @@ public class TenantAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnClass(name = "com.baomidou.dynamic.datasource.DynamicRoutingDataSource")
     public TenantDataSourceAdvisor tenantDataSourceAdvisor(TenantDataSourceInterceptor tenantDataSourceInterceptor) {
         return new TenantDataSourceAdvisor(tenantDataSourceInterceptor);
     }
@@ -92,6 +92,7 @@ public class TenantAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnClass(name = "com.baomidou.dynamic.datasource.DynamicRoutingDataSource")
     public TenantDataSourceInterceptor tenantDataSourceInterceptor(TenantDataSourceHandler tenantDataSourceHandler) {
         return new TenantDataSourceInterceptor(tenantDataSourceHandler);
     }
@@ -101,9 +102,9 @@ public class TenantAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public TenantDataSourceHandler tenantDataSourceHandler(DataSource dataSource,
-                                                           DefaultDataSourceCreator dataSourceCreator) {
-        return new DefaultTenantDataSourceHandler((DynamicRoutingDataSource)dataSource, dataSourceCreator);
+    @ConditionalOnClass(name = "com.baomidou.dynamic.datasource.DynamicRoutingDataSource")
+    public TenantDataSourceHandler tenantDataSourceHandler(DataSource dataSource) {
+        return new DefaultTenantDataSourceHandler(dataSource);
     }
 
     /**
@@ -124,8 +125,8 @@ public class TenantAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public TenantHandler tenantHandler(TenantDataSourceHandler tenantDataSourceHandler, TenantProvider tenantProvider) {
-        return new DefaultTenantHandler(tenantProperties, tenantDataSourceHandler, tenantProvider);
+    public TenantHandler tenantHandler(TenantProvider tenantProvider) {
+        return new DefaultTenantHandler(tenantProperties, tenantProvider);
     }
 
     @PostConstruct

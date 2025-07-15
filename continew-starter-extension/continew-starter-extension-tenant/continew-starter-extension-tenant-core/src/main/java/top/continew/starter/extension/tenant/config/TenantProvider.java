@@ -30,9 +30,9 @@ public interface TenantProvider {
     /**
      * 根据租户 ID 获取租户上下文
      *
-     * @param tenantId 租户 ID
-     * @param isVerify 是否验证有效性
+     * @param tenantIdAsString 租户 ID 字符串
+     * @param isVerify         是否验证有效性
      * @return 租户上下文
      */
-    TenantContext getByTenantId(String tenantId, boolean isVerify);
+    TenantContext getByTenantId(String tenantIdAsString, boolean isVerify);
 }
