@@ -21,6 +21,10 @@ import java.lang.annotation.*;
 /**
  * 租户忽略注解
  *
+ * <p>
+ * 例如：定时任务等需要忽略租户的场景
+ * </p>
+ *
  * @author Charles7c
  * @since 2.7.0
  */

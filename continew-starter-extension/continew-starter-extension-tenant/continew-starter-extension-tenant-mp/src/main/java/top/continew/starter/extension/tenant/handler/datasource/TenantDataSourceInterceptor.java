@@ -39,6 +39,11 @@ public class TenantDataSourceInterceptor implements MethodInterceptor {
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
+        // 忽略租户
+        if (TenantContextHolder.isIgnore()) {
+            return true;
+        }
+        // 忽略行级隔离
         if (TenantIsolationLevel.LINE.equals(TenantContextHolder.getIsolationLevel())) {
             return invocation.proceed();
         }

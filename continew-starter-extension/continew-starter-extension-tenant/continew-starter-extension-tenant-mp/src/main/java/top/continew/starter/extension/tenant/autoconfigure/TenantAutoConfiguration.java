@@ -30,6 +30,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.ResolvableType;
 import top.continew.starter.core.constant.PropertiesConstants;
+import top.continew.starter.extension.tenant.aop.TenantIgnoreAspect;
 import top.continew.starter.extension.tenant.config.TenantProvider;
 import top.continew.starter.extension.tenant.handler.DefaultTenantHandler;
 import top.continew.starter.extension.tenant.TenantDataSourceHandler;
@@ -57,6 +58,15 @@ public class TenantAutoConfiguration {
 
     public TenantAutoConfiguration(TenantProperties tenantProperties) {
         this.tenantProperties = tenantProperties;
+    }
+
+    /**
+     * 租户忽略切面
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public TenantIgnoreAspect tenantIgnoreAspect() {
+        return new TenantIgnoreAspect();
     }
 
     /**

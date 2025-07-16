@@ -32,7 +32,15 @@ import java.util.Optional;
  */
 public class TenantContextHolder {
 
-    private static final TransmittableThreadLocal<TenantContext> CONTEXT_HOLDER = new TransmittableThreadLocal<>();
+    /**
+     * 租户上下文
+     */
+    private static final TransmittableThreadLocal<TenantContext> CONTEXT = new TransmittableThreadLocal<>();
+
+    /**
+     * 是否忽略租户
+     */
+    private static final TransmittableThreadLocal<Boolean> IGNORE = new TransmittableThreadLocal<>();
 
     private TenantContextHolder() {
     }
@@ -43,7 +51,7 @@ public class TenantContextHolder {
      * @param context 上下文
      */
     public static void setContext(TenantContext context) {
-        CONTEXT_HOLDER.set(context);
+        CONTEXT.set(context);
     }
 
     /**
@@ -52,14 +60,33 @@ public class TenantContextHolder {
      * @return 上下文
      */
     public static TenantContext getContext() {
-        return CONTEXT_HOLDER.get();
+        return CONTEXT.get();
     }
 
     /**
-     * 清除上下文
+     * 设置是否忽略租户
+     *
+     * @param ignore 是否忽略租户
+     */
+    public static void setIgnore(boolean ignore) {
+        IGNORE.set(ignore);
+    }
+
+    /**
+     * 是否忽略租户
+     *
+     * @return 是否忽略租户
+     */
+    public static boolean isIgnore() {
+        return Boolean.TRUE.equals(IGNORE.get());
+    }
+
+    /**
+     * 清除
      */
     public static void clearContext() {
-        CONTEXT_HOLDER.remove();
+        CONTEXT.remove();
+        IGNORE.remove();
     }
 
     /**
