@@ -19,12 +19,12 @@ package top.continew.starter.extension.datapermission.model;
 import java.util.Set;
 
 /**
- * 用户上下文
+ * 用户数据
  *
  * @author Charles7c
  * @since 1.1.0
  */
-public class UserContext {
+public class UserData {
 
     /**
      * 用户 ID
@@ -34,7 +34,7 @@ public class UserContext {
     /**
      * 角色列表
      */
-    private Set<RoleContext> roles;
+    private Set<RoleData> roles;
 
     /**
      * 部门 ID
@@ -49,11 +49,11 @@ public class UserContext {
         this.userId = userId;
     }
 
-    public Set<RoleContext> getRoles() {
+    public Set<RoleData> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<RoleContext> roles) {
+    public void setRoles(Set<RoleData> roles) {
         this.roles = roles;
     }
 

@@ -19,12 +19,12 @@ package top.continew.starter.extension.datapermission.model;
 import top.continew.starter.extension.datapermission.enums.DataScope;
 
 /**
- * 角色上下文
+ * 角色数据
  *
  * @author Charles7c
  * @since 1.1.0
  */
-public class RoleContext {
+public class RoleData {
 
     /**
      * 角色 ID
@@ -36,10 +36,10 @@ public class RoleContext {
      */
     private DataScope dataScope;
 
-    public RoleContext() {
+    public RoleData() {
     }
 
-    public RoleContext(String roleId, DataScope dataScope) {
+    public RoleData(String roleId, DataScope dataScope) {
         this.roleId = roleId;
         this.dataScope = dataScope;
     }
@@ -58,5 +58,21 @@ public class RoleContext {
 
     public void setDataScope(DataScope dataScope) {
         this.dataScope = dataScope;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        RoleData roleData = (RoleData)o;
+        return roleId.equals(roleData.roleId) && dataScope == roleData.dataScope;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = roleId.hashCode();
+        result = 31 * result + dataScope.hashCode();
+        return result;
     }
 }

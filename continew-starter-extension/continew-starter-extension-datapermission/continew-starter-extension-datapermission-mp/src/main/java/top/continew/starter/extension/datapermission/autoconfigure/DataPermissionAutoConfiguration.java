@@ -28,7 +28,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.ResolvableType;
 import top.continew.starter.core.constant.PropertiesConstants;
-import top.continew.starter.extension.datapermission.filter.DataPermissionUserContextProvider;
+import top.continew.starter.extension.datapermission.filter.DataPermissionUserDataProvider;
 import top.continew.starter.extension.datapermission.handler.DefaultDataPermissionHandler;
 
 /**
@@ -61,21 +61,21 @@ public class DataPermissionAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public DataPermissionHandler dataPermissionHandler(DataPermissionUserContextProvider dataPermissionUserContextProvider) {
-        return new DefaultDataPermissionHandler(dataPermissionUserContextProvider);
+    public DataPermissionHandler dataPermissionHandler(DataPermissionUserDataProvider dataPermissionUserDataProvider) {
+        return new DefaultDataPermissionHandler(dataPermissionUserDataProvider);
     }
 
     /**
-     * 数据权限用户上下文提供者
+     * 数据权限用户数据提供者
      */
     @Bean
     @ConditionalOnMissingBean
-    public DataPermissionUserContextProvider dataPermissionUserContextProvider() {
+    public DataPermissionUserDataProvider dataPermissionUserDataProvider() {
         if (log.isErrorEnabled()) {
             log.error("Consider defining a bean of type '{}' in your configuration.", ResolvableType
-                .forClass(DataPermissionUserContextProvider.class));
+                .forClass(DataPermissionUserDataProvider.class));
         }
-        throw new NoSuchBeanDefinitionException(DataPermissionUserContextProvider.class);
+        throw new NoSuchBeanDefinitionException(DataPermissionUserDataProvider.class);
     }
 
     static {

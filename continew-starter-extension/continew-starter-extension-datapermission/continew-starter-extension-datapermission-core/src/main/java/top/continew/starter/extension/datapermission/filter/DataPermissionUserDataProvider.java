@@ -16,15 +16,15 @@
 
 package top.continew.starter.extension.datapermission.filter;
 
-import top.continew.starter.extension.datapermission.model.UserContext;
+import top.continew.starter.extension.datapermission.model.UserData;
 
 /**
- * 数据权限用户上下文提供者
+ * 数据权限用户数据提供者
  *
  * @author Charles7c
  * @since 1.1.0
  */
-public interface DataPermissionUserContextProvider {
+public interface DataPermissionUserDataProvider {
 
     /**
      * 是否过滤
@@ -34,9 +34,9 @@ public interface DataPermissionUserContextProvider {
     boolean isFilter();
 
     /**
-     * 获取用户上下文
+     * 获取用户数据
      *
-     * @return 用户上下文
+     * @return 用户数据
      */
-    UserContext getUserContext();
+    UserData getUserData();
 }

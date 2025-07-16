@@ -47,9 +47,9 @@ import top.continew.starter.data.enums.DatabaseType;
 import top.continew.starter.data.util.MetaUtils;
 import top.continew.starter.extension.datapermission.annotation.DataPermission;
 import top.continew.starter.extension.datapermission.enums.DataScope;
-import top.continew.starter.extension.datapermission.filter.DataPermissionUserContextProvider;
-import top.continew.starter.extension.datapermission.model.RoleContext;
-import top.continew.starter.extension.datapermission.model.UserContext;
+import top.continew.starter.extension.datapermission.filter.DataPermissionUserDataProvider;
+import top.continew.starter.extension.datapermission.model.RoleData;
+import top.continew.starter.extension.datapermission.model.UserData;
 
 /**
  * 默认数据权限处理器
@@ -61,11 +61,11 @@ import top.continew.starter.extension.datapermission.model.UserContext;
 public class DefaultDataPermissionHandler implements DataPermissionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultDataPermissionHandler.class);
-    private final DataPermissionUserContextProvider dataPermissionUserContextProvider;
+    private final DataPermissionUserDataProvider dataPermissionUserDataProvider;
     private static final DataSource dataSource = SpringUtil.getBean(DataSource.class);
 
-    public DefaultDataPermissionHandler(DataPermissionUserContextProvider dataPermissionUserContextProvider) {
-        this.dataPermissionUserContextProvider = dataPermissionUserContextProvider;
+    public DefaultDataPermissionHandler(DataPermissionUserDataProvider dataPermissionUserDataProvider) {
+        this.dataPermissionUserDataProvider = dataPermissionUserDataProvider;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
                 if (dataPermission == null || !CharSequenceUtil.equalsAny(methodName, name, name + "_COUNT")) {
                     continue;
                 }
-                if (dataPermissionUserContextProvider.isFilter()) {
+                if (dataPermissionUserDataProvider.isFilter()) {
                     return buildDataScopeFilter(dataPermission, where);
                 }
             }
@@ -100,19 +100,19 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
      */
     private Expression buildDataScopeFilter(DataPermission dataPermission, Expression where) {
         Expression expression = null;
-        UserContext userContext = dataPermissionUserContextProvider.getUserContext();
-        Set<RoleContext> roles = userContext.getRoles();
-        for (RoleContext roleContext : roles) {
-            DataScope dataScope = roleContext.getDataScope();
+        UserData userData = dataPermissionUserDataProvider.getUserData();
+        Set<RoleData> roles = userData.getRoles();
+        for (RoleData roleData : roles) {
+            DataScope dataScope = roleData.getDataScope();
             if (DataScope.ALL.equals(dataScope)) {
                 return where;
             }
             switch (dataScope) {
                 case DEPT_AND_CHILD -> expression = this
-                    .buildDeptAndChildExpression(dataPermission, userContext, expression);
-                case DEPT -> expression = this.buildDeptExpression(dataPermission, userContext, expression);
-                case SELF -> expression = this.buildSelfExpression(dataPermission, userContext, expression);
-                case CUSTOM -> expression = this.buildCustomExpression(dataPermission, roleContext, expression);
+                    .buildDeptAndChildExpression(dataPermission, userData, expression);
+                case DEPT -> expression = this.buildDeptExpression(dataPermission, userData, expression);
+                case SELF -> expression = this.buildSelfExpression(dataPermission, userData, expression);
+                case CUSTOM -> expression = this.buildCustomExpression(dataPermission, roleData, expression);
                 default -> throw new IllegalArgumentException("暂不支持 [%s] 数据权限".formatted(dataScope));
             }
         }
@@ -128,12 +128,12 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
      * </p>
      *
      * @param dataPermission 数据权限
-     * @param userContext    用户上下文
+     * @param userData       用户数据
      * @param expression     处理前的表达式
      * @return 处理完后的表达式
      */
     private Expression buildDeptAndChildExpression(DataPermission dataPermission,
-                                                   UserContext userContext,
+                                                   UserData userData,
                                                    Expression expression) {
         ParenthesedSelect subSelect = new ParenthesedSelect();
         PlainSelect select = new PlainSelect();
@@ -142,14 +142,14 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
 
         EqualsTo equalsTo = new EqualsTo();
         equalsTo.setLeftExpression(new Column(dataPermission.id()));
-        equalsTo.setRightExpression(new LongValue(userContext.getDeptId()));
+        equalsTo.setRightExpression(new LongValue(userData.getDeptId()));
 
         DatabaseType databaseType = MetaUtils.getDatabaseType(dataSource);
         Expression inSetExpression;
         if (DatabaseType.MYSQL.getDatabase().equalsIgnoreCase(databaseType.getDatabase())) {
             Function findInSetFunction = new Function();
             findInSetFunction.setName("find_in_set");
-            findInSetFunction.setParameters(new ExpressionList(new LongValue(userContext
+            findInSetFunction.setParameters(new ExpressionList(new LongValue(userData
                 .getDeptId()), new Column("ancestors")));
             inSetExpression = findInSetFunction;
         } else if (DatabaseType.POSTGRE_SQL.getDatabase().equalsIgnoreCase(databaseType.getDatabase())) {
@@ -160,7 +160,7 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
             // 创建 LIKE 函数
             LikeExpression likeExpression = new LikeExpression();
             likeExpression.setLeftExpression(concatFunction);
-            likeExpression.setRightExpression(new StringValue("%," + userContext.getDeptId() + ",%"));
+            likeExpression.setRightExpression(new StringValue("%," + userData.getDeptId() + ",%"));
             inSetExpression = likeExpression;
         } else {
             throw new IllegalArgumentException("暂不支持 [%s] 数据权限".formatted(""));
@@ -183,16 +183,14 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
      * </p>
      *
      * @param dataPermission 数据权限
-     * @param userContext    用户上下文
+     * @param userData       用户数据
      * @param expression     处理前的表达式
      * @return 处理完后的表达式
      */
-    private Expression buildDeptExpression(DataPermission dataPermission,
-                                           UserContext userContext,
-                                           Expression expression) {
+    private Expression buildDeptExpression(DataPermission dataPermission, UserData userData, Expression expression) {
         EqualsTo equalsTo = new EqualsTo();
         equalsTo.setLeftExpression(this.buildColumn(dataPermission.tableAlias(), dataPermission.deptId()));
-        equalsTo.setRightExpression(new LongValue(userContext.getDeptId()));
+        equalsTo.setRightExpression(new LongValue(userData.getDeptId()));
         return expression != null ? new OrExpression(expression, equalsTo) : equalsTo;
     }
 
@@ -204,16 +202,14 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
      * </p>
      *
      * @param dataPermission 数据权限
-     * @param userContext    用户上下文
+     * @param userData       用户数据
      * @param expression     处理前的表达式
      * @return 处理完后的表达式
      */
-    private Expression buildSelfExpression(DataPermission dataPermission,
-                                           UserContext userContext,
-                                           Expression expression) {
+    private Expression buildSelfExpression(DataPermission dataPermission, UserData userData, Expression expression) {
         EqualsTo equalsTo = new EqualsTo();
         equalsTo.setLeftExpression(this.buildColumn(dataPermission.tableAlias(), dataPermission.userId()));
-        equalsTo.setRightExpression(new LongValue(userContext.getUserId()));
+        equalsTo.setRightExpression(new LongValue(userData.getUserId()));
         return expression != null ? new OrExpression(expression, equalsTo) : equalsTo;
     }
 
@@ -226,20 +222,18 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
      * </p>
      *
      * @param dataPermission 数据权限
-     * @param roleContext    角色上下文
+     * @param roleData       角色上下文
      * @param expression     处理前的表达式
      * @return 处理完后的表达式
      */
-    private Expression buildCustomExpression(DataPermission dataPermission,
-                                             RoleContext roleContext,
-                                             Expression expression) {
+    private Expression buildCustomExpression(DataPermission dataPermission, RoleData roleData, Expression expression) {
         ParenthesedSelect subSelect = new ParenthesedSelect();
         PlainSelect select = new PlainSelect();
         select.setSelectItems(Collections.singletonList(new SelectItem<>(new Column(dataPermission.deptId()))));
         select.setFromItem(new Table(dataPermission.roleDeptTableAlias()));
         EqualsTo equalsTo = new EqualsTo();
         equalsTo.setLeftExpression(new Column(dataPermission.roleId()));
-        equalsTo.setRightExpression(new LongValue(roleContext.getRoleId()));
+        equalsTo.setRightExpression(new LongValue(roleData.getRoleId()));
         select.setWhere(equalsTo);
         subSelect.setSelect(select);
         // 构建父查询
