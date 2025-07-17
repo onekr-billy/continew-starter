@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.starter.extension.tenant.autoconfigure;
+package top.continew.starter.extension.tenant.interceptor;
 
 import cn.hutool.core.annotation.AnnotationUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +23,7 @@ import org.springframework.core.Ordered;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import top.continew.starter.extension.tenant.annotation.TenantIgnore;
+import top.continew.starter.extension.tenant.autoconfigure.TenantProperties;
 import top.continew.starter.extension.tenant.config.TenantProvider;
 import top.continew.starter.extension.tenant.context.TenantContextHolder;
 
@@ -44,6 +45,7 @@ public class TenantInterceptor implements HandlerInterceptor, Ordered {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        // 忽略租户拦截
         if (handler instanceof HandlerMethod handlerMethod) {
             TenantIgnore methodAnnotation = handlerMethod.getMethodAnnotation(TenantIgnore.class);
             if (methodAnnotation != null) {
@@ -55,9 +57,16 @@ public class TenantInterceptor implements HandlerInterceptor, Ordered {
                 return true;
             }
         }
+        // 设置上下文
         String tenantId = request.getHeader(tenantProperties.getTenantIdHeader());
         TenantContextHolder.setContext(tenantProvider.getByTenantId(tenantId, true));
         return true;
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception e) {
+        // 清除上下文
+        TenantContextHolder.clear();
     }
 
     @Override

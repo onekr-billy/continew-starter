@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package top.continew.starter.extension.tenant;
+package top.continew.starter.extension.tenant.annotation;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import top.continew.starter.core.constant.PropertiesConstants;
+
+import java.lang.annotation.*;
 
 /**
- * 租户处理器
+ * 是否启用租户判断注解
  *
- * @author 小熊
- * @since 2.8.0
+ * @author Charles7c
+ * @since 2.13.1
  */
-public interface TenantHandler {
-
-    /**
-     * 在指定租户中执行
-     *
-     * @param tenantId 租户 ID
-     * @param runnable 方法
-     */
-    void execute(Long tenantId, Runnable runnable);
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Documented
+@ConditionalOnProperty(prefix = PropertiesConstants.TENANT, name = PropertiesConstants.ENABLED, havingValue = "true", matchIfMissing = true)
+public @interface ConditionalOnEnabledTenant {
 }

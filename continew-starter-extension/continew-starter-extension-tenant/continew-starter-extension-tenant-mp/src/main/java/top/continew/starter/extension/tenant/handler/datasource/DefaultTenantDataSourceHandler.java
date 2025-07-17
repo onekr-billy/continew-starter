@@ -82,4 +82,9 @@ public class DefaultTenantDataSourceHandler implements TenantDataSourceHandler {
     public void removeDataSource(String dataSourceName) {
         dynamicRoutingDataSource.removeDataSource(dataSourceName);
     }
+
+    @Override
+    public void poll() {
+        DynamicDataSourceContextHolder.poll();
+    }
 }

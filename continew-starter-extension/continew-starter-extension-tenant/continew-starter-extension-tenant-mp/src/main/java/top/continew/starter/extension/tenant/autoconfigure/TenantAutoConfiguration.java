@@ -25,16 +25,13 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.ResolvableType;
-import top.continew.starter.core.constant.PropertiesConstants;
+import top.continew.starter.extension.tenant.annotation.ConditionalOnEnabledTenant;
 import top.continew.starter.extension.tenant.aop.TenantIgnoreAspect;
 import top.continew.starter.extension.tenant.config.TenantProvider;
-import top.continew.starter.extension.tenant.handler.DefaultTenantHandler;
 import top.continew.starter.extension.tenant.TenantDataSourceHandler;
-import top.continew.starter.extension.tenant.TenantHandler;
 import top.continew.starter.extension.tenant.handler.datasource.DefaultTenantDataSourceHandler;
 import top.continew.starter.extension.tenant.handler.datasource.TenantDataSourceAdvisor;
 import top.continew.starter.extension.tenant.handler.datasource.TenantDataSourceInterceptor;
@@ -49,8 +46,8 @@ import javax.sql.DataSource;
  * @since 2.7.0
  */
 @AutoConfiguration
+@ConditionalOnEnabledTenant
 @EnableConfigurationProperties(TenantProperties.class)
-@ConditionalOnProperty(prefix = PropertiesConstants.TENANT, name = PropertiesConstants.ENABLED, havingValue = "true", matchIfMissing = true)
 public class TenantAutoConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(TenantAutoConfiguration.class);
@@ -128,15 +125,6 @@ public class TenantAutoConfiguration {
                 .forClass(TenantProvider.class));
         }
         throw new NoSuchBeanDefinitionException(TenantProvider.class);
-    }
-
-    /**
-     * 租户处理器
-     */
-    @Bean
-    @ConditionalOnMissingBean
-    public TenantHandler tenantHandler(TenantProvider tenantProvider) {
-        return new DefaultTenantHandler(tenantProperties, tenantProvider);
     }
 
     @PostConstruct

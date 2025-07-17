@@ -57,4 +57,9 @@ public interface TenantDataSourceHandler {
      * @param dataSourceName 数据源名称
      */
     void removeDataSource(String dataSourceName);
+
+    /**
+     * 轮询数据源
+     */
+    void poll();
 }

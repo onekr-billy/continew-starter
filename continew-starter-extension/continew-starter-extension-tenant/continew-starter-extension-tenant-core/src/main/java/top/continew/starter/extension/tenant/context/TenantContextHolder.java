@@ -18,6 +18,7 @@ package top.continew.starter.extension.tenant.context;
 
 import cn.hutool.extra.spring.SpringUtil;
 import com.alibaba.ttl.TransmittableThreadLocal;
+import top.continew.starter.core.util.SpringUtils;
 import top.continew.starter.extension.tenant.autoconfigure.TenantProperties;
 import top.continew.starter.extension.tenant.config.TenantDataSource;
 import top.continew.starter.extension.tenant.enums.TenantIsolationLevel;
@@ -35,12 +36,12 @@ public class TenantContextHolder {
     /**
      * 租户上下文
      */
-    private static final TransmittableThreadLocal<TenantContext> CONTEXT = new TransmittableThreadLocal<>();
+    private static final TransmittableThreadLocal<TenantContext> CONTEXT_HOLDER = new TransmittableThreadLocal<>();
 
     /**
      * 是否忽略租户
      */
-    private static final TransmittableThreadLocal<Boolean> IGNORE = new TransmittableThreadLocal<>();
+    private static final TransmittableThreadLocal<Boolean> IGNORE_HOLDER = new TransmittableThreadLocal<>();
 
     private TenantContextHolder() {
     }
@@ -51,7 +52,7 @@ public class TenantContextHolder {
      * @param context 上下文
      */
     public static void setContext(TenantContext context) {
-        CONTEXT.set(context);
+        CONTEXT_HOLDER.set(context);
     }
 
     /**
@@ -60,7 +61,7 @@ public class TenantContextHolder {
      * @return 上下文
      */
     public static TenantContext getContext() {
-        return CONTEXT.get();
+        return CONTEXT_HOLDER.get();
     }
 
     /**
@@ -69,7 +70,7 @@ public class TenantContextHolder {
      * @param ignore 是否忽略租户
      */
     public static void setIgnore(boolean ignore) {
-        IGNORE.set(ignore);
+        IGNORE_HOLDER.set(ignore);
     }
 
     /**
@@ -78,15 +79,15 @@ public class TenantContextHolder {
      * @return 是否忽略租户
      */
     public static boolean isIgnore() {
-        return Boolean.TRUE.equals(IGNORE.get());
+        return Boolean.TRUE.equals(IGNORE_HOLDER.get());
     }
 
     /**
      * 清除
      */
-    public static void clearContext() {
-        CONTEXT.remove();
-        IGNORE.remove();
+    public static void clear() {
+        CONTEXT_HOLDER.remove();
+        IGNORE_HOLDER.remove();
     }
 
     /**
@@ -116,5 +117,24 @@ public class TenantContextHolder {
      */
     public static TenantDataSource getDataSource() {
         return Optional.ofNullable(getContext()).map(TenantContext::getDataSource).orElse(null);
+    }
+
+    /**
+     * 是否启用了租户
+     *
+     * @return 是否启用了租户
+     */
+    public static boolean isTenantEnabled() {
+        TenantProperties tenantProperties = SpringUtils.getBean(TenantProperties.class, true);
+        return tenantProperties != null && tenantProperties.isEnabled();
+    }
+
+    /**
+     * 是否禁用了租户
+     *
+     * @return 是否禁用了租户
+     */
+    public static boolean isTenantDisabled() {
+        return !isTenantEnabled();
     }
 }

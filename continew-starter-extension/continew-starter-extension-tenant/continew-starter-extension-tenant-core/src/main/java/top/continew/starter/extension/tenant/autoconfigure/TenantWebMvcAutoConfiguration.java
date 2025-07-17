@@ -23,6 +23,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import top.continew.starter.core.constant.PropertiesConstants;
 import top.continew.starter.extension.tenant.config.TenantProvider;
+import top.continew.starter.extension.tenant.interceptor.TenantInterceptor;
 
 /**
  * 租户 Web MVC 自动配置
