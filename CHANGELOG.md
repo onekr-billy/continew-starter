@@ -1,3 +1,28 @@
+## [v2.13.1](https://github.com/continew-org/continew-starter/compare/v2.13.0...v2.13.1) (2025-07-17)
+
+### ✨ 新特性
+
+- 【validation】增强 EnumValue 枚举校验器，支持枚举值的数组和集合校验，增加对 BaseEnum 接口的支持 ([3dad27d](https://github.com/continew-org/continew-starter/commit/3dad27df3f747d60f47c1504286c86f6636e7242))
+- 【extension/tenant】新增 TenantIgnoreAspect 切面，完善定时任务等需要忽略租户的场景 ([07e1637](https://github.com/continew-org/continew-starter/commit/07e1637363bce4cac3f215384c8bbf6235a30778))
+- 【core】SpringUtils 工具类新增 getBean(Class<T> clazz, boolean ignoreNoSuchBeanEx) 方法 ([17272a7](https://github.com/continew-org/continew-starter/commit/17272a780905b554b1fb47e52667a51be0af7bbe))
+- 【core】新增集合工具类 CollUtils（mapToList、mapToSet） ([3f7f118](https://github.com/continew-org/continew-starter/commit/3f7f118d3e6b38c2cb13a2661a37eda3325894a7))
+- 【extension/tenant】新增 TenantUtils 替换 TenantHandler 接口及其实现类 DefaultTenantHandler ([2f2aae0](https://github.com/continew-org/continew-starter/commit/2f2aae08ab934009cd39bbe7ec3823c594fa48f8))
+- 【core】ServletUtils 新增应 JSON 数据给客户端方法 ([67edb08](https://github.com/continew-org/continew-starter/commit/67edb0828dee355ff46d055935a76a42a5a6ebd8))
+
+### 💎 功能优化
+
+- 【extension/crud】完善树配置相关注释 ([3be0d90](https://github.com/continew-org/continew-starter/commit/3be0d900180e4ed528f32f2350b150552aee0420))
+- 【extension/crud】移除 Crane4j 依赖方便使用者自定义实现 ([aefd61b](https://github.com/continew-org/continew-starter/commit/aefd61b855e376b0f509d34d441b1d1d5b831a39))
+- 【extension/tenant】将"多租户"描述统一为"租户" ([d32c051](https://github.com/continew-org/continew-starter/commit/d32c05166d297d1665436eae63f41277f6dca2af))
+- 【extension/tenant】将 dynamic-datasource 依赖设置为 optional ([778a861](https://github.com/continew-org/continew-starter/commit/778a861fa9f97a99a7014b72a37e984145872421))
+- 【extension/datapermission】UserContext、RoleContext 重命名为 UserData、RoleData，以避免和应用冲突 ([a0b64b8](https://github.com/continew-org/continew-starter/commit/a0b64b81d560c3c4e7175685f66ab98406a31dcc))
+- 使用 CollUtils 替代部分 Stream 集合转换 ([e05e0de](https://github.com/continew-org/continew-starter/commit/e05e0de7b81329512ea1f0ad5e9ed3c04bdfe752))
+
+### 🐛 问题修复
+
+- 【security/mask】修复部分注释错误 ([34deff9](https://github.com/continew-org/continew-starter/commit/34deff959aa9ba817d05b552b173b4cbaebd289a))
+- 【dependencies】指定 Apache POI 依赖版本（解决版本冲突）并移除冗余包 ([b4cb147](https://github.com/continew-org/continew-starter/commit/b4cb147a77cdfeb754c061eab888eb10314231be))
+
 ## [v2.13.0](https://github.com/continew-org/continew-starter/compare/v2.12.2...v2.13.0) (2025-07-05)
 
 ### ✨ 新特性
