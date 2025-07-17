@@ -23,6 +23,7 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.continew.starter.core.util.CollUtils;
 import top.continew.starter.license.exception.LicenseException;
 import top.continew.starter.license.model.LicenseExtraModel;
 
@@ -33,7 +34,6 @@ import java.net.SocketException;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * 服务器信息工具类
@@ -264,10 +264,7 @@ public class ServerInfoUtils {
         // 获取所有网络接口
         Set<InetAddress> inetAddresses = getLocalAllInetAddress();
         if (CollectionUtil.isNotEmpty(inetAddresses)) {
-            return inetAddresses.stream()
-                .map(ServerInfoUtils::getMacByInetAddress)
-                .distinct()
-                .collect(Collectors.toSet());
+            return CollUtils.mapToSet(inetAddresses, ServerInfoUtils::getMacByInetAddress);
         }
         return Collections.emptySet();
     }
@@ -282,11 +279,7 @@ public class ServerInfoUtils {
         // 获取所有网络接口
         Set<InetAddress> inetAddresses = getLocalAllInetAddress();
         if (CollectionUtil.isNotEmpty(inetAddresses)) {
-            return inetAddresses.stream()
-                .map(InetAddress::getHostAddress)
-                .distinct()
-                .map(String::toLowerCase)
-                .collect(Collectors.toSet());
+            return CollUtils.mapToSet(inetAddresses, InetAddress::getHostAddress);
         }
         return Collections.emptySet();
     }

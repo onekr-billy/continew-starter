@@ -48,6 +48,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import top.continew.starter.apidoc.handler.BaseEnumParameterHandler;
 import top.continew.starter.apidoc.handler.OpenApiHandler;
 import top.continew.starter.core.autoconfigure.application.ApplicationProperties;
+import top.continew.starter.core.util.CollUtils;
 import top.continew.starter.core.util.GeneralPropertySourceFactory;
 
 import java.util.List;
@@ -104,7 +105,7 @@ public class SpringDocAutoConfiguration implements WebMvcConfigurer {
             Map<String, SecurityScheme> securitySchemeMap = components.getSecuritySchemes();
             if (MapUtil.isNotEmpty(securitySchemeMap)) {
                 SecurityRequirement securityRequirement = new SecurityRequirement();
-                List<String> list = securitySchemeMap.values().stream().map(SecurityScheme::getName).toList();
+                List<String> list = CollUtils.mapToList(securitySchemeMap.values(), SecurityScheme::getName);
                 list.forEach(securityRequirement::addList);
                 openApi.addSecurityItem(securityRequirement);
             }
@@ -127,10 +128,8 @@ public class SpringDocAutoConfiguration implements WebMvcConfigurer {
                         Map<String, SecurityScheme> securitySchemeMap = components.getSecuritySchemes();
                         pathItem.readOperations().forEach(operation -> {
                             SecurityRequirement securityRequirement = new SecurityRequirement();
-                            List<String> list = securitySchemeMap.values()
-                                .stream()
-                                .map(SecurityScheme::getName)
-                                .toList();
+                            List<String> list = CollUtils.mapToList(securitySchemeMap
+                                .values(), SecurityScheme::getName);
                             list.forEach(securityRequirement::addList);
                             operation.addSecurityItem(securityRequirement);
                         });

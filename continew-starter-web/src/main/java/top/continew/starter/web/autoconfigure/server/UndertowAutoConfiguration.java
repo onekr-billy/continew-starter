@@ -31,8 +31,7 @@ import io.undertow.Undertow;
 import io.undertow.server.handlers.DisallowedMethodsHandler;
 import io.undertow.util.HttpString;
 import top.continew.starter.core.constant.PropertiesConstants;
-
-import java.util.stream.Collectors;
+import top.continew.starter.core.util.CollUtils;
 
 /**
  * Undertow 自动配置
@@ -57,11 +56,8 @@ public class UndertowAutoConfiguration {
     public WebServerFactoryCustomizer<UndertowServletWebServerFactory> customize(ServerExtensionProperties properties) {
         return factory -> {
             factory.addDeploymentInfoCustomizers(deploymentInfo -> deploymentInfo
-                .addInitialHandlerChainWrapper(handler -> new DisallowedMethodsHandler(handler, properties
-                    .getDisallowedMethods()
-                    .stream()
-                    .map(HttpString::tryFromString)
-                    .collect(Collectors.toSet()))));
+                .addInitialHandlerChainWrapper(handler -> new DisallowedMethodsHandler(handler, CollUtils
+                    .mapToSet(properties.getDisallowedMethods(), HttpString::tryFromString))));
             log.debug("[ContiNew Starter] - Disallowed HTTP methods on Server Undertow: {}.", properties
                 .getDisallowedMethods());
             log.debug("[ContiNew Starter] - Auto Configuration 'Web-Server Undertow' completed initialization.");

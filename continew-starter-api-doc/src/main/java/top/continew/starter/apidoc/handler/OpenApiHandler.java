@@ -37,11 +37,11 @@ import org.springdoc.core.utils.PropertyResolverUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.web.method.HandlerMethod;
+import top.continew.starter.core.util.CollUtils;
 
 import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -176,11 +176,8 @@ public class OpenApiHandler extends OpenAPIService {
         buildTagsFromClass(handlerMethod.getBeanType(), tags, tagsStr, locale);
 
         if (CollUtil.isNotEmpty(tagsStr)) {
-            tagsStr = tagsStr.stream()
-                .map(str -> propertyResolverUtils.resolve(str, locale))
-                .collect(Collectors.toSet());
+            tagsStr = CollUtils.mapToSet(tagsStr, str -> propertyResolverUtils.resolve(str, locale));
         }
-
         if (springdocTags.containsKey(handlerMethod)) {
             Tag tag = springdocTags.get(handlerMethod);
             tagsStr.add(tag.getName());
@@ -256,7 +253,7 @@ public class OpenApiHandler extends OpenAPIService {
         methodTags.addAll(AnnotatedElementUtils
             .findAllMergedAnnotations(method, io.swagger.v3.oas.annotations.tags.Tag.class));
         if (CollUtil.isNotEmpty(methodTags)) {
-            tagsStr.addAll(toSet(methodTags, tag -> propertyResolverUtils.resolve(tag.name(), locale)));
+            tagsStr.addAll(CollUtils.mapToSet(methodTags, tag -> propertyResolverUtils.resolve(tag.name(), locale)));
             List<io.swagger.v3.oas.annotations.tags.Tag> allTags = new ArrayList<>(methodTags);
             addTags(allTags, tags, locale);
         }
@@ -275,22 +272,4 @@ public class OpenApiHandler extends OpenAPIService {
             });
         });
     }
-
-    /**
-     * 将collection转化为Set集合，但是两者的泛型不同<br>
-     * <B>{@code Collection<E>  ------>  Set<T> } </B>
-     *
-     * @param collection 需要转化的集合
-     * @param function   collection中的泛型转化为set泛型的lambda表达式
-     * @param <E>        collection中的泛型
-     * @param <T>        Set中的泛型
-     * @return 转化后的Set
-     */
-    public static <E, T> Set<T> toSet(Collection<E> collection, Function<E, T> function) {
-        if (CollUtil.isEmpty(collection) || function == null) {
-            return CollUtil.newHashSet();
-        }
-        return collection.stream().map(function).filter(Objects::nonNull).collect(Collectors.toSet());
-    }
-
 }

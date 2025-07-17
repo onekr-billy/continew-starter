@@ -45,7 +45,7 @@ public class ReflectUtils {
      */
     public static List<String> getNonStaticFieldsName(Class<?> beanClass) throws SecurityException {
         List<Field> nonStaticFields = getNonStaticFields(beanClass);
-        return nonStaticFields.stream().map(Field::getName).collect(Collectors.toList());
+        return CollUtils.mapToList(nonStaticFields, Field::getName);
     }
 
     /**
