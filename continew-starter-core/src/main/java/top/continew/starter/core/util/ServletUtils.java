@@ -25,6 +25,7 @@ import cn.hutool.json.JSONUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.MediaType;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -36,7 +37,10 @@ import top.continew.starter.core.wrapper.RepeatReadResponseWrapper;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Servlet 工具类
@@ -332,6 +336,18 @@ public class ServletUtils extends JakartaServletUtil {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    /**
+     * 响应 JSON 数据给客户端
+     *
+     * @param response 响应对象
+     * @param data     响应数据
+     * @since 2.13.1
+     * @see #write(HttpServletResponse, String, String)
+     */
+    public static void writeJSON(HttpServletResponse response, Object data) {
+        write(response, JSONUtil.toJsonStr(data), MediaType.APPLICATION_JSON_VALUE);
     }
 
     /**
