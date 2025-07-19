@@ -17,11 +17,12 @@
 package top.continew.starter.extension.tenant.autoconfigure;
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.core.Ordered;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import top.continew.starter.core.constant.PropertiesConstants;
+import top.continew.starter.extension.tenant.annotation.ConditionalOnEnabledTenant;
 import top.continew.starter.extension.tenant.config.TenantProvider;
 import top.continew.starter.extension.tenant.interceptor.TenantInterceptor;
 
@@ -32,8 +33,9 @@ import top.continew.starter.extension.tenant.interceptor.TenantInterceptor;
  * @since 2.7.0
  */
 @AutoConfiguration
+@ConditionalOnEnabledTenant
 @ConditionalOnWebApplication
-@ConditionalOnProperty(prefix = PropertiesConstants.TENANT, name = PropertiesConstants.ENABLED, havingValue = "true", matchIfMissing = true)
+@EnableConfigurationProperties(TenantProperties.class)
 public class TenantWebMvcAutoConfiguration implements WebMvcConfigurer {
 
     private final TenantProperties tenantProperties;
@@ -46,6 +48,7 @@ public class TenantWebMvcAutoConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new TenantInterceptor(tenantProperties, tenantProvider));
+        registry.addInterceptor(new TenantInterceptor(tenantProperties, tenantProvider))
+            .order(Ordered.HIGHEST_PRECEDENCE);
     }
 }
