@@ -63,11 +63,6 @@ public class DefaultTenantLineHandler implements TenantLineHandler {
         if (TenantContextHolder.isIgnore()) {
             return true;
         }
-        // 忽略超级租户
-        Long tenantId = TenantContextHolder.getTenantId();
-        if (tenantId == null || tenantId.equals(tenantProperties.getSuperTenantId())) {
-            return true;
-        }
         // 忽略数据源级隔离
         if (TenantIsolationLevel.DATASOURCE.equals(TenantContextHolder.getIsolationLevel())) {
             return true;

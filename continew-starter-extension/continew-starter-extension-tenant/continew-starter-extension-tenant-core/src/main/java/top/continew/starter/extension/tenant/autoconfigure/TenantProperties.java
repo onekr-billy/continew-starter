@@ -52,11 +52,6 @@ public class TenantProperties {
     private String tenantIdHeader = "X-Tenant-Id";
 
     /**
-     * 超级/默认租户 ID（超管用户所在租户）
-     */
-    private Long superTenantId = 0L;
-
-    /**
      * 忽略表（忽略拼接租户条件）
      */
     private List<String> ignoreTables;
@@ -91,14 +86,6 @@ public class TenantProperties {
 
     public void setTenantIdHeader(String tenantIdHeader) {
         this.tenantIdHeader = tenantIdHeader;
-    }
-
-    public Long getSuperTenantId() {
-        return superTenantId;
-    }
-
-    public void setSuperTenantId(Long superTenantId) {
-        this.superTenantId = superTenantId;
     }
 
     public List<String> getIgnoreTables() {
