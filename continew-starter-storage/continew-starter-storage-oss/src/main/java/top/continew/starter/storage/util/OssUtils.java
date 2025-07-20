@@ -16,7 +16,7 @@
 
 package top.continew.starter.storage.util;
 
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.text.CharSequenceUtil;
 import software.amazon.awssdk.regions.Region;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.storage.constant.StorageConstant;
@@ -39,7 +39,7 @@ public class OssUtils {
      * @return {@link Region }
      */
     public static Region getRegion(String region) {
-        return StrUtil.isEmpty(region) ? Region.US_EAST_1 : Region.of(region);
+        return CharSequenceUtil.isEmpty(region) ? Region.US_EAST_1 : Region.of(region);
     }
 
     /**
@@ -51,7 +51,7 @@ public class OssUtils {
      */
     public static String getUrl(String endpoint, String bucketName) {
         // 如果是云服务商，直接返回域名或终端点
-        if (StrUtil.containsAny(endpoint, StorageConstant.CLOUD_SERVICE_PREFIX)) {
+        if (CharSequenceUtil.containsAny(endpoint, StorageConstant.CLOUD_SERVICE_PREFIX)) {
             return "http://" + bucketName + StringConstants.DOT + endpoint;
         } else {
             return "http://" + endpoint + StringConstants.SLASH + bucketName;

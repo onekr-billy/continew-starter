@@ -19,7 +19,7 @@ package top.continew.starter.storage.util;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.file.FileNameUtil;
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.text.CharSequenceUtil;
 import top.continew.starter.core.constant.StringConstants;
 
 import java.io.ByteArrayInputStream;
@@ -121,7 +121,7 @@ public class StorageUtils {
         // 获取文件的扩展名
         String extName = FileNameUtil.extName(fileName);
         // 去掉扩展名
-        String baseName = StrUtil.subBefore(fileName, StringConstants.DOT, true);
+        String baseName = CharSequenceUtil.subBefore(fileName, StringConstants.DOT, true);
         // 拼接新的路径：原始路径 + .缩略图后缀 + .扩展名
         return baseName + "." + suffix + "." + extName;
     }

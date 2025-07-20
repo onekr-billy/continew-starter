@@ -16,7 +16,7 @@
 
 package top.continew.starter.storage.enums;
 
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.text.CharSequenceUtil;
 import top.continew.starter.core.enums.BaseEnum;
 
 import java.util.Arrays;
@@ -69,7 +69,7 @@ public enum FileType implements BaseEnum<Integer> {
      */
     public static FileType getByExtension(String extension) {
         return Arrays.stream(FileType.values())
-            .filter(t -> t.getExtensions().contains(StrUtil.emptyIfNull(extension).toLowerCase()))
+            .filter(t -> t.getExtensions().contains(CharSequenceUtil.emptyIfNull(extension).toLowerCase()))
             .findFirst()
             .orElse(FileType.UNKNOWN);
     }

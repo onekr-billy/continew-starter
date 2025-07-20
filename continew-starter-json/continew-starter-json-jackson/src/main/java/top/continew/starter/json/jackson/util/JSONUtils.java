@@ -16,7 +16,7 @@
 
 package top.continew.starter.json.jackson.util;
 
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -168,7 +168,7 @@ public class JSONUtils {
      * @return 解析后的 Java 对象
      */
     public static <T> T parseObject(String str, Class<T> clazz) {
-        if (StrUtil.isEmpty(str)) {
+        if (CharSequenceUtil.isEmpty(str)) {
             return null;
         }
         try {
@@ -186,7 +186,7 @@ public class JSONUtils {
      * @return 解析后的 List<T>
      */
     public static <T> List<T> parseArray(String str, Class<T> clazz) {
-        if (StrUtil.isEmpty(str)) {
+        if (CharSequenceUtil.isEmpty(str)) {
             return new ArrayList<>();
         }
         try {
@@ -204,7 +204,7 @@ public class JSONUtils {
      * @return 是否为 JSON 格式
      */
     public static boolean isTypeJSON(String str) {
-        if (StrUtil.isEmpty(str)) {
+        if (CharSequenceUtil.isEmpty(str)) {
             return false;
         }
         try {
@@ -223,7 +223,7 @@ public class JSONUtils {
      * @return 解析后的 Java 对象
      */
     public static <T> T toBean(String str, Class<T> clazz) {
-        if (StrUtil.isEmpty(str)) {
+        if (CharSequenceUtil.isEmpty(str)) {
             return null;
         }
         try {

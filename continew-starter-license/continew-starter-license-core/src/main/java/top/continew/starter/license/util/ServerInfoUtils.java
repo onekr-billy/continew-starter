@@ -20,9 +20,9 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.util.StrUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.CollUtils;
 import top.continew.starter.license.exception.LicenseException;
 import top.continew.starter.license.model.LicenseExtraModel;
@@ -128,7 +128,7 @@ public class ServerInfoUtils {
      * @return {@link String}
      */
     private static String getLinuxCpuSerial() {
-        String result = StrUtil.EMPTY;
+        String result = StringConstants.EMPTY;
         String cpuIdCmd = "dmidecode";
         BufferedReader bufferedReader = null;
         try {
@@ -160,8 +160,7 @@ public class ServerInfoUtils {
      * @return {@link String}
      */
     private static String getWindowCpuSerial() {
-
-        StringBuilder result = new StringBuilder(StrUtil.EMPTY);
+        StringBuilder result = new StringBuilder(StringConstants.EMPTY);
         File file = null;
         BufferedReader input = null;
         try {
@@ -205,11 +204,11 @@ public class ServerInfoUtils {
         try {
             Process process = new ProcessBuilder("sh", "-c", command).start();
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-                return reader.lines().findFirst().orElse(StrUtil.EMPTY);
+                return reader.lines().findFirst().orElse(StringConstants.EMPTY);
             }
         } catch (IOException e) {
             log.error("获取 Linux 主板序列号失败: {}", e.getMessage());
-            return StrUtil.EMPTY;
+            return StringConstants.EMPTY;
         }
     }
 
@@ -219,7 +218,7 @@ public class ServerInfoUtils {
      * @return {@link String}
      */
     private static String getWindowMainBoardSerial() {
-        StringBuilder result = new StringBuilder(StrUtil.EMPTY);
+        StringBuilder result = new StringBuilder(StringConstants.EMPTY);
         File file = null;
         BufferedReader input = null;
         try {

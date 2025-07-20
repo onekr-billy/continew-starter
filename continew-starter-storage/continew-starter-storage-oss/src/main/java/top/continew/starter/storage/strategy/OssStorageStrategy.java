@@ -19,8 +19,8 @@ package top.continew.starter.storage.strategy;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.file.FileNameUtil;
+import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -156,7 +156,7 @@ public class OssStorageStrategy implements StorageStrategy<OssClient> {
             // 格式化文件名 防止上传后重复
             String formatFileName = StorageUtils.formatFileName(fileName);
             // 判断文件路径是否为空  为空给默认路径 格式 2024/12/30/
-            if (StrUtil.isEmpty(path)) {
+            if (CharSequenceUtil.isEmpty(path)) {
                 path = StorageUtils.ossDefaultPath();
             }
             ThumbnailResp thumbnailResp = null;
