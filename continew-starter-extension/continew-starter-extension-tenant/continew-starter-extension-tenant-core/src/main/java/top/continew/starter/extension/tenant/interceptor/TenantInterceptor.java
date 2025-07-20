@@ -19,7 +19,6 @@ package top.continew.starter.extension.tenant.interceptor;
 import cn.hutool.core.annotation.AnnotationUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.core.Ordered;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import top.continew.starter.extension.tenant.annotation.TenantIgnore;
@@ -33,7 +32,7 @@ import top.continew.starter.extension.tenant.context.TenantContextHolder;
  * @author Charles7c
  * @since 2.7.0
  */
-public class TenantInterceptor implements HandlerInterceptor, Ordered {
+public class TenantInterceptor implements HandlerInterceptor {
 
     private final TenantProperties tenantProperties;
     private final TenantProvider tenantProvider;
@@ -45,21 +44,11 @@ public class TenantInterceptor implements HandlerInterceptor, Ordered {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        // 忽略租户拦截
-        if (handler instanceof HandlerMethod handlerMethod) {
-            TenantIgnore methodAnnotation = handlerMethod.getMethodAnnotation(TenantIgnore.class);
-            if (methodAnnotation != null) {
-                return true;
-            }
-            TenantIgnore classAnnotation = AnnotationUtil.getAnnotation(handlerMethod
-                .getBeanType(), TenantIgnore.class);
-            if (classAnnotation != null) {
-                return true;
-            }
-        }
         // 设置上下文
         String tenantId = request.getHeader(tenantProperties.getTenantIdHeader());
         TenantContextHolder.setContext(tenantProvider.getByTenantId(tenantId, true));
+        // 设置是否忽略租户
+        TenantContextHolder.setIgnore(this.isIgnore(handler));
         return true;
     }
 
@@ -69,8 +58,20 @@ public class TenantInterceptor implements HandlerInterceptor, Ordered {
         TenantContextHolder.clear();
     }
 
-    @Override
-    public int getOrder() {
-        return Integer.MIN_VALUE;
+    /**
+     * 是否忽略租户
+     *
+     * @param handler 处理器
+     * @return 是否忽略租户
+     */
+    private boolean isIgnore(Object handler) {
+        if (handler instanceof HandlerMethod handlerMethod) {
+            TenantIgnore methodAnnotation = handlerMethod.getMethodAnnotation(TenantIgnore.class);
+            if (methodAnnotation != null) {
+                return true;
+            }
+            return AnnotationUtil.getAnnotation(handlerMethod.getBeanType(), TenantIgnore.class) != null;
+        }
+        return false;
     }
 }

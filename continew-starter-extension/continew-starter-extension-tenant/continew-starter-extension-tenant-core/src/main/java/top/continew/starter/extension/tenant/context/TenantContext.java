@@ -35,7 +35,7 @@ public class TenantContext {
     /**
      * 隔离级别
      */
-    private TenantIsolationLevel isolationLevel;
+    private TenantIsolationLevel isolationLevel = TenantIsolationLevel.LINE;
 
     /**
      * 数据源信息
