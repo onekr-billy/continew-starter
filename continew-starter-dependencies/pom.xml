@@ -13,47 +13,77 @@
     <description>ContiNew Starter 依赖模块</description>
 
     <properties>
-        <!-- 项目版本号 -->
+        <!-- Project Version -->
         <revision>2.13.2-SNAPSHOT</revision>
+
+        <!-- Core Framework Versions -->
         <spring-boot.version>3.3.12</spring-boot.version>
         <spring-cloud.version>2023.0.5</spring-cloud.version>
+
+        <!-- Cache and Storage Versions -->
         <redisson.version>3.49.0</redisson.version>
         <jetcache.version>2.7.8</jetcache.version>
-        <cosid.version>2.13.0</cosid.version>
+
+        <!-- Security and Authentication Versions -->
         <sa-token.version>1.44.0</sa-token.version>
         <just-auth.version>1.16.7</just-auth.version>
+
+        <!-- Database and ORM Versions -->
         <mybatis-plus.version>3.5.12</mybatis-plus.version>
         <mybatis-flex.version>1.10.9</mybatis-flex.version>
         <dynamic-datasource.version>4.3.1</dynamic-datasource.version>
         <p6spy.version>3.9.1</p6spy.version>
+
+        <!-- ID Generator and Job Scheduler Versions -->
+        <cosid.version>2.13.0</cosid.version>
         <snail-job.version>1.5.0</snail-job.version>
+
+        <!-- Messaging and Notification Versions -->
         <sms4j.version>3.3.5</sms4j.version>
+
+        <!-- Captcha Versions -->
         <aj-captcha.version>1.4.0</aj-captcha.version>
         <easy-captcha.version>1.6.2</easy-captcha.version>
-        <nashorn.version>15.6</nashorn.version>
+
+        <!-- Excel Processing Versions -->
         <fastexcel.version>1.2.0</fastexcel.version>
         <poi.version>5.4.1</poi.version>
+
+        <!-- File Storage Versions -->
         <x-file-storage.version>2.2.1</x-file-storage.version>
         <aws-s3-v1.version>1.12.783</aws-s3-v1.version>
         <aws-sdk.version>2.31.63</aws-sdk.version>
         <aws-crt.version>0.38.5</aws-crt.version>
         <thumbnails.version>0.4.20</thumbnails.version>
+
+        <!-- Validation and Response Processing Versions -->
         <graceful-response.version>5.0.5-boot3</graceful-response.version>
         <spel-validator.version>0.5.0-beta</spel-validator.version>
         <crane4j.version>2.9.0</crane4j.version>
+
+        <!-- API Documentation Versions -->
         <knife4j.version>4.5.0</knife4j.version>
+
+        <!-- Tracing and Logging Versions -->
         <tlog.version>1.5.2</tlog.version>
+
+        <!-- License and Compression Versions -->
         <truelicense.version>1.33</truelicense.version>
         <zip4j.version>2.11.5</zip4j.version>
+
+        <!-- HTTP Client and Utilities Versions -->
         <okhttp.version>4.12.0</okhttp.version>
         <ttl.version>2.14.5</ttl.version>
         <ip2region.version>3.3.6</ip2region.version>
         <hutool.version>5.8.38</hutool.version>
         <snakeyaml.version>2.4</snakeyaml.version>
-        <!-- 解决部分传递依赖漏洞问题 -->
+        <nashorn.version>15.6</nashorn.version>
+
+        <!-- Security Vulnerability Fix Versions -->
         <commons-beanutils.version>1.11.0</commons-beanutils.version>
         <commons-io.version>2.17.0</commons-io.version>
         <commons-compress.version>1.26.0</commons-compress.version>
+
         <!-- Maven Plugin Versions -->
         <flatten.version>1.7.0</flatten.version>
         <spotless.version>2.44.3</spotless.version>
