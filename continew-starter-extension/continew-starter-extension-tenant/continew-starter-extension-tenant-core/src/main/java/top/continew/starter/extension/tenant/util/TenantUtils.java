@@ -88,7 +88,7 @@ public class TenantUtils {
      *
      * @param runnable 业务逻辑
      */
-    public void executeIgnore(Runnable runnable) {
+    public static void executeIgnore(Runnable runnable) {
         // 未启用或忽略租户，直接执行业务逻辑
         if (TenantContextHolder.isTenantDisabled() || TenantContextHolder.isIgnore()) {
             runnable.run();
