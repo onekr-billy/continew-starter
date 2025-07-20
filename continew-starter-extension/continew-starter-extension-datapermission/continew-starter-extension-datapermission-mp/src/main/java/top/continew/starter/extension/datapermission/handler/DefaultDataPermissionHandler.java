@@ -46,8 +46,10 @@ import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.data.enums.DatabaseType;
 import top.continew.starter.data.util.MetaUtils;
 import top.continew.starter.extension.datapermission.annotation.DataPermission;
+import top.continew.starter.extension.datapermission.constant.DataPermissionConstants;
 import top.continew.starter.extension.datapermission.enums.DataScope;
-import top.continew.starter.extension.datapermission.filter.DataPermissionUserDataProvider;
+import top.continew.starter.extension.datapermission.exception.DataPermissionException;
+import top.continew.starter.extension.datapermission.provider.DataPermissionUserDataProvider;
 import top.continew.starter.extension.datapermission.model.RoleData;
 import top.continew.starter.extension.datapermission.model.UserData;
 
@@ -62,7 +64,6 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultDataPermissionHandler.class);
     private final DataPermissionUserDataProvider dataPermissionUserDataProvider;
-    private static final DataSource dataSource = SpringUtil.getBean(DataSource.class);
 
     public DefaultDataPermissionHandler(DataPermissionUserDataProvider dataPermissionUserDataProvider) {
         this.dataPermissionUserDataProvider = dataPermissionUserDataProvider;
@@ -71,24 +72,45 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
     @Override
     public Expression getSqlSegment(Expression where, String mappedStatementId) {
         try {
-            Class<?> clazz = Class.forName(mappedStatementId.substring(0, mappedStatementId
-                .lastIndexOf(StringConstants.DOT)));
-            String methodName = mappedStatementId.substring(mappedStatementId.lastIndexOf(StringConstants.DOT) + 1);
-            Method[] methodArr = clazz.getMethods();
-            for (Method method : methodArr) {
-                DataPermission dataPermission = method.getAnnotation(DataPermission.class);
-                String name = method.getName();
-                if (dataPermission == null || !CharSequenceUtil.equalsAny(methodName, name, name + "_COUNT")) {
-                    continue;
-                }
-                if (dataPermissionUserDataProvider.isFilter()) {
-                    return buildDataScopeFilter(dataPermission, where);
-                }
+            DataPermission dataPermission = findDataPermissionAnnotation(mappedStatementId);
+            if (dataPermission != null && dataPermissionUserDataProvider.isFilter()) {
+                return buildDataScopeFilter(dataPermission, where);
             }
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
             log.error("Data permission handler build data scope filter occurred an error: {}.", e.getMessage(), e);
         }
         return where;
+    }
+
+    /**
+     * 查找数据权限注解
+     *
+     * @param mappedStatementId Mapper 方法 ID
+     * @return 数据权限注解
+     */
+    private DataPermission findDataPermissionAnnotation(String mappedStatementId) {
+        try {
+            int lastDotIndex = mappedStatementId.lastIndexOf(StringConstants.DOT);
+            if (lastDotIndex == -1) {
+                return null;
+            }
+
+            String className = mappedStatementId.substring(0, lastDotIndex);
+            String methodName = mappedStatementId.substring(lastDotIndex + 1);
+
+            Class<?> clazz = Class.forName(className);
+            Method[] methods = clazz.getMethods();
+
+            for (Method method : methods) {
+                String name = method.getName();
+                if (CharSequenceUtil.equalsAny(methodName, name, name + DataPermissionConstants.COUNT_METHOD_SUFFIX)) {
+                    return method.getAnnotation(DataPermission.class);
+                }
+            }
+        } catch (ClassNotFoundException e) {
+            throw DataPermissionException.methodNotFound(mappedStatementId);
+        }
+        return null;
     }
 
     /**
@@ -99,23 +121,29 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
      * @return 构建后查询条件
      */
     private Expression buildDataScopeFilter(DataPermission dataPermission, Expression where) {
-        Expression expression = null;
         UserData userData = dataPermissionUserDataProvider.getUserData();
+        if (userData == null || !userData.isValid()) {
+            throw DataPermissionException.invalidUserData("User data is null or invalid");
+        }
+
+        Expression expression = null;
         Set<RoleData> roles = userData.getRoles();
+
         for (RoleData roleData : roles) {
             DataScope dataScope = roleData.getDataScope();
             if (DataScope.ALL.equals(dataScope)) {
                 return where;
             }
-            switch (dataScope) {
-                case DEPT_AND_CHILD -> expression = this
-                    .buildDeptAndChildExpression(dataPermission, userData, expression);
-                case DEPT -> expression = this.buildDeptExpression(dataPermission, userData, expression);
-                case SELF -> expression = this.buildSelfExpression(dataPermission, userData, expression);
-                case CUSTOM -> expression = this.buildCustomExpression(dataPermission, roleData, expression);
-                default -> throw new IllegalArgumentException("暂不支持 [%s] 数据权限".formatted(dataScope));
-            }
+
+            expression = switch (dataScope) {
+                case DEPT_AND_CHILD -> buildDeptAndChildExpression(dataPermission, userData, expression);
+                case DEPT -> buildDeptExpression(dataPermission, userData, expression);
+                case SELF -> buildSelfExpression(dataPermission, userData, expression);
+                case CUSTOM -> buildCustomExpression(dataPermission, roleData, expression);
+                default -> throw DataPermissionException.unsupportedDataScope(dataScope.toString());
+            };
         }
+
         return where != null ? new AndExpression(where, new ParenthesedExpressionList<>(expression)) : expression;
     }
 
@@ -144,18 +172,19 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
         equalsTo.setLeftExpression(new Column(dataPermission.id()));
         equalsTo.setRightExpression(new LongValue(userData.getDeptId()));
 
-        DatabaseType databaseType = MetaUtils.getDatabaseType(dataSource);
+        DatabaseType databaseType = MetaUtils.getDatabaseType(SpringUtil.getBean(DataSource.class));
         Expression inSetExpression;
         if (DatabaseType.MYSQL.getDatabase().equalsIgnoreCase(databaseType.getDatabase())) {
             Function findInSetFunction = new Function();
             findInSetFunction.setName("find_in_set");
             findInSetFunction.setParameters(new ExpressionList(new LongValue(userData
-                .getDeptId()), new Column("ancestors")));
+                .getDeptId()), new Column(DataPermissionConstants.ANCESTORS_COLUMN)));
             inSetExpression = findInSetFunction;
         } else if (DatabaseType.POSTGRE_SQL.getDatabase().equalsIgnoreCase(databaseType.getDatabase())) {
             // 构建 concat 函数
             Function concatFunction = new Function("concat");
-            concatFunction.setParameters(new ExpressionList<>(new Column("ancestors"), new StringValue(",")));
+            concatFunction
+                .setParameters(new ExpressionList<>(new Column(DataPermissionConstants.ANCESTORS_COLUMN), new StringValue(",")));
 
             // 创建 LIKE 函数
             LikeExpression likeExpression = new LikeExpression();
@@ -163,7 +192,7 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
             likeExpression.setRightExpression(new StringValue("%," + userData.getDeptId() + ",%"));
             inSetExpression = likeExpression;
         } else {
-            throw new IllegalArgumentException("暂不支持 [%s] 数据权限".formatted(""));
+            throw DataPermissionException.unsupportedDatabase(databaseType.getDatabase());
         }
 
         select.setWhere(new OrExpression(equalsTo, inSetExpression));

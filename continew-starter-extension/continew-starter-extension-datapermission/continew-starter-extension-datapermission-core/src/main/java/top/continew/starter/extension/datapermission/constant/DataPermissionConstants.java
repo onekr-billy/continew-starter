@@ -14,29 +14,26 @@
  * limitations under the License.
  */
 
-package top.continew.starter.extension.datapermission.filter;
-
-import top.continew.starter.extension.datapermission.model.UserData;
+package top.continew.starter.extension.datapermission.constant;
 
 /**
- * 数据权限用户数据提供者
+ * 数据权限常量
  *
  * @author Charles7c
- * @since 1.1.0
+ * @since 2.13.2
  */
-public interface DataPermissionUserDataProvider {
+public final class DataPermissionConstants {
 
     /**
-     * 是否过滤
-     *
-     * @return true：过滤；false：不过滤
+     * 数据库字段：祖先节点
      */
-    boolean isFilter();
+    public static final String ANCESTORS_COLUMN = "ancestors";
 
     /**
-     * 获取用户数据
-     *
-     * @return 用户数据
+     * 方法名后缀：COUNT
      */
-    UserData getUserData();
+    public static final String COUNT_METHOD_SUFFIX = "_COUNT";
+
+    private DataPermissionConstants() {
+    }
 }

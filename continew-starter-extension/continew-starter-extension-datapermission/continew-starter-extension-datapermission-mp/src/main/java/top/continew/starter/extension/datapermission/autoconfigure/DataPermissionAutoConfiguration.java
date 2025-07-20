@@ -28,7 +28,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.ResolvableType;
 import top.continew.starter.core.constant.PropertiesConstants;
-import top.continew.starter.extension.datapermission.filter.DataPermissionUserDataProvider;
+import top.continew.starter.extension.datapermission.provider.DataPermissionUserDataProvider;
 import top.continew.starter.extension.datapermission.handler.DefaultDataPermissionHandler;
 
 /**

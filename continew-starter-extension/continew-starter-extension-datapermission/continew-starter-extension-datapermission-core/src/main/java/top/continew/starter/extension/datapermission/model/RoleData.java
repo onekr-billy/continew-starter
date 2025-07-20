@@ -29,7 +29,7 @@ public class RoleData {
     /**
      * 角色 ID
      */
-    private String roleId;
+    private Long roleId;
 
     /**
      * 数据权限
@@ -39,16 +39,16 @@ public class RoleData {
     public RoleData() {
     }
 
-    public RoleData(String roleId, DataScope dataScope) {
+    public RoleData(Long roleId, DataScope dataScope) {
         this.roleId = roleId;
         this.dataScope = dataScope;
     }
 
-    public String getRoleId() {
+    public Long getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(String roleId) {
+    public void setRoleId(Long roleId) {
         this.roleId = roleId;
     }
 

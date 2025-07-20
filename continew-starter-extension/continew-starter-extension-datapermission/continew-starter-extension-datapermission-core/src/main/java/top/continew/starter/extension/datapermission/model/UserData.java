@@ -16,6 +16,7 @@
 
 package top.continew.starter.extension.datapermission.model;
 
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -29,23 +30,32 @@ public class UserData {
     /**
      * 用户 ID
      */
-    private String userId;
+    private Long userId;
 
     /**
      * 角色列表
      */
-    private Set<RoleData> roles;
+    private Set<RoleData> roles = Collections.emptySet();
 
     /**
      * 部门 ID
      */
-    private String deptId;
+    private Long deptId;
 
-    public String getUserId() {
+    public UserData() {
+    }
+
+    public UserData(Long userId, Long deptId, Set<RoleData> roles) {
+        this.userId = userId;
+        this.deptId = deptId;
+        this.roles = roles != null ? roles : Collections.emptySet();
+    }
+
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
@@ -54,14 +64,23 @@ public class UserData {
     }
 
     public void setRoles(Set<RoleData> roles) {
-        this.roles = roles;
+        this.roles = roles != null ? roles : Collections.emptySet();
     }
 
-    public String getDeptId() {
+    public Long getDeptId() {
         return deptId;
     }
 
-    public void setDeptId(String deptId) {
+    public void setDeptId(Long deptId) {
         this.deptId = deptId;
+    }
+
+    /**
+     * 检查用户数据是否有效
+     *
+     * @return 是否有效
+     */
+    public boolean isValid() {
+        return userId != null && deptId != null && !roles.isEmpty();
     }
 }
