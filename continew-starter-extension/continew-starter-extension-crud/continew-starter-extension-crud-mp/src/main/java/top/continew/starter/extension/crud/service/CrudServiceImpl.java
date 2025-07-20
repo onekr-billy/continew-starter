@@ -22,7 +22,6 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
-import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ReflectUtil;
@@ -36,9 +35,13 @@ import org.springframework.transaction.annotation.Transactional;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.ClassUtils;
 import top.continew.starter.core.util.ReflectUtils;
+import top.continew.starter.core.util.TreeBuildUtils;
+import top.continew.starter.core.util.validation.CheckUtils;
+import top.continew.starter.core.util.validation.ValidationUtils;
 import top.continew.starter.data.mapper.BaseMapper;
 import top.continew.starter.data.service.impl.ServiceImpl;
 import top.continew.starter.data.util.QueryWrapperHelper;
+import top.continew.starter.excel.util.ExcelUtils;
 import top.continew.starter.extension.crud.annotation.DictModel;
 import top.continew.starter.extension.crud.annotation.TreeField;
 import top.continew.starter.extension.crud.autoconfigure.CrudProperties;
@@ -48,12 +51,13 @@ import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.query.SortQuery;
 import top.continew.starter.extension.crud.model.resp.LabelValueResp;
 import top.continew.starter.extension.crud.model.resp.PageResp;
-import top.continew.starter.excel.util.ExcelUtils;
-import top.continew.starter.core.util.validation.CheckUtils;
-import top.continew.starter.core.util.validation.ValidationUtils;
 
+import java.lang.invoke.MethodHandleProxies;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * CRUD 业务实现基类
@@ -100,20 +104,16 @@ public abstract class CrudServiceImpl<M extends BaseMapper<T>, T extends BaseIdD
         CrudProperties crudProperties = SpringUtil.getBean(CrudProperties.class);
         CrudTreeProperties treeProperties = crudProperties.getTree();
         TreeField treeField = listClass.getDeclaredAnnotation(TreeField.class);
-        TreeNodeConfig treeNodeConfig;
-        Long rootId;
         // 简单树（下拉列表）使用全局配置结构，复杂树（表格）使用局部配置
-        if (isSimple) {
-            treeNodeConfig = treeProperties.genTreeNodeConfig();
-            rootId = treeProperties.getRootId();
-        } else {
-            treeNodeConfig = treeProperties.genTreeNodeConfig(treeField);
-            rootId = treeField.rootId();
-        }
+        TreeNodeConfig treeNodeConfig = isSimple ? treeProperties.genTreeNodeConfig() : treeProperties.genTreeNodeConfig(treeField);
+        String valueGetter = CharSequenceUtil.genGetter(treeField.value());
+        String parentIdKeyGetter = CharSequenceUtil.genGetter(treeField.parentIdKey());
+        Function<L, Long> getId = createMethodReference(listClass, valueGetter);
+        Function<L, Long> getParentId = createMethodReference(listClass, parentIdKeyGetter);
         // 构建树
-        return TreeUtil.build(list, rootId, treeNodeConfig, (node, tree) -> {
-            tree.setId(ReflectUtil.invoke(node, CharSequenceUtil.genGetter(treeField.value())));
-            tree.setParentId(ReflectUtil.invoke(node, CharSequenceUtil.genGetter(treeField.parentIdKey())));
+        return TreeBuildUtils.buildMultiRoot(list, getId, getParentId, treeNodeConfig, (node, tree) -> {
+            tree.setId(ReflectUtil.invoke(node, valueGetter));
+            tree.setParentId(ReflectUtil.invoke(node, parentIdKeyGetter));
             tree.setName(ReflectUtil.invoke(node, CharSequenceUtil.genGetter(treeField.nameKey())));
             tree.setWeight(ReflectUtil.invoke(node, CharSequenceUtil.genGetter(treeField.weightKey())));
             // 如果构建简单树结构，则不包含扩展字段
@@ -125,6 +125,26 @@ public abstract class CrudServiceImpl<M extends BaseMapper<T>, T extends BaseIdD
                     .getName()))));
             }
         });
+    }
+
+    /**
+     * 通过反射创建方法引用
+     *
+     * @param clazz      实体类类型
+     * @param methodName 方法名
+     * @param <T>        实体类类型
+     * @param <K>        返回值类型
+     * @return Function<T, K> 方法引用
+     */
+    @SuppressWarnings("unchecked")
+    public static <T, K> Function<T, K> createMethodReference(Class<T> clazz, String methodName) {
+        try {
+            Method method = clazz.getDeclaredMethod(methodName);
+            method.setAccessible(true);
+            return MethodHandleProxies.asInterfaceInstance(Function.class, MethodHandles.lookup().unreflect(method));
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create method reference for " + methodName, e);
+        }
     }
 
     @Override

@@ -61,10 +61,6 @@ public interface CrudService<L, D, Q, C> {
 
     /**
      * 查询树列表
-     * <p>
-     * 虽然提供了查询条件，但不建议使用，容易因缺失根节点导致树节点丢失。
-     * 建议在前端进行查询过滤，如需使用建议重写方法。
-     * </p>
      *
      * @param query     查询条件
      * @param sortQuery 排序查询条件
