@@ -16,6 +16,7 @@
 
 package top.continew.starter.validation.constraints;
 
+import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.json.JSONUtil;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -30,7 +31,7 @@ public class JsonStringValidator implements ConstraintValidator<JsonString, Stri
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value == null) {
+        if (CharSequenceUtil.isBlank(value)) {
             return true;
         }
         return JSONUtil.isTypeJSON(value);

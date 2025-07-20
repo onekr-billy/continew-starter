@@ -16,6 +16,7 @@
 
 package top.continew.starter.validation.constraints;
 
+import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.PhoneUtil;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -34,7 +35,7 @@ public class MobileValidator implements ConstraintValidator<Mobile, String> {
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value == null) {
+        if (CharSequenceUtil.isBlank(value)) {
             return true;
         }
         return PhoneUtil.isMobile(value);
