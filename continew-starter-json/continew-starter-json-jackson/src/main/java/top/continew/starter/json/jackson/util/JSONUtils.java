@@ -19,33 +19,33 @@ package top.continew.starter.json.jackson.util;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import top.continew.starter.json.jackson.exception.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
- * json 工具
+ * JSON 工具类
+ *
+ * @see ObjectMapper
+ * @see cn.hutool.json.JSONUtil
  *
  * @author echo
+ * @author Charles7c
  * @since 2.11.0
  */
 public class JSONUtils {
+
+    private static final ObjectMapper OBJECT_MAPPER = SpringUtil.getBean(ObjectMapper.class);
 
     private JSONUtils() {
     }
 
     /**
-     * Jackson 对象映射器，用于 JSON 解析与序列化。
-     */
-    private static final ObjectMapper OBJECT_MAPPER = SpringUtil.getBean(ObjectMapper.class);
-
-    /**
-     * 获取 Jackson 对象映射器。
+     * 获取 Jackson 对象映射器
      *
      * @return {@link ObjectMapper} Jackson 对象映射器
      */
@@ -54,183 +54,136 @@ public class JSONUtils {
     }
 
     /**
-     * 对象转为 json 字符串
+     * 转换对象为JsonNode<br>
      *
-     * @param object 对象
-     * @return {@link String }
+     * @param obj 对象
+     * @return JsonNode
      */
-    public static String toJsonStr(Object object) {
-        if (object == null) {
+    public static JsonNode parseObj(Object obj) {
+        if (obj == null) {
             return null;
         }
-        try {
-            return OBJECT_MAPPER.writeValueAsString(object);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        return OBJECT_MAPPER.valueToTree(obj);
     }
 
     /**
-     * 将对象转换为 JsonNode。
+     * 转换为JSON字符串
      *
-     * @param obj 需要转换的对象
-     * @return 转换后的 {@link JsonNode}，如果 obj 为空，则返回 null
+     * @param obj 被转为JSON的对象
+     * @return JSON字符串
      */
-    public static JsonNode toJson(Object obj) {
+    public static String toJsonStr(Object obj) {
         if (obj == null) {
             return null;
         }
         try {
-            return OBJECT_MAPPER.valueToTree(obj);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * 将 List 转换为 JsonNode。
-     *
-     * @param list 输入的 List
-     * @return 转换后的 {@link JsonNode}
-     */
-    public static JsonNode listToJson(List<?> list) {
-        return toJson(list);
-    }
-
-    /**
-     * 将 Map 转换为 JsonNode。
-     *
-     * @param map 输入的 Map
-     * @return 转换后的 {@link JsonNode}
-     */
-    public static JsonNode mapToJson(Map<?, ?> map) {
-        return toJson(map);
-    }
-
-    /**
-     * 将 JsonNode 转换为 List<String>，用于环境变量格式解析。
-     *
-     * @param jsonNode 需要转换的 JsonNode
-     * @return 转换后的 List<String>
-     */
-    public static List<String> jsonToEnvList(JsonNode jsonNode) {
-        if (jsonNode == null || jsonNode.isNull()) {
-            return new ArrayList<>();
-        }
-        List<String> envList = new ArrayList<>();
-        jsonNode.fields().forEachRemaining(field -> {
-            String key = field.getKey();
-            JsonNode valueNode = field.getValue();
-            String value = valueNode.isValueNode() ? valueNode.asText() : valueNode.toString();
-            envList.add(key + "=" + value);
-        });
-        return envList;
-    }
-
-    /**
-     * 将 JsonNode 转换为 List<String>。
-     *
-     * @param jsonNode 需要转换的 JsonNode
-     * @return 转换后的 List<String>
-     */
-    public static List<String> jsonToStringList(JsonNode jsonNode) {
-        if (jsonNode == null || jsonNode.isNull()) {
-            return new ArrayList<>();
-        }
-        try {
-            return OBJECT_MAPPER.convertValue(jsonNode, new TypeReference<>() {
-            });
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    /**
-     * 将 JsonNode 转换为指定类型的 Java 对象。
-     *
-     * @param jsonNode JSON 数据
-     * @param clazz    目标 Java 类
-     * @return 解析后的 Java 对象
-     */
-    public static <T> T fromJson(JsonNode jsonNode, Class<T> clazz) {
-        try {
-            return OBJECT_MAPPER.treeToValue(jsonNode, clazz);
+            return OBJECT_MAPPER.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new JSONException(e);
         }
     }
 
     /**
-     * 解析 JSON 字符串为 Java 对象。
+     * JSON字符串转为实体类对象，转换异常将被抛出
      *
-     * @param str   JSON 字符串
-     * @param clazz 目标 Java 类
-     * @return 解析后的 Java 对象
+     * @param <T>        Bean类型
+     * @param jsonString JSON字符串
+     * @param beanClass  实体类对象
+     * @return 实体类对象
      */
-    public static <T> T parseObject(String str, Class<T> clazz) {
-        if (CharSequenceUtil.isEmpty(str)) {
+    public static <T> T toBean(String jsonString, Class<T> beanClass) {
+        if (CharSequenceUtil.isBlank(jsonString)) {
             return null;
         }
         try {
-            return OBJECT_MAPPER.readValue(str, clazz);
+            return OBJECT_MAPPER.readValue(jsonString, beanClass);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new JSONException(e);
         }
     }
 
     /**
-     * 字符串 解析为 list<T>
+     * 将JSON字符串转换为Bean的List，默认为ArrayList
      *
-     * @param str   字符串
-     * @param clazz 目标 Java 类
-     * @return 解析后的 List<T>
+     * @param jsonStr     需要转换的JSON字符串
+     * @param elementType 列表元素类型
+     * @return 转换后的 List
+     * @since 2.13.2
      */
-    public static <T> List<T> parseArray(String str, Class<T> clazz) {
-        if (CharSequenceUtil.isEmpty(str)) {
-            return new ArrayList<>();
+    public static <T> List<T> toList(String jsonStr, Class<T> elementType) {
+        if (jsonStr == null || jsonStr.trim().isEmpty()) {
+            return new ArrayList<>(0);
         }
         try {
-            return OBJECT_MAPPER.readValue(str, OBJECT_MAPPER.getTypeFactory()
-                .constructCollectionType(List.class, clazz));
+            return OBJECT_MAPPER.readValue(jsonStr, OBJECT_MAPPER.getTypeFactory()
+                .constructCollectionType(List.class, elementType));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new JSONException("Failed to parse JSON string to list", e);
         }
     }
 
     /**
-     * 判断字符串是否为 JSON 格式。
+     * 将JSONArray转换为Bean的List，默认为ArrayList
+     *
+     * @param jsonNode    需要转换的 JsonNode
+     * @param elementType 列表元素类型
+     * @return 转换后的 List
+     * @since 2.13.2
+     */
+    public static <T> List<T> toList(JsonNode jsonNode, Class<T> elementType) {
+        if (jsonNode == null || jsonNode.isNull()) {
+            return new ArrayList<>(0);
+        }
+        try {
+            return OBJECT_MAPPER.convertValue(jsonNode, OBJECT_MAPPER.getTypeFactory()
+                .constructCollectionType(List.class, elementType));
+        } catch (IllegalArgumentException e) {
+            throw new JSONException("Failed to convert JSON to list", e);
+        }
+    }
+
+    /**
+     * 是否为JSON类型字符串，首尾都为大括号或中括号判定为JSON字符串
      *
      * @param str 字符串
-     * @return 是否为 JSON 格式
+     * @return 是否为JSON类型字符串
+     * @since 2.13.2
+     * @see cn.hutool.json.JSONUtil#isTypeJSON(String)
+     * @author Looly（<a href="https://gitee.com/dromara/hutool">Hutool</a>）
      */
     public static boolean isTypeJSON(String str) {
-        if (CharSequenceUtil.isEmpty(str)) {
-            return false;
-        }
-        try {
-            OBJECT_MAPPER.readTree(str);
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
+        return isTypeJSONObject(str) || isTypeJSONArray(str);
     }
 
     /**
-     * 将 JSON 字符串转换为指定类型的 Java 对象。
+     * 是否为JSONObject类型字符串，首尾都为大括号判定为JSONObject字符串
      *
-     * @param str   字符串
-     * @param clazz 目标对象的 Class 类型
-     * @return 解析后的 Java 对象
+     * @param str 字符串
+     * @return 是否为JSON字符串
+     * @since 2.13.2
+     * @see cn.hutool.json.JSONUtil#isTypeJSONObject(String)
+     * @author Looly（<a href="https://gitee.com/dromara/hutool">Hutool</a>）
      */
-    public static <T> T toBean(String str, Class<T> clazz) {
-        if (CharSequenceUtil.isEmpty(str)) {
-            return null;
+    public static boolean isTypeJSONObject(String str) {
+        if (CharSequenceUtil.isBlank(str)) {
+            return false;
         }
-        try {
-            return OBJECT_MAPPER.readValue(str, clazz);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return CharSequenceUtil.isWrap(CharSequenceUtil.trim(str), '{', '}');
     }
 
+    /**
+     * 是否为JSONArray类型的字符串，首尾都为中括号判定为JSONArray字符串
+     *
+     * @param str 字符串
+     * @return 是否为JSONArray类型字符串
+     * @since 2.13.2
+     * @see cn.hutool.json.JSONUtil#isTypeJSONArray(String)
+     * @author Looly（<a href="https://gitee.com/dromara/hutool">Hutool</a>）
+     */
+    public static boolean isTypeJSONArray(String str) {
+        if (CharSequenceUtil.isBlank(str)) {
+            return false;
+        }
+        return CharSequenceUtil.isWrap(CharSequenceUtil.trim(str), '[', ']');
+    }
 }

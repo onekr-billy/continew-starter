@@ -27,7 +27,9 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * json 构建工具
+ * JSON 构建工具
+ *
+ * @see ObjectMapper
  *
  * @author echo
  * @since 2.11.0
