@@ -44,7 +44,7 @@ public abstract class AbstractSymmetricCryptoEncryptor extends AbstractEncryptor
      */
     private final CryptoContext context;
 
-    public AbstractSymmetricCryptoEncryptor(CryptoContext context) {
+    protected AbstractSymmetricCryptoEncryptor(CryptoContext context) {
         super(context);
         this.context = context;
     }

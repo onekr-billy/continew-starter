@@ -34,6 +34,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 加密助手
  *
  * @author lishuyan
+ * @since 2.13.2
  */
 public class EncryptHelper {
 
@@ -48,6 +49,9 @@ public class EncryptHelper {
      * 加密器缓存
      */
     private static final Map<Integer, IEncryptor> ENCRYPTOR_CACHE = new ConcurrentHashMap<>();
+
+    private EncryptHelper() {
+    }
 
     /**
      * 初始化默认配置

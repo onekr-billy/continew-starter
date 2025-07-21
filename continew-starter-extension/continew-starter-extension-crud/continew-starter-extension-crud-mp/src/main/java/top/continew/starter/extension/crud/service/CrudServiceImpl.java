@@ -71,7 +71,7 @@ import java.util.function.Function;
  * @author Charles7c
  * @since 1.0.0
  */
-public abstract class CrudServiceImpl<M extends BaseMapper<T>, T extends BaseIdDO, L, D, Q, C> extends ServiceImpl<M, T> implements CrudService<L, D, Q, C> {
+public class CrudServiceImpl<M extends BaseMapper<T>, T extends BaseIdDO, L, D, Q, C> extends ServiceImpl<M, T> implements CrudService<L, D, Q, C> {
 
     private Class<L> listClass;
     private Class<D> detailClass;

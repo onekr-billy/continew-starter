@@ -42,6 +42,7 @@ import top.continew.starter.extension.crud.autoconfigure.CrudTreeProperties;
 import top.continew.starter.extension.crud.model.entity.BaseIdDO;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.query.SortQuery;
+import top.continew.starter.extension.crud.model.resp.LabelValueResp;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 import top.continew.starter.excel.util.ExcelUtils;
 
@@ -62,7 +63,7 @@ import java.util.Optional;
  * @author Charles7c
  * @since 1.0.0
  */
-public abstract class CrudServiceImpl<M extends BaseMapper<T>, T extends BaseIdDO, L, D, Q, C> extends ServiceImpl<M, T> implements CrudService<L, D, Q, C> {
+public class CrudServiceImpl<M extends BaseMapper<T>, T extends BaseIdDO, L, D, Q, C> extends ServiceImpl<M, T> implements CrudService<L, D, Q, C> {
 
     protected final Class<L> listClass = this.currentListClass();
     protected final Class<D> detailClass = this.currentDetailClass();
@@ -128,6 +129,11 @@ public abstract class CrudServiceImpl<M extends BaseMapper<T>, T extends BaseIdD
         D detail = BeanUtil.toBean(entity, detailClass);
         this.fill(detail);
         return detail;
+    }
+
+    @Override
+    public List<LabelValueResp> listDict(Q query, SortQuery sortQuery) {
+        return List.of();
     }
 
     @Override

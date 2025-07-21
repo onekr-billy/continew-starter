@@ -20,10 +20,11 @@ package top.continew.starter.security.crypto.encryptor;
  * 加密器基类
  *
  * @author lishuyan
+ * @since 2.13.2
  */
 public abstract class AbstractEncryptor implements IEncryptor {
 
-    public AbstractEncryptor(CryptoContext context) {
+    protected AbstractEncryptor(CryptoContext context) {
         // 配置校验与配置注入
     }
 

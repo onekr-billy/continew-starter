@@ -53,7 +53,7 @@ public class CryptoAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public MyBatisEncryptInterceptor myBatisEncryptInterceptor() {
+    public MyBatisEncryptInterceptor mybatisEncryptInterceptor() {
         return new MyBatisEncryptInterceptor();
     }
 
@@ -62,7 +62,7 @@ public class CryptoAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(MyBatisDecryptInterceptor.class)
-    public MyBatisDecryptInterceptor myBatisDecryptInterceptor() {
+    public MyBatisDecryptInterceptor mybatisDecryptInterceptor() {
         return new MyBatisDecryptInterceptor();
     }
 
