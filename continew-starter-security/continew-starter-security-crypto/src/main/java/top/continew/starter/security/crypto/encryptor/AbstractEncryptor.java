@@ -17,27 +17,14 @@
 package top.continew.starter.security.crypto.encryptor;
 
 /**
- * 加/解密接口
+ * 加密器基类
  *
- * @author Charles7c
  * @author lishuyan
- * @since 1.4.0
  */
-public interface IEncryptor {
+public abstract class AbstractEncryptor implements IEncryptor {
 
-    /**
-     * 加密
-     *
-     * @param plaintext 明文
-     * @return 加密后的文本
-     */
-    String encrypt(String plaintext);
+    public AbstractEncryptor(CryptoContext context) {
+        // 配置校验与配置注入
+    }
 
-    /**
-     * 解密
-     *
-     * @param ciphertext 密文
-     * @return 解密后的文本
-     */
-    String decrypt(String ciphertext);
 }

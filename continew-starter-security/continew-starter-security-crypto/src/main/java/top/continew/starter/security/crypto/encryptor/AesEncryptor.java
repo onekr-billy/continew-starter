@@ -29,6 +29,10 @@ import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
  */
 public class AesEncryptor extends AbstractSymmetricCryptoEncryptor {
 
+    public AesEncryptor(CryptoContext context) {
+        super(context);
+    }
+
     @Override
     protected SymmetricAlgorithm getAlgorithm() {
         return SymmetricAlgorithm.AES;

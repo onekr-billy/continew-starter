@@ -29,26 +29,40 @@ import java.util.concurrent.ConcurrentHashMap;
  * 对称加/解密处理器
  *
  * @author Charles7c
+ * @author lishuyan
  * @since 1.4.0
  */
-public abstract class AbstractSymmetricCryptoEncryptor implements IEncryptor {
+public abstract class AbstractSymmetricCryptoEncryptor extends AbstractEncryptor {
 
+    /**
+     * 对称加密缓存
+     */
     private static final Map<String, SymmetricCrypto> CACHE = new ConcurrentHashMap<>();
 
-    @Override
-    public String encrypt(String plaintext, String password, String publicKey) throws Exception {
-        if (CharSequenceUtil.isBlank(plaintext)) {
-            return plaintext;
-        }
-        return this.getCrypto(password).encryptHex(plaintext);
+    /**
+     * 加密上下文
+     */
+    private final CryptoContext context;
+
+    public AbstractSymmetricCryptoEncryptor(CryptoContext context) {
+        super(context);
+        this.context = context;
     }
 
     @Override
-    public String decrypt(String ciphertext, String password, String privateKey) throws Exception {
+    public String encrypt(String plaintext) {
+        if (CharSequenceUtil.isBlank(plaintext)) {
+            return plaintext;
+        }
+        return this.getCrypto(context.getPassword()).encryptHex(plaintext);
+    }
+
+    @Override
+    public String decrypt(String ciphertext) {
         if (CharSequenceUtil.isBlank(ciphertext)) {
             return ciphertext;
         }
-        return this.getCrypto(password).decryptStr(ciphertext);
+        return this.getCrypto(context.getPassword()).decryptStr(ciphertext);
     }
 
     /**

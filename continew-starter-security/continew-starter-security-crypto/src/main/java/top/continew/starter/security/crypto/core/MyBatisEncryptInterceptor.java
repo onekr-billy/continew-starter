@@ -28,12 +28,9 @@ import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.security.crypto.annotation.FieldEncrypt;
-import top.continew.starter.security.crypto.autoconfigure.CryptoProperties;
-import top.continew.starter.security.crypto.encryptor.IEncryptor;
+import top.continew.starter.security.crypto.utils.EncryptHelper;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -47,18 +44,13 @@ import java.util.regex.Pattern;
  * 字段加密拦截器
  *
  * @author Charles7c
+ * @author lishuyan
  * @since 1.4.0
  */
 public class MyBatisEncryptInterceptor extends AbstractMyBatisInterceptor implements InnerInterceptor {
 
-    private static final Logger log = LoggerFactory.getLogger(MyBatisEncryptInterceptor.class);
     private static final Pattern PARAM_PAIRS_PATTERN = Pattern
         .compile("#\\{ew\\.paramNameValuePairs\\.(" + Constants.WRAPPER_PARAM + "\\d+)\\}");
-    private final CryptoProperties properties;
-
-    public MyBatisEncryptInterceptor(CryptoProperties properties) {
-        this.properties = properties;
-    }
 
     @Override
     public void beforeQuery(Executor executor,
@@ -124,22 +116,16 @@ public class MyBatisEncryptInterceptor extends AbstractMyBatisInterceptor implem
      */
     private void encryptEntity(List<Field> fieldList, Object entity) {
         for (Field field : fieldList) {
-            IEncryptor encryptor = super.getEncryptor(field.getAnnotation(FieldEncrypt.class));
             Object fieldValue = ReflectUtil.getFieldValue(entity, field);
             if (fieldValue == null) {
                 continue;
             }
-            // 优先获取自定义对称加密算法密钥，获取不到时再获取全局配置
-            String password = ObjectUtil.defaultIfBlank(field.getAnnotation(FieldEncrypt.class).password(), properties
-                .getPassword());
-            String ciphertext = fieldValue.toString();
-            try {
-                ciphertext = encryptor.encrypt(fieldValue.toString(), password, properties.getPublicKey());
-            } catch (Exception e) {
-                // 加密失败时保留原值，避免影响正常业务流程
-                log.warn("加密失败，请检查加密配置", e);
+            String strValue = String.valueOf(fieldValue);
+            if (CharSequenceUtil.isBlank(strValue)) {
+                continue;
             }
-            ReflectUtil.setFieldValue(entity, field, ciphertext);
+            ReflectUtil.setFieldValue(entity, field, EncryptHelper.encrypt(strValue, field
+                .getAnnotation(FieldEncrypt.class)));
         }
     }
 
@@ -197,8 +183,7 @@ public class MyBatisEncryptInterceptor extends AbstractMyBatisInterceptor implem
                 if (matcher.matches()) {
                     String valueKey = matcher.group(1);
                     Object value = updateWrapper.getParamNameValuePairs().get(valueKey);
-                    Object ciphertext = this.doEncrypt(value, fieldEncrypt);
-                    updateWrapper.getParamNameValuePairs().put(valueKey, ciphertext);
+                    updateWrapper.getParamNameValuePairs().put(valueKey, this.doEncrypt(value, fieldEncrypt));
                 }
             }
         }
@@ -211,19 +196,14 @@ public class MyBatisEncryptInterceptor extends AbstractMyBatisInterceptor implem
      * @param fieldEncrypt   字段加密注解
      */
     private Object doEncrypt(Object parameterValue, FieldEncrypt fieldEncrypt) {
-        if (parameterValue == null) {
+        if (ObjectUtil.isNull(parameterValue)) {
             return null;
         }
-        IEncryptor encryptor = super.getEncryptor(fieldEncrypt);
-        // 优先获取自定义对称加密算法密钥，获取不到时再获取全局配置
-        String password = ObjectUtil.defaultIfBlank(fieldEncrypt.password(), properties.getPassword());
-        try {
-            return encryptor.encrypt(parameterValue.toString(), password, properties.getPublicKey());
-        } catch (Exception e) {
-            // 加密失败时保留原值，避免影响正常业务流程
-            log.warn("加密失败，请检查加密配置", e);
+        String strValue = String.valueOf(parameterValue);
+        if (CharSequenceUtil.isBlank(strValue)) {
+            return null;
         }
-        return parameterValue;
+        return EncryptHelper.encrypt(strValue, fieldEncrypt);
     }
 
     /**

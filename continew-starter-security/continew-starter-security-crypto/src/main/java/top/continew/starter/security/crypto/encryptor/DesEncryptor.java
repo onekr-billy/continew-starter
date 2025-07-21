@@ -29,6 +29,10 @@ import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
  */
 public class DesEncryptor extends AbstractSymmetricCryptoEncryptor {
 
+    public DesEncryptor(CryptoContext context) {
+        super(context);
+    }
+
     @Override
     protected SymmetricAlgorithm getAlgorithm() {
         return SymmetricAlgorithm.DES;

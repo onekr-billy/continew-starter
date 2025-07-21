@@ -14,31 +14,23 @@
  * limitations under the License.
  */
 
-package top.continew.starter.security.crypto.autoconfigure;
+package top.continew.starter.security.crypto.encryptor;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import top.continew.starter.core.constant.PropertiesConstants;
 import top.continew.starter.security.crypto.enums.Algorithm;
 
-/**
- * 加/解密配置属性
- *
- * @author Charles7c
- * @author lishuyan
- * @since 1.4.0
- */
-@ConfigurationProperties(PropertiesConstants.SECURITY_CRYPTO)
-public class CryptoProperties {
+import java.util.Objects;
 
-    /**
-     * 是否启用
-     */
-    private boolean enabled = true;
+/**
+ * 加密上下文
+ *
+ * @author lishuyan
+ */
+public class CryptoContext {
 
     /**
      * 默认算法
      */
-    private Algorithm algorithm = Algorithm.AES;
+    private Algorithm algorithm;
 
     /**
      * 对称加密算法密钥
@@ -54,14 +46,6 @@ public class CryptoProperties {
      * 非对称加密算法私钥
      */
     private String privateKey;
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
 
     public Algorithm getAlgorithm() {
         return algorithm;
@@ -93,5 +77,23 @@ public class CryptoProperties {
 
     public void setPrivateKey(String privateKey) {
         this.privateKey = privateKey;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        CryptoContext that = (CryptoContext)o;
+        return algorithm == that.algorithm && Objects.equals(password, that.password) && Objects
+            .equals(publicKey, that.publicKey) && Objects.equals(privateKey, that.privateKey);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(algorithm, password, publicKey, privateKey);
     }
 }

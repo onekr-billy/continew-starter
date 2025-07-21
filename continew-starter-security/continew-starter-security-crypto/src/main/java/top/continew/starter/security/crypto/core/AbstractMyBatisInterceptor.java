@@ -18,14 +18,11 @@ package top.continew.starter.security.crypto.core;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ReflectUtil;
-import cn.hutool.extra.spring.SpringUtil;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.mapping.MappedStatement;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.exception.BaseException;
 import top.continew.starter.security.crypto.annotation.FieldEncrypt;
-import top.continew.starter.security.crypto.encryptor.IEncryptor;
-import top.continew.starter.security.crypto.enums.Algorithm;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -69,23 +66,6 @@ public abstract class AbstractMyBatisInterceptor {
             .filter(field -> String.class.equals(field.getType()))
             .filter(field -> field.getAnnotation(FieldEncrypt.class) != null)
             .toList());
-    }
-
-    /**
-     * 获取字段加/解密处理器
-     *
-     * @param fieldEncrypt 字段加密注解
-     * @return 加/解密处理器
-     */
-    protected IEncryptor getEncryptor(FieldEncrypt fieldEncrypt) {
-        Class<? extends IEncryptor> encryptorClass = fieldEncrypt.encryptor();
-        // 使用预定义加/解密处理器
-        if (encryptorClass == IEncryptor.class) {
-            Algorithm algorithm = fieldEncrypt.value();
-            return ReflectUtil.newInstance(algorithm.getEncryptor());
-        }
-        // 使用自定义加/解密处理器
-        return SpringUtil.getBean(encryptorClass);
     }
 
     /**

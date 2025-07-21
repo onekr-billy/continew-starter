@@ -27,11 +27,13 @@ import org.springframework.context.annotation.Bean;
 import top.continew.starter.core.constant.PropertiesConstants;
 import top.continew.starter.security.crypto.core.MyBatisDecryptInterceptor;
 import top.continew.starter.security.crypto.core.MyBatisEncryptInterceptor;
+import top.continew.starter.security.crypto.utils.EncryptHelper;
 
 /**
  * 加/解密自动配置
  *
  * @author Charles7c
+ * @author lishuyan
  * @since 1.4.0
  */
 @AutoConfiguration
@@ -52,7 +54,7 @@ public class CryptoAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public MyBatisEncryptInterceptor myBatisEncryptInterceptor() {
-        return new MyBatisEncryptInterceptor(properties);
+        return new MyBatisEncryptInterceptor();
     }
 
     /**
@@ -61,11 +63,12 @@ public class CryptoAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(MyBatisDecryptInterceptor.class)
     public MyBatisDecryptInterceptor myBatisDecryptInterceptor() {
-        return new MyBatisDecryptInterceptor(properties);
+        return new MyBatisDecryptInterceptor();
     }
 
     @PostConstruct
     public void postConstruct() {
+        EncryptHelper.init(properties);
         log.debug("[ContiNew Starter] - Auto Configuration 'Security-Crypto' completed initialization.");
     }
 }

@@ -28,6 +28,7 @@ import java.lang.annotation.Target;
  * 字段加/解密注解
  *
  * @author Charles7c
+ * @author lishuyan
  * @since 1.4.0
  */
 @Target({ElementType.FIELD, ElementType.PARAMETER})
@@ -37,7 +38,7 @@ public @interface FieldEncrypt {
     /**
      * 加密/解密算法
      */
-    Algorithm value() default Algorithm.AES;
+    Algorithm value() default Algorithm.DEFAULT;
 
     /**
      * 加密/解密处理器
@@ -51,4 +52,14 @@ public @interface FieldEncrypt {
      * 对称加密算法密钥
      */
     String password() default "";
+
+    /**
+     * 非对称加密算法公钥：RSA需要
+     */
+    String publicKey() default "";
+
+    /**
+     * 非对称加密算法私钥：RSA需要
+     */
+    String privateKey() default "";
 }

@@ -17,6 +17,7 @@
 package top.continew.starter.security.crypto.core;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.ReflectUtil;
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
@@ -25,39 +26,30 @@ import org.apache.ibatis.plugin.Intercepts;
 import org.apache.ibatis.plugin.Invocation;
 import org.apache.ibatis.plugin.Signature;
 import org.apache.ibatis.type.SimpleTypeRegistry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import top.continew.starter.security.crypto.annotation.FieldEncrypt;
-import top.continew.starter.security.crypto.autoconfigure.CryptoProperties;
-import top.continew.starter.security.crypto.encryptor.IEncryptor;
+import top.continew.starter.security.crypto.utils.EncryptHelper;
 
 import java.lang.reflect.Field;
 import java.sql.Statement;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 字段解密拦截器
  *
  * @author Charles7c
+ * @author lishuyan
  * @since 1.4.0
  */
 @Intercepts({@Signature(type = ResultSetHandler.class, method = "handleResultSets", args = {Statement.class})})
 public class MyBatisDecryptInterceptor extends AbstractMyBatisInterceptor implements Interceptor {
 
-    private static final Logger log = LoggerFactory.getLogger(MyBatisDecryptInterceptor.class);
-    private CryptoProperties properties;
-
-    public MyBatisDecryptInterceptor(CryptoProperties properties) {
-        this.properties = properties;
-    }
-
-    public MyBatisDecryptInterceptor() {
-    }
-
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
+        // 获取执行结果
         Object obj = invocation.proceed();
-        if (obj == null) {
+        if (ObjectUtil.isNull(obj)) {
             return null;
         }
         // 确保目标是 ResultSetHandler
@@ -68,6 +60,9 @@ public class MyBatisDecryptInterceptor extends AbstractMyBatisInterceptor implem
         if (obj instanceof List<?> resultList) {
             // 处理列表结果
             this.decryptList(resultList);
+        } else if (obj instanceof Map<?, ?> map) {
+            // 处理Map结果
+            this.decryptMap(map);
         } else {
             // 处理单个对象结果
             this.decryptObject(obj);
@@ -90,12 +85,24 @@ public class MyBatisDecryptInterceptor extends AbstractMyBatisInterceptor implem
     }
 
     /**
+     * 解密Map结果
+     *
+     * @param resultMap 结果Map
+     */
+    private void decryptMap(Map<?, ?> resultMap) {
+        if (CollUtil.isEmpty(resultMap)) {
+            return;
+        }
+        new HashSet<>(resultMap.values()).forEach(this::decryptObject);
+    }
+
+    /**
      * 解密单个对象结果
      *
      * @param result 结果对象
      */
     private void decryptObject(Object result) {
-        if (result == null) {
+        if (ObjectUtil.isNull(result)) {
             return;
         }
         // String、Integer、Long 等简单类型对象无需处理
@@ -109,21 +116,16 @@ public class MyBatisDecryptInterceptor extends AbstractMyBatisInterceptor implem
         }
         // 解密处理
         for (Field field : fieldList) {
-            IEncryptor encryptor = super.getEncryptor(field.getAnnotation(FieldEncrypt.class));
             Object fieldValue = ReflectUtil.getFieldValue(result, field);
             if (fieldValue == null) {
                 continue;
             }
-            // 优先获取自定义对称加密算法密钥，获取不到时再获取全局配置
-            String password = ObjectUtil.defaultIfBlank(field.getAnnotation(FieldEncrypt.class).password(), properties
-                .getPassword());
-            try {
-                String ciphertext = encryptor.decrypt(fieldValue.toString(), password, properties.getPrivateKey());
-                ReflectUtil.setFieldValue(result, field, ciphertext);
-            } catch (Exception e) {
-                // 解密失败时保留原值，避免影响正常业务流程
-                log.warn("解密失败，请检查加密配置", e);
+            String strValue = String.valueOf(fieldValue);
+            if (CharSequenceUtil.isBlank(strValue)) {
+                continue;
             }
+            ReflectUtil.setFieldValue(result, field, EncryptHelper.decrypt(strValue, field
+                .getAnnotation(FieldEncrypt.class)));
         }
     }
 }

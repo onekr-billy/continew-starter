@@ -22,9 +22,15 @@ import top.continew.starter.security.crypto.encryptor.*;
  * 加密/解密算法枚举
  *
  * @author Charles7c
+ * @author lishuyan
  * @since 1.4.0
  */
 public enum Algorithm {
+
+    /**
+     * 默认使用配置属性的算法
+     */
+    DEFAULT(null),
 
     /**
      * AES

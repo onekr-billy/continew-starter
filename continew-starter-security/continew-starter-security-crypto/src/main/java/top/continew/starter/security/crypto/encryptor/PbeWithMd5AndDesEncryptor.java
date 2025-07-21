@@ -29,6 +29,10 @@ import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
  */
 public class PbeWithMd5AndDesEncryptor extends AbstractSymmetricCryptoEncryptor {
 
+    public PbeWithMd5AndDesEncryptor(CryptoContext context) {
+        super(context);
+    }
+
     @Override
     protected SymmetricAlgorithm getAlgorithm() {
         return SymmetricAlgorithm.PBEWithMD5AndDES;

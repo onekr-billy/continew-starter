@@ -105,7 +105,9 @@ public abstract class CrudServiceImpl<M extends BaseMapper<T>, T extends BaseIdD
         CrudTreeProperties treeProperties = crudProperties.getTree();
         TreeField treeField = listClass.getDeclaredAnnotation(TreeField.class);
         // 简单树（下拉列表）使用全局配置结构，复杂树（表格）使用局部配置
-        TreeNodeConfig treeNodeConfig = isSimple ? treeProperties.genTreeNodeConfig() : treeProperties.genTreeNodeConfig(treeField);
+        TreeNodeConfig treeNodeConfig = isSimple
+            ? treeProperties.genTreeNodeConfig()
+            : treeProperties.genTreeNodeConfig(treeField);
         String valueGetter = CharSequenceUtil.genGetter(treeField.value());
         String parentIdKeyGetter = CharSequenceUtil.genGetter(treeField.parentIdKey());
         Function<L, Long> getId = createMethodReference(listClass, valueGetter);

@@ -27,17 +27,29 @@ import cn.hutool.crypto.asymmetric.KeyType;
  * </p>
  *
  * @author Charles7c
+ * @author lishuyan
  * @since 1.4.0
  */
-public class RsaEncryptor implements IEncryptor {
+public class RsaEncryptor extends AbstractEncryptor {
 
-    @Override
-    public String encrypt(String plaintext, String password, String publicKey) throws Exception {
-        return Base64.encode(SecureUtil.rsa(null, publicKey).encrypt(plaintext, KeyType.PublicKey));
+    /**
+     * 加密上下文
+     */
+    private final CryptoContext context;
+
+    public RsaEncryptor(CryptoContext context) {
+        super(context);
+        this.context = context;
     }
 
     @Override
-    public String decrypt(String ciphertext, String password, String privateKey) throws Exception {
-        return new String(SecureUtil.rsa(privateKey, null).decrypt(Base64.decode(ciphertext), KeyType.PrivateKey));
+    public String encrypt(String plaintext) {
+        return Base64.encode(SecureUtil.rsa(null, context.getPublicKey()).encrypt(plaintext, KeyType.PublicKey));
+    }
+
+    @Override
+    public String decrypt(String ciphertext) {
+        return new String(SecureUtil.rsa(context.getPrivateKey(), null)
+            .decrypt(Base64.decode(ciphertext), KeyType.PrivateKey));
     }
 }

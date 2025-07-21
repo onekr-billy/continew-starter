@@ -30,12 +30,12 @@ import cn.hutool.core.codec.Base64;
 public class Base64Encryptor implements IEncryptor {
 
     @Override
-    public String encrypt(String plaintext, String password, String publicKey) throws Exception {
+    public String encrypt(String plaintext) {
         return Base64.encode(plaintext);
     }
 
     @Override
-    public String decrypt(String ciphertext, String password, String privateKey) throws Exception {
+    public String decrypt(String ciphertext) {
         return Base64.decodeStr(ciphertext);
     }
 }

@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2022-present Charles7c Authors. All Rights Reserved.
+ * <p>
+ * Licensed under the GNU LESSER GENERAL PUBLIC LICENSE 3.0;
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.gnu.org/licenses/lgpl.html
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package top.continew.starter.core.util;
 
 import cn.hutool.core.collection.CollUtil;
@@ -70,7 +86,10 @@ public class TreeBuildUtils extends TreeUtil {
      * @param nodeParser     解析器，用于将输入节点转换为树节点
      * @return 构建好的树形结构列表
      */
-    public static <T, K> List<Tree<K>> build(List<T> list, K parentId, TreeNodeConfig treeNodeConfig, NodeParser<T, K> nodeParser) {
+    public static <T, K> List<Tree<K>> build(List<T> list,
+                                             K parentId,
+                                             TreeNodeConfig treeNodeConfig,
+                                             NodeParser<T, K> nodeParser) {
         if (CollUtil.isEmpty(list)) {
             return CollUtil.newArrayList();
         }
@@ -88,7 +107,10 @@ public class TreeBuildUtils extends TreeUtil {
      * @param <K>         节点 ID 类型（如 Long、String）
      * @return 构建完成的树形结构（可能包含多个顶级根节点）
      */
-    public static <T, K> List<Tree<K>> buildMultiRoot(List<T> list, Function<T, K> getId, Function<T, K> getParentId, NodeParser<T, K> parser) {
+    public static <T, K> List<Tree<K>> buildMultiRoot(List<T> list,
+                                                      Function<T, K> getId,
+                                                      Function<T, K> getParentId,
+                                                      NodeParser<T, K> parser) {
         if (CollUtil.isEmpty(list)) {
             return CollUtil.newArrayList();
         }
@@ -112,8 +134,11 @@ public class TreeBuildUtils extends TreeUtil {
      * @param parser         树节点属性映射器，用于将原始节点 T 转为 Tree 节点
      * @return 构建完成的树形结构（可能包含多个顶级根节点）
      */
-    public static <T, K> List<Tree<K>> buildMultiRoot(List<T> list, Function<T, K> getId, Function<T, K> getParentId,
-                                                      TreeNodeConfig treeNodeConfig, NodeParser<T, K> parser) {
+    public static <T, K> List<Tree<K>> buildMultiRoot(List<T> list,
+                                                      Function<T, K> getId,
+                                                      Function<T, K> getParentId,
+                                                      TreeNodeConfig treeNodeConfig,
+                                                      NodeParser<T, K> parser) {
         if (CollUtil.isEmpty(list)) {
             return CollUtil.newArrayList();
         }
@@ -121,8 +146,8 @@ public class TreeBuildUtils extends TreeUtil {
         rootParentIds.removeAll(CollUtils.mapToSet(list, getId));
         // 构建每一个根 parentId 下的树，并合并成最终结果列表
         return rootParentIds.stream()
-                .flatMap(rootParentId -> TreeUtil.build(list, rootParentId, treeNodeConfig, parser).stream())
-                .collect(Collectors.toList());
+            .flatMap(rootParentId -> TreeUtil.build(list, rootParentId, treeNodeConfig, parser).stream())
+            .collect(Collectors.toList());
     }
 
     /**
@@ -136,9 +161,7 @@ public class TreeBuildUtils extends TreeUtil {
         if (CollUtil.isEmpty(nodes)) {
             return CollUtil.newArrayList();
         }
-        return nodes.stream()
-            .flatMap(TreeBuildUtils::extractLeafNodes)
-            .collect(Collectors.toList());
+        return nodes.stream().flatMap(TreeBuildUtils::extractLeafNodes).collect(Collectors.toList());
     }
 
     /**
@@ -153,8 +176,7 @@ public class TreeBuildUtils extends TreeUtil {
             return Stream.of(node);
         } else {
             // 递归调用，获取所有子节点的叶子节点
-            return node.getChildren().stream()
-                .flatMap(TreeBuildUtils::extractLeafNodes);
+            return node.getChildren().stream().flatMap(TreeBuildUtils::extractLeafNodes);
         }
     }
 
