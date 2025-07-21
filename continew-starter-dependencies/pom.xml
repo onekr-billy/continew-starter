@@ -58,7 +58,7 @@
 
         <!-- Validation and Response Processing Versions -->
         <graceful-response.version>5.0.5-boot3</graceful-response.version>
-        <spel-validator.version>0.5.0-beta</spel-validator.version>
+        <spel-validator.version>0.5.1-beta</spel-validator.version>
         <crane4j.version>2.9.0</crane4j.version>
 
         <!-- API Documentation Versions -->
