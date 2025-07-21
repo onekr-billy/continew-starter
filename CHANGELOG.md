@@ -1,3 +1,29 @@
+## [v2.13.2](https://github.com/continew-org/continew-starter/compare/v2.13.1...v2.13.2) (2025-07-21)
+
+### ✨ 新特性
+
+- 【core】新增 扩展 hutool TreeUtil 封装树构建的 TreeBuildUtils 工具类，其中包括扩展的（构建树形结构、构建多根节点的树结构（支持多个顶级节点））等方法。(Gitee#72@lishuyanla) ([90c11f6](https://github.com/continew-org/continew-starter/commit/90c11f60f9ba313acbfd76de66f3b4022bc8b270))
+- 【security/crypto】重构加/解密模块业务逻辑，封装 EncryptHelper 工具类，提供统一的加/解密方法，方便使用者灵活处理加/解密 (Gitee#73@lishuyanla) ([5d10a28](https://github.com/continew-org/continew-starter/commit/5d10a28aa1c4ade0a51235e302c46143b90f7bb5))
+
+### 💎 功能优化
+
+- 【extension/tenant】移除超级租户 ID 配置属性 ([a778e31](https://github.com/continew-org/continew-starter/commit/a778e3182a8163e9e3ea5bbc677090da2efe0a31))
+- 【extension/tenant】设置租户拦截器的优先级为最高 ([d8c4224](https://github.com/continew-org/continew-starter/commit/d8c4224030d6d2eb6eea3554e689165315924bf6))
+- 【extension/tenant】优化租户忽略逻辑 ([35e7962](https://github.com/continew-org/continew-starter/commit/35e79620e40d8d4f121a24ec720dcd8968ce9104))
+- 【extension/crud】 ([586322a](https://github.com/continew-org/continew-starter/commit/586322a180f2bce9faf1acbacb65ec09df921815))
+- 【extension/datapermission】优化数据权限模块代码 ([5dd6808](https://github.com/continew-org/continew-starter/commit/5dd6808bea4483a7e69884b69bac4928cb95bd89))
+- 【json/jackson】重构 JSON 工具类 ([43d1489](https://github.com/continew-org/continew-starter/commit/43d1489f1a850731b4fc27a2ae0cbab24a72025c))
+- 解决部分 sonar 问题 ([ddd4e38](https://github.com/continew-org/continew-starter/commit/ddd4e38dca4c5f64b9fc999d57a13d827d29d474)) ([47165f8](https://github.com/continew-org/continew-starter/commit/47165f80a15cf7da346fbbb931894284b0cd7124))
+
+### 🐛 问题修复
+
+- 【validation】修复字符串值仅进行了 null 判空错误 ([12746d6](https://github.com/continew-org/continew-starter/commit/12746d62613f3e9d8cce4b4aea71d6466f345e0a))
+- 【extension/tenant】将 TenantUtils.executeIgnore 方法改为静态方法 ([43ba770](https://github.com/continew-org/continew-starter/commit/43ba770971e5fb124272ed6d4fadef36be9c8fb8))
+
+### 📦 依赖升级
+
+- 【dependencies】spel-validator 0.5.0-beta => 0.5.1-beta ([601c071](https://github.com/continew-org/continew-starter/commit/601c0715052106f4cae3419fda0f276231cb3b13))
+
 ## [v2.13.1](https://github.com/continew-org/continew-starter/compare/v2.13.0...v2.13.1) (2025-07-17)
 
 ### ✨ 新特性
