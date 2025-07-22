@@ -127,29 +127,6 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends BaseIdDO, L, D, 
         }
     }
 
-    /**
-     * 构建树字段
-     *
-     * @param isSimple  是否简单树结构
-     * @param node      节点
-     * @param tree      树
-     * @param treeField 树字段
-     */
-    private void buildTreeField(boolean isSimple, L node, Tree<Long> tree, TreeField treeField) {
-        tree.setId(ReflectUtil.invoke(node, CharSequenceUtil.genGetter(treeField.value())));
-        tree.setParentId(ReflectUtil.invoke(node, CharSequenceUtil.genGetter(treeField.parentIdKey())));
-        tree.setName(ReflectUtil.invoke(node, CharSequenceUtil.genGetter(treeField.nameKey())));
-        tree.setWeight(ReflectUtil.invoke(node, CharSequenceUtil.genGetter(treeField.weightKey())));
-        // 如果构建简单树结构，则不包含扩展字段
-        if (!isSimple) {
-            List<Field> fieldList = ReflectUtils.getNonStaticFields(listClass);
-            fieldList.removeIf(f -> CharSequenceUtil.equalsAnyIgnoreCase(f.getName(), treeField.value(), treeField
-                .parentIdKey(), treeField.nameKey(), treeField.weightKey(), treeField.childrenKey()));
-            fieldList.forEach(f -> tree.putExtra(f.getName(), ReflectUtil.invoke(node, CharSequenceUtil.genGetter(f
-                .getName()))));
-        }
-    }
-
     @Override
     public D get(Long id) {
         T entity = super.getById(id);
@@ -350,4 +327,26 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends BaseIdDO, L, D, 
         return (Class<Q>)this.typeArguments[4];
     }
 
+    /**
+     * 构建树字段
+     *
+     * @param isSimple  是否简单树结构
+     * @param node      节点
+     * @param tree      树
+     * @param treeField 树字段
+     */
+    private void buildTreeField(boolean isSimple, L node, Tree<Long> tree, TreeField treeField) {
+        tree.setId(ReflectUtil.invoke(node, CharSequenceUtil.genGetter(treeField.value())));
+        tree.setParentId(ReflectUtil.invoke(node, CharSequenceUtil.genGetter(treeField.parentIdKey())));
+        tree.setName(ReflectUtil.invoke(node, CharSequenceUtil.genGetter(treeField.nameKey())));
+        tree.setWeight(ReflectUtil.invoke(node, CharSequenceUtil.genGetter(treeField.weightKey())));
+        // 如果构建简单树结构，则不包含扩展字段
+        if (!isSimple) {
+            List<Field> fieldList = ReflectUtils.getNonStaticFields(listClass);
+            fieldList.removeIf(f -> CharSequenceUtil.equalsAnyIgnoreCase(f.getName(), treeField.value(), treeField
+                .parentIdKey(), treeField.nameKey(), treeField.weightKey(), treeField.childrenKey()));
+            fieldList.forEach(f -> tree.putExtra(f.getName(), ReflectUtil.invoke(node, CharSequenceUtil.genGetter(f
+                .getName()))));
+        }
+    }
 }

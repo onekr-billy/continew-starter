@@ -21,6 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.validation.annotation.Validated;
+import top.continew.starter.extension.crud.annotation.TreeField;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.query.SortQuery;
 import top.continew.starter.extension.crud.model.resp.BasePageResp;
@@ -66,6 +67,7 @@ public interface CrudService<L, D, Q, C> {
      * @param sortQuery 排序查询条件
      * @param isSimple  是否为简单树结构（不包含基本树结构之外的扩展字段，简单树（下拉列表）使用全局配置结构，复杂树（表格）使用 @TreeField 局部配置）
      * @return 树列表信息
+     * @see TreeField
      */
     List<Tree<Long>> tree(@Valid Q query, @Valid SortQuery sortQuery, boolean isSimple);
 
@@ -77,6 +79,9 @@ public interface CrudService<L, D, Q, C> {
      * @param isSimple     是否为简单树结构（不包含基本树结构之外的扩展字段，简单树（下拉列表）使用全局配置结构，复杂树（表格）使用 @TreeField 局部配置）
      * @param isSingleRoot 是否为单个根节点
      * @return 树列表信息
+     * @author lishuyan
+     * @since 2.13.3
+     * @see TreeField
      */
     List<Tree<Long>> tree(@Valid Q query, @Valid SortQuery sortQuery, boolean isSimple, boolean isSingleRoot);
 
@@ -95,6 +100,7 @@ public interface CrudService<L, D, Q, C> {
      * @param sortQuery 排序查询条件
      * @return 字典列表信息
      * @since 2.1.0
+     * @see top.continew.starter.extension.crud.annotation.DictModel
      */
     List<LabelValueResp> listDict(@Valid Q query, @Valid SortQuery sortQuery);
 
