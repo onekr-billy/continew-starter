@@ -1,3 +1,28 @@
+## [v2.13.3](https://github.com/continew-org/continew-starter/compare/v2.13.2...v2.13.3) (2025-07-22)
+
+### ✨ 新特性
+
+- 【core】ReflectUtils 新增 createMethodReference 方法（由 CRUD 模块迁移） ([1eb1c2d](https://github.com/continew-org/continew-starter/commit/1eb1c2d845ded85197a222e492b0afe5bd8da48d))
+- 【data】Query 注解新增多列查询逻辑关系支持（原来仅支持或者，现在也支持并且） ([3e822c0](https://github.com/continew-org/continew-starter/commit/3e822c0b8442a5a00840a9ae67d7fa03cd5d33b0))
+- 【core】新增 OrderedConstants 统一登记过滤器和拦截器相关顺序常量，并调整相关过滤器和拦截器顺序 ([a392fab](https://github.com/continew-org/continew-starter/commit/a392fab78222db8f05933e398d8b0541aed07651))
+- 【security/password】重构密码编码器，新增 PasswordEncoderUtil ([58f9687](https://github.com/continew-org/continew-starter/commit/58f9687c581c121d4688e2ab99678d94d262c60a))
+- 【security/crypto】新增支持密码编码器加密 ([38b6428](https://github.com/continew-org/continew-starter/commit/38b6428662b909875df4ae8f36f180b0394accc1))
+
+### 💎 功能优化
+
+- 【extension/crud】重构查询树列表功能，增加重载方法，支持构建单个根节点或者多个根节点的树结构 (Gitee#75@lishuyanla) ([55660ba](https://github.com/continew-org/continew-starter/commit/55660ba18bb3b8b8cecc1c979aa71cde5b4b39d9)) ([a213537](https://github.com/continew-org/continew-starter/commit/a2135374b231ee410bafc8573e706443c6097353))
+- 【core】TreeBuildUtils => TreeUtils ([c76d777](https://github.com/continew-org/continew-starter/commit/c76d777a2e3b20a0542ef606cb3a4c85068a25fe))
+- 【extension/crud】优化部分代码 ([0a9027d](https://github.com/continew-org/continew-starter/commit/0a9027d91f3a2618f91e7b5417cbed5288e1e46b))
+- 【web】拆分 default-web.yml 为 default-response.yml 和 default-server.yml 配置文件 ([e64553e](https://github.com/continew-org/continew-starter/commit/e64553e6205ca3473a656f60448304bf4c18ddca))
+
+### 🐛 问题修复
+
+- 【security/crypto】修复新版 API 未支持自定义加密器问题 (Gitee#74@lishuyanla) ([36c30a2](https://github.com/continew-org/continew-starter/commit/36c30a20ddff30832a31e7d6751d0140c45de3a7))
+
+### 📦 依赖升级
+
+- 【dependencies】spel-validator 0.5.1-beta => 0.5.2-beta ([9d39012](https://github.com/continew-org/continew-starter/commit/9d39012f0b53baa81040a863526048955cab6d11))
+
 ## [v2.13.2](https://github.com/continew-org/continew-starter/compare/v2.13.1...v2.13.2) (2025-07-21)
 
 ### ✨ 新特性
