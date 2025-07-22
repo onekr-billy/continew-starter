@@ -30,13 +30,10 @@ import cn.hutool.extra.spring.SpringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import jakarta.el.MethodNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Sort;
-import org.springframework.lang.NonNull;
 import org.springframework.transaction.annotation.Transactional;
 import top.continew.starter.core.constant.StringConstants;
-import top.continew.starter.core.exception.BusinessException;
 import top.continew.starter.core.util.ClassUtils;
 import top.continew.starter.core.util.ReflectUtils;
 import top.continew.starter.core.util.TreeUtils;
@@ -56,10 +53,7 @@ import top.continew.starter.extension.crud.model.query.SortQuery;
 import top.continew.starter.extension.crud.model.resp.LabelValueResp;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 
-import java.lang.invoke.MethodHandleProxies;
-import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Function;
 
@@ -128,9 +122,10 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends BaseIdDO, L, D, 
             return TreeUtil.build(list, rootId, treeNodeConfig, (node,
                                                                  tree) -> buildTreeField(isSimple, node, tree, treeField));
         } else {
-            Function<L, Long> getId = createMethodReference(listClass, CharSequenceUtil.genGetter(treeField.value()));
-            Function<L, Long> getParentId = createMethodReference(listClass, CharSequenceUtil.genGetter(treeField
-                .parentIdKey()));
+            Function<L, Long> getId = ReflectUtils.createMethodReference(listClass, CharSequenceUtil.genGetter(treeField
+                .value()));
+            Function<L, Long> getParentId = ReflectUtils.createMethodReference(listClass, CharSequenceUtil
+                .genGetter(treeField.parentIdKey()));
             // 构建多根节点树
             return TreeUtils.buildMultiRoot(list, getId, getParentId, treeNodeConfig, (node,
                                                                                        tree) -> buildTreeField(isSimple, node, tree, treeField));
@@ -158,52 +153,6 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends BaseIdDO, L, D, 
             fieldList.forEach(f -> tree.putExtra(f.getName(), ReflectUtil.invoke(node, CharSequenceUtil.genGetter(f
                 .getName()))));
         }
-    }
-
-    /**
-     * 通过反射创建方法引用，支持在父类中查找方法
-     *
-     * @param clazz      实体类类型
-     * @param methodName 方法名
-     * @param <T>        实体类类型
-     * @param <K>        返回值类型
-     * @return Function<T, K> 方法引用
-     * @throws IllegalArgumentException 如果参数不合法
-     * @throws MethodNotFoundException  如果在类层次结构中找不到指定方法
-     */
-    @SuppressWarnings("unchecked")
-    public static <T, K> Function<T, K> createMethodReference(@NonNull Class<T> clazz, @NonNull String methodName) {
-        try {
-            Method method = getMethod(clazz, methodName);
-            method.setAccessible(true);
-            return MethodHandleProxies.asInterfaceInstance(Function.class, MethodHandles.lookup().unreflect(method));
-        } catch (Exception e) {
-            throw new BusinessException("创建方法引用失败：" + clazz.getName() + StringConstants.DOT + methodName, e);
-        }
-    }
-
-    /**
-     * 获取方法（包括父类）
-     *
-     * @param clazz      实体类
-     * @param methodName 方法名
-     * @param <T>        实体类
-     * @return 方法
-     */
-    private static <T> Method getMethod(Class<T> clazz, String methodName) {
-        Class<?> currentClass = clazz;
-        Method method = null;
-        // 查找方法（包括父类）
-        while (currentClass != null) {
-            try {
-                method = currentClass.getDeclaredMethod(methodName);
-                break;
-            } catch (NoSuchMethodException e) {
-                // 继续查找父类
-                currentClass = currentClass.getSuperclass();
-            }
-        }
-        return method;
     }
 
     @Override

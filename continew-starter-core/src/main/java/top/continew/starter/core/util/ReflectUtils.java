@@ -17,11 +17,17 @@
 package top.continew.starter.core.util;
 
 import cn.hutool.core.util.ReflectUtil;
+import top.continew.starter.core.constant.StringConstants;
+import top.continew.starter.core.exception.BusinessException;
 
+import java.lang.invoke.MethodHandleProxies;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -59,5 +65,28 @@ public class ReflectUtils {
     public static List<Field> getNonStaticFields(Class<?> beanClass) throws SecurityException {
         Field[] fields = ReflectUtil.getFields(beanClass);
         return Arrays.stream(fields).filter(f -> !Modifier.isStatic(f.getModifiers())).collect(Collectors.toList());
+    }
+
+    /**
+     * 通过反射创建方法引用，支持在父类中查找方法
+     *
+     * @param clazz      实体类类型
+     * @param methodName 方法名
+     * @param <T>        实体类类型
+     * @param <K>        返回值类型
+     * @return Function<T, K> 方法引用
+     * @throws IllegalArgumentException 如果参数不合法
+     * @author lishuyan
+     * @since 2.13.2
+     */
+    @SuppressWarnings("unchecked")
+    public static <T, K> Function<T, K> createMethodReference(Class<T> clazz, String methodName) {
+        try {
+            Method method = ReflectUtil.getMethodByName(clazz, methodName);
+            method.setAccessible(true);
+            return MethodHandleProxies.asInterfaceInstance(Function.class, MethodHandles.lookup().unreflect(method));
+        } catch (Exception e) {
+            throw new BusinessException("创建方法引用失败：" + clazz.getName() + StringConstants.DOT + methodName, e);
+        }
     }
 }
