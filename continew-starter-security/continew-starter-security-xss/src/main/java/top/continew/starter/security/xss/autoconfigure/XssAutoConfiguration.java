@@ -25,6 +25,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import top.continew.starter.core.constant.OrderedConstants;
 import top.continew.starter.core.constant.PropertiesConstants;
 import top.continew.starter.security.xss.filter.XssFilter;
 
@@ -43,12 +44,13 @@ public class XssAutoConfiguration {
     private static final Logger log = LoggerFactory.getLogger(XssAutoConfiguration.class);
 
     /**
-     * XSS 过滤器配置
+     * XSS 过滤器
      */
     @Bean
     public FilterRegistrationBean<XssFilter> xssFilter(XssProperties xssProperties) {
         FilterRegistrationBean<XssFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new XssFilter(xssProperties));
+        registrationBean.setOrder(OrderedConstants.Filter.XSS_FILTER);
         return registrationBean;
     }
 

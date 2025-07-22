@@ -19,9 +19,9 @@ package top.continew.starter.extension.tenant.autoconfigure;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.core.Ordered;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import top.continew.starter.core.constant.OrderedConstants;
 import top.continew.starter.extension.tenant.annotation.ConditionalOnEnabledTenant;
 import top.continew.starter.extension.tenant.config.TenantProvider;
 import top.continew.starter.extension.tenant.interceptor.TenantInterceptor;
@@ -49,6 +49,6 @@ public class TenantWebMvcAutoConfiguration implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new TenantInterceptor(tenantProperties, tenantProvider))
-            .order(Ordered.HIGHEST_PRECEDENCE);
+            .order(OrderedConstants.Interceptor.TENANT_INTERCEPTOR);
     }
 }

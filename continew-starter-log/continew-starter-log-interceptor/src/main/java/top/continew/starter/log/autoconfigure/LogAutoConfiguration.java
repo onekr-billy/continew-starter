@@ -22,10 +22,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import top.continew.starter.core.constant.OrderedConstants;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.log.annotation.ConditionalOnEnabledLog;
 import top.continew.starter.log.dao.LogDao;
@@ -59,7 +61,8 @@ public class LogAutoConfiguration implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LogInterceptor(logProperties, logHandler(), logDao()))
             .addPathPatterns(StringConstants.PATH_PATTERN)
-            .excludePathPatterns(logProperties.getExcludePatterns());
+            .excludePathPatterns(logProperties.getExcludePatterns())
+            .order(OrderedConstants.Interceptor.LOG_INTERCEPTOR);
     }
 
     /**
@@ -67,8 +70,11 @@ public class LogAutoConfiguration implements WebMvcConfigurer {
      */
     @Bean
     @ConditionalOnMissingBean
-    public LogFilter logFilter() {
-        return new LogFilter(logProperties);
+    public FilterRegistrationBean<LogFilter> logFilter() {
+        FilterRegistrationBean<LogFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new LogFilter(logProperties));
+        registrationBean.setOrder(OrderedConstants.Filter.LOG_FILTER);
+        return registrationBean;
     }
 
     /**

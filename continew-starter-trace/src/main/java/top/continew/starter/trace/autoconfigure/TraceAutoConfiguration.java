@@ -30,7 +30,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
-import org.springframework.core.Ordered;
+import top.continew.starter.core.constant.OrderedConstants;
 import top.continew.starter.core.constant.PropertiesConstants;
 import top.continew.starter.trace.filter.TLogServletFilter;
 import top.continew.starter.trace.handler.TraceIdGenerator;
@@ -70,14 +70,14 @@ public class TraceAutoConfiguration {
     }
 
     /**
-     * TLog 过滤器配置
+     * TLog 过滤器
      */
     @Bean
     public FilterRegistrationBean<TLogServletFilter> tLogServletFilter() {
-        FilterRegistrationBean<TLogServletFilter> registration = new FilterRegistrationBean<>();
-        registration.setFilter(new TLogServletFilter(traceProperties));
-        registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
-        return registration;
+        FilterRegistrationBean<TLogServletFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new TLogServletFilter(traceProperties));
+        registrationBean.setOrder(OrderedConstants.Filter.TRACE_FILTER);
+        return registrationBean;
     }
 
     /**

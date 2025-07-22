@@ -22,7 +22,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
-import org.springframework.core.Ordered;
 import org.springframework.lang.NonNull;
 import org.springframework.web.filter.OncePerRequestFilter;
 import top.continew.starter.core.wrapper.RepeatReadRequestWrapper;
@@ -40,17 +39,12 @@ import java.net.URISyntaxException;
  * @author echo
  * @since 1.1.0
  */
-public class LogFilter extends OncePerRequestFilter implements Ordered {
+public class LogFilter extends OncePerRequestFilter {
 
     private final LogProperties logProperties;
 
     public LogFilter(LogProperties logProperties) {
         this.logProperties = logProperties;
-    }
-
-    @Override
-    public int getOrder() {
-        return Ordered.LOWEST_PRECEDENCE - 10;
     }
 
     @Override
