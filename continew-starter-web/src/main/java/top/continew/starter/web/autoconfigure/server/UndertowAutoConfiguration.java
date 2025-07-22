@@ -30,8 +30,10 @@ import org.springframework.context.annotation.Bean;
 import io.undertow.Undertow;
 import io.undertow.server.handlers.DisallowedMethodsHandler;
 import io.undertow.util.HttpString;
+import org.springframework.context.annotation.PropertySource;
 import top.continew.starter.core.constant.PropertiesConstants;
 import top.continew.starter.core.util.CollUtils;
+import top.continew.starter.core.util.GeneralPropertySourceFactory;
 
 /**
  * Undertow 自动配置
@@ -44,6 +46,7 @@ import top.continew.starter.core.util.CollUtils;
 @ConditionalOnWebApplication
 @ConditionalOnClass(Undertow.class)
 @EnableConfigurationProperties(ServerExtensionProperties.class)
+@PropertySource(value = "classpath:default-server.yml", factory = GeneralPropertySourceFactory.class)
 @ConditionalOnProperty(prefix = "server.extension", name = PropertiesConstants.ENABLED, havingValue = "true")
 public class UndertowAutoConfiguration {
 

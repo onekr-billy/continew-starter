@@ -54,7 +54,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(GlobalResponseProperties.class)
-@PropertySource(value = "classpath:default-web.yml", factory = GeneralPropertySourceFactory.class)
+@PropertySource(value = "classpath:default-response.yml", factory = GeneralPropertySourceFactory.class)
 public class GlobalResponseAutoConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalResponseAutoConfiguration.class);
