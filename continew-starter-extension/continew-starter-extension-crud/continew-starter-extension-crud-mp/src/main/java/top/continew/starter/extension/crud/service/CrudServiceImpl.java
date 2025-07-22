@@ -22,6 +22,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
+import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ReflectUtil;
@@ -29,10 +30,13 @@ import cn.hutool.extra.spring.SpringUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import jakarta.el.MethodNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Sort;
+import org.springframework.lang.NonNull;
 import org.springframework.transaction.annotation.Transactional;
 import top.continew.starter.core.constant.StringConstants;
+import top.continew.starter.core.exception.BusinessException;
 import top.continew.starter.core.util.ClassUtils;
 import top.continew.starter.core.util.ReflectUtils;
 import top.continew.starter.core.util.TreeBuildUtils;
@@ -97,56 +101,109 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends BaseIdDO, L, D, 
 
     @Override
     public List<Tree<Long>> tree(Q query, SortQuery sortQuery, boolean isSimple) {
+        return this.tree(query, sortQuery, true, false);
+    }
+
+    @Override
+    public List<Tree<Long>> tree(Q query, SortQuery sortQuery, boolean isSimple, boolean isSingleRoot) {
         List<L> list = this.list(query, sortQuery);
         if (CollUtil.isEmpty(list)) {
-            return new ArrayList<>(0);
+            return CollUtil.newArrayList();
         }
         CrudProperties crudProperties = SpringUtil.getBean(CrudProperties.class);
         CrudTreeProperties treeProperties = crudProperties.getTree();
         TreeField treeField = listClass.getDeclaredAnnotation(TreeField.class);
+        TreeNodeConfig treeNodeConfig;
+        Long rootId;
         // 简单树（下拉列表）使用全局配置结构，复杂树（表格）使用局部配置
-        TreeNodeConfig treeNodeConfig = isSimple
-            ? treeProperties.genTreeNodeConfig()
-            : treeProperties.genTreeNodeConfig(treeField);
-        String valueGetter = CharSequenceUtil.genGetter(treeField.value());
-        String parentIdKeyGetter = CharSequenceUtil.genGetter(treeField.parentIdKey());
-        Function<L, Long> getId = createMethodReference(listClass, valueGetter);
-        Function<L, Long> getParentId = createMethodReference(listClass, parentIdKeyGetter);
-        // 构建树
-        return TreeBuildUtils.buildMultiRoot(list, getId, getParentId, treeNodeConfig, (node, tree) -> {
-            tree.setId(ReflectUtil.invoke(node, valueGetter));
-            tree.setParentId(ReflectUtil.invoke(node, parentIdKeyGetter));
-            tree.setName(ReflectUtil.invoke(node, CharSequenceUtil.genGetter(treeField.nameKey())));
-            tree.setWeight(ReflectUtil.invoke(node, CharSequenceUtil.genGetter(treeField.weightKey())));
-            // 如果构建简单树结构，则不包含扩展字段
-            if (!isSimple) {
-                List<Field> fieldList = ReflectUtils.getNonStaticFields(listClass);
-                fieldList.removeIf(f -> CharSequenceUtil.equalsAnyIgnoreCase(f.getName(), treeField.value(), treeField
-                    .parentIdKey(), treeField.nameKey(), treeField.weightKey(), treeField.childrenKey()));
-                fieldList.forEach(f -> tree.putExtra(f.getName(), ReflectUtil.invoke(node, CharSequenceUtil.genGetter(f
-                    .getName()))));
-            }
-        });
+        if (isSimple) {
+            treeNodeConfig = treeProperties.genTreeNodeConfig();
+            rootId = treeProperties.getRootId();
+        } else {
+            treeNodeConfig = treeProperties.genTreeNodeConfig(treeField);
+            rootId = treeField.rootId();
+        }
+        if (isSingleRoot) {
+            // 构建单根节点树
+            return TreeUtil.build(list, rootId, treeNodeConfig, (node,
+                                                                 tree) -> buildTreeField(isSimple, node, tree, treeField));
+        } else {
+            Function<L, Long> getId = createMethodReference(listClass, CharSequenceUtil.genGetter(treeField.value()));
+            Function<L, Long> getParentId = createMethodReference(listClass, CharSequenceUtil.genGetter(treeField
+                .parentIdKey()));
+            // 构建多根节点树
+            return TreeBuildUtils.buildMultiRoot(list, getId, getParentId, treeNodeConfig, (node,
+                                                                                            tree) -> buildTreeField(isSimple, node, tree, treeField));
+        }
     }
 
     /**
-     * 通过反射创建方法引用
+     * 构建树字段
+     *
+     * @param isSimple  是否简单树结构
+     * @param node      节点
+     * @param tree      树
+     * @param treeField 树字段
+     */
+    private void buildTreeField(boolean isSimple, L node, Tree<Long> tree, TreeField treeField) {
+        tree.setId(ReflectUtil.invoke(node, CharSequenceUtil.genGetter(treeField.value())));
+        tree.setParentId(ReflectUtil.invoke(node, CharSequenceUtil.genGetter(treeField.parentIdKey())));
+        tree.setName(ReflectUtil.invoke(node, CharSequenceUtil.genGetter(treeField.nameKey())));
+        tree.setWeight(ReflectUtil.invoke(node, CharSequenceUtil.genGetter(treeField.weightKey())));
+        // 如果构建简单树结构，则不包含扩展字段
+        if (!isSimple) {
+            List<Field> fieldList = ReflectUtils.getNonStaticFields(listClass);
+            fieldList.removeIf(f -> CharSequenceUtil.equalsAnyIgnoreCase(f.getName(), treeField.value(), treeField
+                .parentIdKey(), treeField.nameKey(), treeField.weightKey(), treeField.childrenKey()));
+            fieldList.forEach(f -> tree.putExtra(f.getName(), ReflectUtil.invoke(node, CharSequenceUtil.genGetter(f
+                .getName()))));
+        }
+    }
+
+    /**
+     * 通过反射创建方法引用，支持在父类中查找方法
      *
      * @param clazz      实体类类型
      * @param methodName 方法名
      * @param <T>        实体类类型
      * @param <K>        返回值类型
      * @return Function<T, K> 方法引用
+     * @throws IllegalArgumentException 如果参数不合法
+     * @throws MethodNotFoundException  如果在类层次结构中找不到指定方法
      */
     @SuppressWarnings("unchecked")
-    public static <T, K> Function<T, K> createMethodReference(Class<T> clazz, String methodName) {
+    public static <T, K> Function<T, K> createMethodReference(@NonNull Class<T> clazz, @NonNull String methodName) {
         try {
-            Method method = clazz.getDeclaredMethod(methodName);
+            Method method = getMethod(clazz, methodName);
             method.setAccessible(true);
             return MethodHandleProxies.asInterfaceInstance(Function.class, MethodHandles.lookup().unreflect(method));
         } catch (Exception e) {
-            throw new RuntimeException("Failed to create method reference for " + methodName, e);
+            throw new BusinessException("创建方法引用失败：" + clazz.getName() + StringConstants.DOT + methodName, e);
         }
+    }
+
+    /**
+     * 获取方法（包括父类）
+     *
+     * @param clazz      实体类
+     * @param methodName 方法名
+     * @param <T>        实体类
+     * @return 方法
+     */
+    private static <T> Method getMethod(Class<T> clazz, String methodName) {
+        Class<?> currentClass = clazz;
+        Method method = null;
+        // 查找方法（包括父类）
+        while (currentClass != null) {
+            try {
+                method = currentClass.getDeclaredMethod(methodName);
+                break;
+            } catch (NoSuchMethodException e) {
+                // 继续查找父类
+                currentClass = currentClass.getSuperclass();
+            }
+        }
+        return method;
     }
 
     @Override
