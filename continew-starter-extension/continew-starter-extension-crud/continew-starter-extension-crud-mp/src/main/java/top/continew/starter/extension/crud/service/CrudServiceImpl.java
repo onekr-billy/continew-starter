@@ -95,7 +95,7 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends BaseIdDO, L, D, 
 
     @Override
     public List<Tree<Long>> tree(Q query, SortQuery sortQuery, boolean isSimple) {
-        return this.tree(query, sortQuery, true, false);
+        return this.tree(query, sortQuery, isSimple, false);
     }
 
     @Override
