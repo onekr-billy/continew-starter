@@ -18,6 +18,7 @@ package top.continew.starter.security.password.autoconfigure;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import top.continew.starter.core.constant.PropertiesConstants;
+import top.continew.starter.security.password.enums.PasswordEncoderAlgorithm;
 
 /**
  * 密码编解码配置属性
@@ -34,9 +35,9 @@ public class PasswordEncoderProperties {
     private boolean enabled = true;
 
     /**
-     * 默认启用的编码器 ID（默认：BCryptPasswordEncoder）
+     * 默认启用的编码器算法（默认：BCrypt 加密算法）
      */
-    private String encodingId = "bcrypt";
+    private PasswordEncoderAlgorithm algorithm = PasswordEncoderAlgorithm.BCRYPT;
 
     public boolean isEnabled() {
         return enabled;
@@ -46,11 +47,11 @@ public class PasswordEncoderProperties {
         this.enabled = enabled;
     }
 
-    public String getEncodingId() {
-        return encodingId;
+    public PasswordEncoderAlgorithm getAlgorithm() {
+        return algorithm;
     }
 
-    public void setEncodingId(String encodingId) {
-        this.encodingId = encodingId;
+    public void setAlgorithm(PasswordEncoderAlgorithm algorithm) {
+        this.algorithm = algorithm;
     }
 }

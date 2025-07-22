@@ -14,23 +14,35 @@
  * limitations under the License.
  */
 
-package top.continew.starter.security.password.constant;
+package top.continew.starter.security.password.exception;
 
-import java.util.regex.Pattern;
+import top.continew.starter.core.exception.BaseException;
+
+import java.io.Serial;
 
 /**
- * 密码编码器相关常量
+ * 密码编码异常
  *
  * @author Charles7c
- * @since 2.12.0
+ * @since 2.13.3
  */
-public class PasswordEncoderConstants {
+public class PasswordEncodeException extends BaseException {
 
-    /**
-     * BCrypt 正则表达式
-     */
-    public static final Pattern BCRYPT_PATTERN = Pattern.compile("\\A\\$2(a|y|b)?\\$(\\d\\d)\\$[./0-9A-Za-z]{53}");
+    @Serial
+    private static final long serialVersionUID = 1L;
 
-    private PasswordEncoderConstants() {
+    public PasswordEncodeException() {
+    }
+
+    public PasswordEncodeException(String message) {
+        super(message);
+    }
+
+    public PasswordEncodeException(Throwable cause) {
+        super(cause);
+    }
+
+    public PasswordEncodeException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

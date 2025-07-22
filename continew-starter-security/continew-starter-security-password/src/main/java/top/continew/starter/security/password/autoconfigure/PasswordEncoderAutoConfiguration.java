@@ -16,8 +16,6 @@
 
 package top.continew.starter.security.password.autoconfigure;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.text.CharSequenceUtil;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,18 +23,17 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
-import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import top.continew.starter.core.constant.PropertiesConstants;
+import top.continew.starter.core.util.GeneralPropertySourceFactory;
 import top.continew.starter.core.util.validation.CheckUtils;
+import top.continew.starter.security.password.enums.PasswordEncoderAlgorithm;
+import top.continew.starter.security.password.util.PasswordEncoderUtil;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -55,15 +52,11 @@ import java.util.Map;
  */
 @AutoConfiguration
 @EnableConfigurationProperties(PasswordEncoderProperties.class)
+@PropertySource(value = "classpath:default-password.yml", factory = GeneralPropertySourceFactory.class)
 @ConditionalOnProperty(prefix = PropertiesConstants.SECURITY_PASSWORD, name = PropertiesConstants.ENABLED, havingValue = "true", matchIfMissing = true)
 public class PasswordEncoderAutoConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(PasswordEncoderAutoConfiguration.class);
-    private final PasswordEncoderProperties properties;
-
-    public PasswordEncoderAutoConfiguration(PasswordEncoderProperties properties) {
-        this.properties = properties;
-    }
 
     /**
      * 密码编码器
@@ -72,23 +65,19 @@ public class PasswordEncoderAutoConfiguration {
      * @see PasswordEncoderFactories
      */
     @Bean
-    public PasswordEncoder passwordEncoder(List<PasswordEncoder> passwordEncoderList) {
+    public PasswordEncoder passwordEncoder(PasswordEncoderProperties properties) {
         Map<String, PasswordEncoder> encoders = new HashMap<>();
-        encoders.put("bcrypt", new BCryptPasswordEncoder());
-        encoders.put("pbkdf2", Pbkdf2PasswordEncoder.defaultsForSpringSecurity_v5_8());
-        encoders.put("scrypt", SCryptPasswordEncoder.defaultsForSpringSecurity_v5_8());
-        encoders.put("argon2", Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8());
-        // 添加自定义的密码编解码器
-        if (CollUtil.isNotEmpty(passwordEncoderList)) {
-            passwordEncoderList.forEach(passwordEncoder -> {
-                String simpleName = passwordEncoder.getClass().getSimpleName();
-                encoders.put(CharSequenceUtil.removeSuffix(simpleName, "PasswordEncoder")
-                    .toLowerCase(), passwordEncoder);
-            });
-        }
-        String encodingId = properties.getEncodingId();
-        CheckUtils.throwIf(!encoders.containsKey(encodingId), "{} is not found in idToPasswordEncoder.", encodingId);
-        return new DelegatingPasswordEncoder(encodingId, encoders);
+        encoders.put(PasswordEncoderAlgorithm.BCRYPT.name().toLowerCase(), PasswordEncoderUtil
+            .getEncoder(PasswordEncoderAlgorithm.BCRYPT));
+        encoders.put(PasswordEncoderAlgorithm.SCRYPT.name().toLowerCase(), PasswordEncoderUtil
+            .getEncoder(PasswordEncoderAlgorithm.SCRYPT));
+        encoders.put(PasswordEncoderAlgorithm.PBKDF2.name().toLowerCase(), PasswordEncoderUtil
+            .getEncoder(PasswordEncoderAlgorithm.PBKDF2));
+        encoders.put(PasswordEncoderAlgorithm.ARGON2.name().toLowerCase(), PasswordEncoderUtil
+            .getEncoder(PasswordEncoderAlgorithm.ARGON2));
+        PasswordEncoderAlgorithm algorithm = properties.getAlgorithm();
+        CheckUtils.throwIf(PasswordEncoderUtil.getEncoder(algorithm) == null, "不支持的加密算法: {}", algorithm);
+        return new DelegatingPasswordEncoder(algorithm.name().toLowerCase(), encoders);
     }
 
     @PostConstruct
