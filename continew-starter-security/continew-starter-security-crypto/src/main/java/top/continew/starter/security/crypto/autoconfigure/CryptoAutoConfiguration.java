@@ -27,7 +27,7 @@ import org.springframework.context.annotation.Bean;
 import top.continew.starter.core.constant.PropertiesConstants;
 import top.continew.starter.security.crypto.core.MyBatisDecryptInterceptor;
 import top.continew.starter.security.crypto.core.MyBatisEncryptInterceptor;
-import top.continew.starter.security.crypto.utils.EncryptHelper;
+import top.continew.starter.security.crypto.util.EncryptHelper;
 
 /**
  * 加/解密自动配置

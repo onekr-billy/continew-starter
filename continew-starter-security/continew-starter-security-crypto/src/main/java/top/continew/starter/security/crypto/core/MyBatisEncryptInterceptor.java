@@ -30,7 +30,7 @@ import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.security.crypto.annotation.FieldEncrypt;
-import top.continew.starter.security.crypto.utils.EncryptHelper;
+import top.continew.starter.security.crypto.util.EncryptHelper;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;

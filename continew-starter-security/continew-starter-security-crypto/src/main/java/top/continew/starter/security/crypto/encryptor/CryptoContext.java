@@ -34,6 +34,14 @@ public class CryptoContext {
     private Algorithm algorithm;
 
     /**
+     * 加密/解密处理器
+     * <p>
+     * 优先级高于加密/解密算法
+     * </p>
+     */
+    Class<? extends IEncryptor> encryptor;
+
+    /**
      * 对称加密算法密钥
      */
     private String password;
@@ -54,6 +62,14 @@ public class CryptoContext {
 
     public void setAlgorithm(Algorithm algorithm) {
         this.algorithm = algorithm;
+    }
+
+    public Class<? extends IEncryptor> getEncryptor() {
+        return encryptor;
+    }
+
+    public void setEncryptor(Class<? extends IEncryptor> encryptor) {
+        this.encryptor = encryptor;
     }
 
     public String getPassword() {
@@ -89,12 +105,13 @@ public class CryptoContext {
             return false;
         }
         CryptoContext that = (CryptoContext)o;
-        return algorithm == that.algorithm && Objects.equals(password, that.password) && Objects
-            .equals(publicKey, that.publicKey) && Objects.equals(privateKey, that.privateKey);
+        return algorithm == that.algorithm && Objects.equals(encryptor, that.encryptor) && Objects
+            .equals(password, that.password) && Objects.equals(publicKey, that.publicKey) && Objects
+                .equals(privateKey, that.privateKey);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(algorithm, password, publicKey, privateKey);
+        return Objects.hash(algorithm, encryptor, password, publicKey, privateKey);
     }
 }

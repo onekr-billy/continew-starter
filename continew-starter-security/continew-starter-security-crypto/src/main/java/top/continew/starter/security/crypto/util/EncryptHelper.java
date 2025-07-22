@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.starter.security.crypto.utils;
+package top.continew.starter.security.crypto.util;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ReflectUtil;
@@ -73,8 +73,9 @@ public class EncryptHelper {
      */
     public static IEncryptor registerAndGetEncryptor(CryptoContext encryptContext) {
         int key = encryptContext.hashCode();
-        return ENCRYPTOR_CACHE.computeIfAbsent(key, k -> ReflectUtil.newInstance(encryptContext.getAlgorithm()
-            .getEncryptor(), encryptContext));
+        return ENCRYPTOR_CACHE.computeIfAbsent(key, k -> encryptContext.getEncryptor().equals(IEncryptor.class)
+            ? ReflectUtil.newInstance(encryptContext.getAlgorithm().getEncryptor(), encryptContext)
+            : ReflectUtil.newInstance(encryptContext.getEncryptor(), encryptContext));
     }
 
     /**
@@ -187,6 +188,9 @@ public class EncryptHelper {
         encryptContext.setAlgorithm(fieldEncrypt.value() == Algorithm.DEFAULT
             ? defaultProperties.getAlgorithm()
             : fieldEncrypt.value());
+        encryptContext.setEncryptor(fieldEncrypt.encryptor().equals(IEncryptor.class)
+            ? IEncryptor.class
+            : fieldEncrypt.encryptor());
         encryptContext.setPassword(fieldEncrypt.password().isEmpty()
             ? defaultProperties.getPassword()
             : fieldEncrypt.password());

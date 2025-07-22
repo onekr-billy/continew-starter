@@ -27,7 +27,7 @@ import org.apache.ibatis.plugin.Invocation;
 import org.apache.ibatis.plugin.Signature;
 import org.apache.ibatis.type.SimpleTypeRegistry;
 import top.continew.starter.security.crypto.annotation.FieldEncrypt;
-import top.continew.starter.security.crypto.utils.EncryptHelper;
+import top.continew.starter.security.crypto.util.EncryptHelper;
 
 import java.lang.reflect.Field;
 import java.sql.Statement;
