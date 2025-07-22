@@ -32,6 +32,7 @@ import top.continew.starter.core.util.validation.ValidationUtils;
 import top.continew.starter.data.annotation.Query;
 import top.continew.starter.data.annotation.QueryIgnore;
 import top.continew.starter.data.enums.QueryType;
+import top.continew.starter.data.enums.LogicalRelation;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -174,8 +175,21 @@ public class QueryWrapperHelper {
                 return consumers;
             }
             // 解析多列查询
+            LogicalRelation logicalRelation = queryAnnotation.logicalRelation();
+            List<Consumer<QueryWrapper<R>>> columnConsumers = new ArrayList<>();
             for (String column : columns) {
-                parse(queryType, column, fieldValue, consumers);
+                parse(queryType, column, fieldValue, columnConsumers);
+            }
+
+            if (logicalRelation == LogicalRelation.AND) {
+                if (!columnConsumers.isEmpty()) {
+                    consumers.add(q -> {
+                        columnConsumers.get(0).accept(q);
+                        columnConsumers.subList(1, columnConsumers.size()).forEach(q::and);
+                    });
+                }
+            } else {
+                consumers.addAll(columnConsumers);
             }
             return consumers;
         } catch (BadRequestException e) {

@@ -16,6 +16,7 @@
 
 package top.continew.starter.data.annotation;
 
+import top.continew.starter.data.enums.LogicalRelation;
 import top.continew.starter.data.enums.QueryType;
 
 import java.lang.annotation.*;
@@ -46,4 +47,9 @@ public @interface Query {
      * 查询类型（等值查询、模糊查询、范围查询等）
      */
     QueryType type() default QueryType.EQ;
+
+    /**
+     * 多列查询时的逻辑关系（仅当 columns 长度大于 1 时生效）
+     */
+    LogicalRelation logicalRelation() default LogicalRelation.OR;
 }
