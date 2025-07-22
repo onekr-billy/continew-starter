@@ -20,6 +20,7 @@ import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.crypto.symmetric.SymmetricAlgorithm;
 import cn.hutool.crypto.symmetric.SymmetricCrypto;
 import top.continew.starter.core.constant.StringConstants;
+import top.continew.starter.security.crypto.autoconfigure.CryptoContext;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;

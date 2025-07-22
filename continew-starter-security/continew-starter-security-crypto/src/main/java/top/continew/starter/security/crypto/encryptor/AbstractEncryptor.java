@@ -16,6 +16,8 @@
 
 package top.continew.starter.security.crypto.encryptor;
 
+import top.continew.starter.security.crypto.autoconfigure.CryptoContext;
+
 /**
  * 加密器基类
  *

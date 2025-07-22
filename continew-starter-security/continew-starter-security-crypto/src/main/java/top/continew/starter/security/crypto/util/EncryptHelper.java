@@ -22,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.continew.starter.security.crypto.annotation.FieldEncrypt;
 import top.continew.starter.security.crypto.autoconfigure.CryptoProperties;
-import top.continew.starter.security.crypto.encryptor.CryptoContext;
+import top.continew.starter.security.crypto.autoconfigure.CryptoContext;
 import top.continew.starter.security.crypto.encryptor.IEncryptor;
 import top.continew.starter.security.crypto.enums.Algorithm;
 

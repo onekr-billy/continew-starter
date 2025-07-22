@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package top.continew.starter.security.crypto.encryptor;
+package top.continew.starter.security.crypto.autoconfigure;
 
+import top.continew.starter.security.crypto.encryptor.IEncryptor;
 import top.continew.starter.security.crypto.enums.Algorithm;
 
 import java.util.Objects;

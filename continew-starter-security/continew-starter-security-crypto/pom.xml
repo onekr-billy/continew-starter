@@ -16,6 +16,13 @@
     <description>ContiNew Starter 安全模块 - 加密</description>
 
     <dependencies>
+        <!-- 安全模块 - 密码编码器 -->
+        <dependency>
+            <groupId>top.continew.starter</groupId>
+            <artifactId>continew-starter-security-password</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!-- Hutool 加密解密模块（封装 JDK 中加密解密算法） -->
         <dependency>
             <groupId>cn.hutool</groupId>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.starter.security.crypto.core;
+package top.continew.starter.security.crypto.mybatis;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ReflectUtil;

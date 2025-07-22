@@ -19,6 +19,7 @@ package top.continew.starter.security.crypto.encryptor;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.asymmetric.KeyType;
+import top.continew.starter.security.crypto.autoconfigure.CryptoContext;
 
 /**
  * RSA 加/解密处理器

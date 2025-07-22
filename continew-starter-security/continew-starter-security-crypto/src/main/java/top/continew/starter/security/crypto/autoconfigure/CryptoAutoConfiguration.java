@@ -24,9 +24,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.PropertySource;
 import top.continew.starter.core.constant.PropertiesConstants;
-import top.continew.starter.security.crypto.core.MyBatisDecryptInterceptor;
-import top.continew.starter.security.crypto.core.MyBatisEncryptInterceptor;
+import top.continew.starter.core.util.GeneralPropertySourceFactory;
+import top.continew.starter.security.crypto.mybatis.MyBatisDecryptInterceptor;
+import top.continew.starter.security.crypto.mybatis.MyBatisEncryptInterceptor;
 import top.continew.starter.security.crypto.util.EncryptHelper;
 
 /**
@@ -39,6 +41,7 @@ import top.continew.starter.security.crypto.util.EncryptHelper;
 @AutoConfiguration
 @EnableConfigurationProperties(CryptoProperties.class)
 @ConditionalOnProperty(prefix = PropertiesConstants.SECURITY_CRYPTO, name = PropertiesConstants.ENABLED, havingValue = "true", matchIfMissing = true)
+@PropertySource(value = "classpath:default-crypto.yml", factory = GeneralPropertySourceFactory.class)
 public class CryptoAutoConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(CryptoAutoConfiguration.class);
