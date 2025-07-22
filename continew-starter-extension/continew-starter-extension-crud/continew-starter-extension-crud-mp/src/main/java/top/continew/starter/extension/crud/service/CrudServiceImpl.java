@@ -39,7 +39,7 @@ import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.exception.BusinessException;
 import top.continew.starter.core.util.ClassUtils;
 import top.continew.starter.core.util.ReflectUtils;
-import top.continew.starter.core.util.TreeBuildUtils;
+import top.continew.starter.core.util.TreeUtils;
 import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.core.util.validation.ValidationUtils;
 import top.continew.starter.data.mapper.BaseMapper;
@@ -132,8 +132,8 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends BaseIdDO, L, D, 
             Function<L, Long> getParentId = createMethodReference(listClass, CharSequenceUtil.genGetter(treeField
                 .parentIdKey()));
             // 构建多根节点树
-            return TreeBuildUtils.buildMultiRoot(list, getId, getParentId, treeNodeConfig, (node,
-                                                                                            tree) -> buildTreeField(isSimple, node, tree, treeField));
+            return TreeUtils.buildMultiRoot(list, getId, getParentId, treeNodeConfig, (node,
+                                                                                       tree) -> buildTreeField(isSimple, node, tree, treeField));
         }
     }
 

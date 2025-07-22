@@ -24,6 +24,7 @@ import cn.hutool.core.lang.tree.parser.NodeParser;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ReflectUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -31,14 +32,18 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * 扩展 hutool TreeUtil 封装树构建
+ * 树工具类
  *
- * @author Lion Li
+ * <p>
+ * 扩展 Hutool TreeUtil 封装树构建
+ * </p>
+ *
+ * @author Lion Li（<a href="https://gitee.com/dromara/RuoYi-Vue-Plus">RuoYi-Vue-Plus</a>）
  * @author lishuyan
  */
-public class TreeBuildUtils extends TreeUtil {
+public class TreeUtils extends TreeUtil {
 
-    private TreeBuildUtils() {
+    private TreeUtils() {
     }
 
     /**
@@ -52,7 +57,7 @@ public class TreeBuildUtils extends TreeUtil {
      */
     public static <T, K> List<Tree<K>> build(List<T> list, NodeParser<T, K> nodeParser) {
         if (CollUtil.isEmpty(list)) {
-            return CollUtil.newArrayList();
+            return new ArrayList<>(0);
         }
         K k = ReflectUtil.invoke(list.get(0), CharSequenceUtil.genGetter("parentId"));
         return TreeUtil.build(list, k, TreeNodeConfig.DEFAULT_CONFIG, nodeParser);
@@ -70,7 +75,7 @@ public class TreeBuildUtils extends TreeUtil {
      */
     public static <T, K> List<Tree<K>> build(List<T> list, K parentId, NodeParser<T, K> nodeParser) {
         if (CollUtil.isEmpty(list)) {
-            return CollUtil.newArrayList();
+            return new ArrayList<>(0);
         }
         return TreeUtil.build(list, parentId, TreeNodeConfig.DEFAULT_CONFIG, nodeParser);
     }
@@ -91,7 +96,7 @@ public class TreeBuildUtils extends TreeUtil {
                                              TreeNodeConfig treeNodeConfig,
                                              NodeParser<T, K> nodeParser) {
         if (CollUtil.isEmpty(list)) {
-            return CollUtil.newArrayList();
+            return new ArrayList<>(0);
         }
         return TreeUtil.build(list, parentId, treeNodeConfig, nodeParser);
     }
@@ -112,7 +117,7 @@ public class TreeBuildUtils extends TreeUtil {
                                                       Function<T, K> getParentId,
                                                       NodeParser<T, K> parser) {
         if (CollUtil.isEmpty(list)) {
-            return CollUtil.newArrayList();
+            return new ArrayList<>(0);
         }
         Set<K> rootParentIds = CollUtils.mapToSet(list, getParentId);
         rootParentIds.removeAll(CollUtils.mapToSet(list, getId));
@@ -140,7 +145,7 @@ public class TreeBuildUtils extends TreeUtil {
                                                       TreeNodeConfig treeNodeConfig,
                                                       NodeParser<T, K> parser) {
         if (CollUtil.isEmpty(list)) {
-            return CollUtil.newArrayList();
+            return new ArrayList<>(0);
         }
         Set<K> rootParentIds = CollUtils.mapToSet(list, getParentId);
         rootParentIds.removeAll(CollUtils.mapToSet(list, getId));
@@ -159,9 +164,9 @@ public class TreeBuildUtils extends TreeUtil {
      */
     public static <K> List<Tree<K>> getLeafNodes(List<Tree<K>> nodes) {
         if (CollUtil.isEmpty(nodes)) {
-            return CollUtil.newArrayList();
+            return new ArrayList<>(0);
         }
-        return nodes.stream().flatMap(TreeBuildUtils::extractLeafNodes).collect(Collectors.toList());
+        return nodes.stream().flatMap(TreeUtils::extractLeafNodes).collect(Collectors.toList());
     }
 
     /**
@@ -176,7 +181,7 @@ public class TreeBuildUtils extends TreeUtil {
             return Stream.of(node);
         } else {
             // 递归调用，获取所有子节点的叶子节点
-            return node.getChildren().stream().flatMap(TreeBuildUtils::extractLeafNodes);
+            return node.getChildren().stream().flatMap(TreeUtils::extractLeafNodes);
         }
     }
 
