@@ -21,8 +21,8 @@ import cn.hutool.core.util.ReflectUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.continew.starter.security.crypto.annotation.FieldEncrypt;
-import top.continew.starter.security.crypto.autoconfigure.CryptoProperties;
 import top.continew.starter.security.crypto.autoconfigure.CryptoContext;
+import top.continew.starter.security.crypto.autoconfigure.CryptoProperties;
 import top.continew.starter.security.crypto.encryptor.IEncryptor;
 import top.continew.starter.security.crypto.enums.Algorithm;
 
@@ -68,14 +68,14 @@ public class EncryptHelper {
      * 计算 CryptoContext 对象的hashCode作为缓存中的key，通过hashCode查询缓存中存在则直接返回，不存在则创建并缓存
      * </p>
      *
-     * @param encryptContext 加密执行者需要的相关配置参数
+     * @param cryptoContext 加密执行者需要的相关配置参数
      * @return 加密执行者
      */
-    public static IEncryptor registerAndGetEncryptor(CryptoContext encryptContext) {
-        int key = encryptContext.hashCode();
-        return ENCRYPTOR_CACHE.computeIfAbsent(key, k -> encryptContext.getEncryptor().equals(IEncryptor.class)
-            ? ReflectUtil.newInstance(encryptContext.getAlgorithm().getEncryptor(), encryptContext)
-            : ReflectUtil.newInstance(encryptContext.getEncryptor(), encryptContext));
+    public static IEncryptor registerAndGetEncryptor(CryptoContext cryptoContext) {
+        int key = cryptoContext.hashCode();
+        return ENCRYPTOR_CACHE.computeIfAbsent(key, k -> cryptoContext.getEncryptor().equals(IEncryptor.class)
+            ? ReflectUtil.newInstance(cryptoContext.getAlgorithm().getEncryptor(), cryptoContext)
+            : ReflectUtil.newInstance(cryptoContext.getEncryptor(), cryptoContext));
     }
 
     /**
@@ -104,8 +104,8 @@ public class EncryptHelper {
         }
         String ciphertext = value;
         try {
-            CryptoContext encryptContext = buildEncryptContext(fieldEncrypt);
-            IEncryptor encryptor = registerAndGetEncryptor(encryptContext);
+            CryptoContext cryptoContext = buildCryptoContext(fieldEncrypt);
+            IEncryptor encryptor = registerAndGetEncryptor(cryptoContext);
             ciphertext = encryptor.encrypt(ciphertext);
         } catch (Exception e) {
             log.warn("加密失败，请检查加密配置，处理加密字段异常：{}", e.getMessage(), e);
@@ -125,8 +125,8 @@ public class EncryptHelper {
         }
         String ciphertext = value;
         try {
-            CryptoContext encryptContext = buildEncryptContext();
-            IEncryptor encryptor = registerAndGetEncryptor(encryptContext);
+            CryptoContext cryptoContext = buildCryptoContext();
+            IEncryptor encryptor = registerAndGetEncryptor(cryptoContext);
             ciphertext = encryptor.encrypt(ciphertext);
         } catch (Exception e) {
             log.warn("加密失败，请检查加密配置，处理加密字段异常：{}", e.getMessage(), e);
@@ -147,8 +147,8 @@ public class EncryptHelper {
         }
         String plaintext = value;
         try {
-            CryptoContext encryptContext = buildEncryptContext(fieldEncrypt);
-            IEncryptor encryptor = registerAndGetEncryptor(encryptContext);
+            CryptoContext cryptoContext = buildCryptoContext(fieldEncrypt);
+            IEncryptor encryptor = registerAndGetEncryptor(cryptoContext);
             plaintext = encryptor.decrypt(plaintext);
         } catch (Exception e) {
             log.warn("解密失败，请检查加密配置，处理解密字段异常：{}", e.getMessage(), e);
@@ -168,8 +168,8 @@ public class EncryptHelper {
         }
         String plaintext = value;
         try {
-            CryptoContext encryptContext = buildEncryptContext();
-            IEncryptor encryptor = registerAndGetEncryptor(encryptContext);
+            CryptoContext cryptoContext = buildCryptoContext();
+            IEncryptor encryptor = registerAndGetEncryptor(cryptoContext);
             plaintext = encryptor.decrypt(plaintext);
         } catch (Exception e) {
             log.warn("解密失败，请检查加密配置，处理解密字段异常：{}", e.getMessage(), e);
@@ -183,24 +183,24 @@ public class EncryptHelper {
      * @param fieldEncrypt 字段加密注解
      * @return 加密上下文
      */
-    private static CryptoContext buildEncryptContext(FieldEncrypt fieldEncrypt) {
-        CryptoContext encryptContext = new CryptoContext();
-        encryptContext.setAlgorithm(fieldEncrypt.value() == Algorithm.DEFAULT
+    private static CryptoContext buildCryptoContext(FieldEncrypt fieldEncrypt) {
+        CryptoContext cryptoContext = new CryptoContext();
+        cryptoContext.setAlgorithm(fieldEncrypt.value() == Algorithm.DEFAULT
             ? defaultProperties.getAlgorithm()
             : fieldEncrypt.value());
-        encryptContext.setEncryptor(fieldEncrypt.encryptor().equals(IEncryptor.class)
+        cryptoContext.setEncryptor(fieldEncrypt.encryptor().equals(IEncryptor.class)
             ? IEncryptor.class
             : fieldEncrypt.encryptor());
-        encryptContext.setPassword(fieldEncrypt.password().isEmpty()
+        cryptoContext.setPassword(fieldEncrypt.password().isEmpty()
             ? defaultProperties.getPassword()
             : fieldEncrypt.password());
-        encryptContext.setPrivateKey(fieldEncrypt.privateKey().isEmpty()
+        cryptoContext.setPrivateKey(fieldEncrypt.privateKey().isEmpty()
             ? defaultProperties.getPrivateKey()
             : fieldEncrypt.privateKey());
-        encryptContext.setPublicKey(fieldEncrypt.publicKey().isEmpty()
+        cryptoContext.setPublicKey(fieldEncrypt.publicKey().isEmpty()
             ? defaultProperties.getPublicKey()
             : fieldEncrypt.publicKey());
-        return encryptContext;
+        return cryptoContext;
     }
 
     /**
@@ -208,12 +208,13 @@ public class EncryptHelper {
      *
      * @return 加密上下文
      */
-    private static CryptoContext buildEncryptContext() {
-        CryptoContext encryptContext = new CryptoContext();
-        encryptContext.setAlgorithm(defaultProperties.getAlgorithm());
-        encryptContext.setPassword(defaultProperties.getPassword());
-        encryptContext.setPrivateKey(defaultProperties.getPrivateKey());
-        encryptContext.setPublicKey(defaultProperties.getPublicKey());
-        return encryptContext;
+    private static CryptoContext buildCryptoContext() {
+        CryptoContext cryptoContext = new CryptoContext();
+        cryptoContext.setAlgorithm(defaultProperties.getAlgorithm());
+        cryptoContext.setEncryptor(IEncryptor.class);
+        cryptoContext.setPassword(defaultProperties.getPassword());
+        cryptoContext.setPrivateKey(defaultProperties.getPrivateKey());
+        cryptoContext.setPublicKey(defaultProperties.getPublicKey());
+        return cryptoContext;
     }
 }
