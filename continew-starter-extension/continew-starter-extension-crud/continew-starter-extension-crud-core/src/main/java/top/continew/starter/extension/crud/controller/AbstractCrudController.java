@@ -34,6 +34,7 @@ import top.continew.starter.extension.crud.model.query.SortQuery;
 import top.continew.starter.extension.crud.model.req.IdsReq;
 import top.continew.starter.extension.crud.model.resp.IdResp;
 import top.continew.starter.extension.crud.model.resp.BasePageResp;
+import top.continew.starter.extension.crud.model.resp.LabelValueResp;
 import top.continew.starter.extension.crud.service.CrudService;
 import top.continew.starter.extension.crud.validation.CrudValidationGroup;
 
@@ -186,5 +187,33 @@ public abstract class AbstractCrudController<S extends CrudService<L, D, Q, C>, 
     @GetMapping("/export")
     public void export(@Valid Q query, @Valid SortQuery sortQuery, HttpServletResponse response) {
         baseService.export(query, sortQuery, response);
+    }
+
+    /**
+     * 查询字典列表
+     *
+     * @param query     查询条件
+     * @param sortQuery 排序查询条件
+     * @return 字典列表信息
+     */
+    @CrudApi(Api.DICT)
+    @Operation(summary = "查询字典列表", description = "查询字典列表（下拉选项等场景）")
+    @GetMapping("/dict")
+    public List<LabelValueResp> dict(@Valid Q query, @Valid SortQuery sortQuery) {
+        return baseService.dict(query, sortQuery);
+    }
+
+    /**
+     * 查询字典树列表
+     *
+     * @param query     查询条件
+     * @param sortQuery 排序查询条件
+     * @return 字典树列表信息
+     */
+    @CrudApi(Api.DICT_TREE)
+    @Operation(summary = "查询字典树列表", description = "查询树型结构字典列表（树型结构下拉选项等场景）")
+    @GetMapping("/dict/tree")
+    public List<Tree<Long>> dictTree(@Valid Q query, @Valid SortQuery sortQuery) {
+        return baseService.tree(query, sortQuery, true);
     }
 }

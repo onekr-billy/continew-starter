@@ -19,9 +19,11 @@ package top.continew.starter.extension.crud.service;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.extra.spring.SpringUtil;
@@ -33,11 +35,13 @@ import org.springframework.transaction.annotation.Transactional;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.ReflectUtils;
 import top.continew.starter.core.util.TreeUtils;
+import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.core.util.validation.ValidationUtils;
 import top.continew.starter.data.base.BaseMapper;
 import top.continew.starter.data.service.impl.ServiceImpl;
 import top.continew.starter.data.util.QueryWrapperHelper;
 import top.continew.starter.excel.util.ExcelUtils;
+import top.continew.starter.extension.crud.annotation.DictModel;
 import top.continew.starter.extension.crud.annotation.TreeField;
 import top.continew.starter.extension.crud.autoconfigure.CrudProperties;
 import top.continew.starter.extension.crud.autoconfigure.CrudTreeProperties;
@@ -48,8 +52,7 @@ import top.continew.starter.extension.crud.model.resp.LabelValueResp;
 import top.continew.starter.extension.crud.model.resp.PageResp;
 
 import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -136,11 +139,6 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends BaseIdDO, L, D, 
     }
 
     @Override
-    public List<LabelValueResp> listDict(Q query, SortQuery sortQuery) {
-        return List.of();
-    }
-
-    @Override
     @Transactional(rollbackFor = Exception.class)
     public Long create(C req) {
         this.beforeCreate(req);
@@ -173,6 +171,44 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends BaseIdDO, L, D, 
         List<D> list = this.list(query, sortQuery, detailClass);
         list.forEach(this::fill);
         ExcelUtils.export(list, "导出数据", detailClass, response);
+    }
+
+    @Override
+    public List<LabelValueResp> dict(Q query, SortQuery sortQuery) {
+        DictModel dictModel = entityClass.getDeclaredAnnotation(DictModel.class);
+        CheckUtils.throwIfNull(dictModel, "请添加并配置 @DictModel 字典结构信息");
+        List<L> list = this.list(query, sortQuery);
+        // 解析映射
+        List<LabelValueResp> respList = new ArrayList<>(list.size());
+        String labelKey = dictModel.labelKey().contains(StringConstants.DOT)
+            ? CharSequenceUtil.subAfter(dictModel.labelKey(), StringConstants.DOT, true)
+            : dictModel.labelKey();
+        String valueKey = dictModel.valueKey().contains(StringConstants.DOT)
+            ? CharSequenceUtil.subAfter(dictModel.valueKey(), StringConstants.DOT, true)
+            : dictModel.valueKey();
+        List<String> extraFieldNames = Arrays.stream(dictModel.extraKeys())
+            .map(extraKey -> extraKey.contains(StringConstants.DOT)
+                ? CharSequenceUtil.subAfter(extraKey, StringConstants.DOT, true)
+                : extraKey)
+            .map(CharSequenceUtil::toCamelCase)
+            .toList();
+        for (L entity : list) {
+            LabelValueResp<Object> labelValueResp = new LabelValueResp<>();
+            labelValueResp.setLabel(Convert.toStr(ReflectUtil.getFieldValue(entity, CharSequenceUtil
+                .toCamelCase(labelKey))));
+            labelValueResp.setValue(ReflectUtil.getFieldValue(entity, CharSequenceUtil.toCamelCase(valueKey)));
+            respList.add(labelValueResp);
+            if (CollUtil.isEmpty(extraFieldNames)) {
+                continue;
+            }
+            // 额外数据
+            Map<String, Object> extraMap = MapUtil.newHashMap(dictModel.extraKeys().length);
+            for (String extraFieldName : extraFieldNames) {
+                extraMap.put(extraFieldName, ReflectUtil.getFieldValue(entity, extraFieldName));
+            }
+            labelValueResp.setExtra(extraMap);
+        }
+        return respList;
     }
 
     /**

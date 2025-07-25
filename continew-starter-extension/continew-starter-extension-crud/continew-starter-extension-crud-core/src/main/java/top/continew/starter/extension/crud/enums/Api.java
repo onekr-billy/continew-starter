@@ -68,4 +68,14 @@ public enum Api {
      * 批量删除
      */
     BATCH_DELETE,
+
+    /**
+     * 字典列表（下拉选项等场景）
+     */
+    DICT,
+
+    /**
+     * 字典树列表（树型结构下拉选项等场景）
+     */
+    DICT_TREE
 }

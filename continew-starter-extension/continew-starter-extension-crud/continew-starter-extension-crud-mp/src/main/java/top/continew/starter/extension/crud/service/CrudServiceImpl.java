@@ -141,7 +141,42 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends BaseIdDO, L, D, 
     }
 
     @Override
-    public List<LabelValueResp> listDict(Q query, SortQuery sortQuery) {
+    @Transactional(rollbackFor = Exception.class)
+    public Long create(C req) {
+        this.beforeCreate(req);
+        T entity = BeanUtil.copyProperties(req, super.getEntityClass());
+        baseMapper.insert(entity);
+        this.afterCreate(req, entity);
+        return entity.getId();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void update(C req, Long id) {
+        this.beforeUpdate(req, id);
+        T entity = this.getById(id);
+        BeanUtil.copyProperties(req, entity, CopyOptions.create().ignoreNullValue());
+        baseMapper.updateById(entity);
+        this.afterUpdate(req, entity);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void delete(List<Long> ids) {
+        this.beforeDelete(ids);
+        baseMapper.deleteByIds(ids);
+        this.afterDelete(ids);
+    }
+
+    @Override
+    public void export(Q query, SortQuery sortQuery, HttpServletResponse response) {
+        List<D> list = this.list(query, sortQuery, this.getDetailClass());
+        list.forEach(this::fill);
+        ExcelUtils.export(list, "导出数据", this.getDetailClass(), response);
+    }
+
+    @Override
+    public List<LabelValueResp> dict(Q query, SortQuery sortQuery) {
         DictModel dictModel = super.getEntityClass().getDeclaredAnnotation(DictModel.class);
         CheckUtils.throwIfNull(dictModel, "请添加并配置 @DictModel 字典结构信息");
         List<L> list = this.list(query, sortQuery);
@@ -176,41 +211,6 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends BaseIdDO, L, D, 
             labelValueResp.setExtra(extraMap);
         }
         return respList;
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Long create(C req) {
-        this.beforeCreate(req);
-        T entity = BeanUtil.copyProperties(req, super.getEntityClass());
-        baseMapper.insert(entity);
-        this.afterCreate(req, entity);
-        return entity.getId();
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void update(C req, Long id) {
-        this.beforeUpdate(req, id);
-        T entity = this.getById(id);
-        BeanUtil.copyProperties(req, entity, CopyOptions.create().ignoreNullValue());
-        baseMapper.updateById(entity);
-        this.afterUpdate(req, entity);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void delete(List<Long> ids) {
-        this.beforeDelete(ids);
-        baseMapper.deleteByIds(ids);
-        this.afterDelete(ids);
-    }
-
-    @Override
-    public void export(Q query, SortQuery sortQuery, HttpServletResponse response) {
-        List<D> list = this.list(query, sortQuery, this.getDetailClass());
-        list.forEach(this::fill);
-        ExcelUtils.export(list, "导出数据", this.getDetailClass(), response);
     }
 
     /**

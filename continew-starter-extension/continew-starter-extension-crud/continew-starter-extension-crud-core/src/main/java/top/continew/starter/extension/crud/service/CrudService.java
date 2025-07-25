@@ -94,17 +94,6 @@ public interface CrudService<L, D, Q, C> {
     D get(Long id);
 
     /**
-     * 查询字典列表
-     *
-     * @param query     查询条件
-     * @param sortQuery 排序查询条件
-     * @return 字典列表信息
-     * @since 2.1.0
-     * @see top.continew.starter.extension.crud.annotation.DictModel
-     */
-    List<LabelValueResp> listDict(@Valid Q query, @Valid SortQuery sortQuery);
-
-    /**
      * 创建
      *
      * @param req 创建请求参数
@@ -137,4 +126,15 @@ public interface CrudService<L, D, Q, C> {
      * @param response  响应对象
      */
     void export(@Valid Q query, @Valid SortQuery sortQuery, HttpServletResponse response);
+
+    /**
+     * 查询字典列表
+     *
+     * @param query     查询条件
+     * @param sortQuery 排序查询条件
+     * @return 字典列表信息
+     * @since 2.1.0
+     * @see top.continew.starter.extension.crud.annotation.DictModel
+     */
+    List<LabelValueResp> dict(@Valid Q query, @Valid SortQuery sortQuery);
 }
