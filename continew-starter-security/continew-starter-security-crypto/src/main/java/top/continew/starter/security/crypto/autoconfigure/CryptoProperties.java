@@ -17,6 +17,7 @@
 package top.continew.starter.security.crypto.autoconfigure;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import top.continew.starter.core.constant.PropertiesConstants;
 import top.continew.starter.security.crypto.enums.Algorithm;
 
@@ -54,6 +55,12 @@ public class CryptoProperties {
      * 非对称加密算法私钥
      */
     private String privateKey;
+
+    /**
+     * 密码编码器配置
+     */
+    @NestedConfigurationProperty
+    private PasswordEncoderProperties passwordEncoder;
 
     public boolean isEnabled() {
         return enabled;
@@ -93,5 +100,13 @@ public class CryptoProperties {
 
     public void setPrivateKey(String privateKey) {
         this.privateKey = privateKey;
+    }
+
+    public PasswordEncoderProperties getPasswordEncoder() {
+        return passwordEncoder;
+    }
+
+    public void setPasswordEncoder(PasswordEncoderProperties passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
     }
 }

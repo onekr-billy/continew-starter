@@ -104,12 +104,6 @@
                 <version>${revision}</version>
             </dependency>
 
-            <!-- 安全模块 - 密码编码器 -->
-            <dependency>
-                <groupId>top.continew.starter</groupId>
-                <artifactId>continew-starter-security-password</artifactId>
-                <version>${revision}</version>
-            </dependency>
             <!-- 安全模块 - 加密 -->
             <dependency>
                 <groupId>top.continew.starter</groupId>

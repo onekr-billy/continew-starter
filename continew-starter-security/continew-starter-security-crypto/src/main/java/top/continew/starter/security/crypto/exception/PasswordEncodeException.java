@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.starter.security.password.exception;
+package top.continew.starter.security.crypto.exception;
 
 import top.continew.starter.core.exception.BaseException;
 

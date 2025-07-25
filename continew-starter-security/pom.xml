@@ -16,11 +16,10 @@
     <description>ContiNew Starter 安全模块</description>
 
     <modules>
-        <module>continew-starter-security-password</module>
-        <module>continew-starter-security-mask</module>
         <module>continew-starter-security-crypto</module>
-        <module>continew-starter-security-sensitivewords</module>
+        <module>continew-starter-security-mask</module>
         <module>continew-starter-security-xss</module>
+        <module>continew-starter-security-sensitivewords</module>
     </modules>
 
     <dependencies>

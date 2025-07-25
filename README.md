@@ -167,9 +167,9 @@ continew-starter
 │  └─ continew-starter-data-mf（MyBatis Flex）
 ├─ continew-starter-security（安全模块）
 │  ├─ continew-starter-security-crypto（加密：字段加解密）
-│  ├─ continew-starter-security-xss（XSS 过滤）
 │  ├─ continew-starter-security-mask（脱敏：JSON 数据脱敏）
-│  └─ continew-starter-security-password（密码编码器）
+│  ├─ continew-starter-security-xss（XSS 过滤）
+│  └─ continew-starter-security-sensitivewords（敏感词）
 ├─ continew-starter-ratelimiter（限流模块）
 ├─ continew-starter-idempotent（幂等模块）
 ├─ continew-starter-trace（链路追踪模块）

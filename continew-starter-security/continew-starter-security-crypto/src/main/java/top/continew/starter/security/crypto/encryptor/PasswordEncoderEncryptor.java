@@ -19,7 +19,7 @@ package top.continew.starter.security.crypto.encryptor;
 import cn.hutool.extra.spring.SpringUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import top.continew.starter.security.crypto.autoconfigure.CryptoContext;
-import top.continew.starter.security.password.autoconfigure.PasswordEncoderProperties;
+import top.continew.starter.security.crypto.autoconfigure.PasswordEncoderProperties;
 
 /**
  * 密码编码器加/解密处理器

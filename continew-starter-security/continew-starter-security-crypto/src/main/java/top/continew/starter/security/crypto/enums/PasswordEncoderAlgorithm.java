@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.starter.security.password.enums;
+package top.continew.starter.security.crypto.enums;
 
 import java.util.regex.Pattern;
 

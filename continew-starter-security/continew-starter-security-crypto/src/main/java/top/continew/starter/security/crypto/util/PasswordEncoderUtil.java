@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package top.continew.starter.security.password.util;
+package top.continew.starter.security.crypto.util;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
-import top.continew.starter.security.password.enums.PasswordEncoderAlgorithm;
-import top.continew.starter.security.password.exception.PasswordEncodeException;
+import top.continew.starter.security.crypto.enums.PasswordEncoderAlgorithm;
+import top.continew.starter.security.crypto.exception.PasswordEncodeException;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
