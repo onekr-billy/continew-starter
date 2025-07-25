@@ -17,13 +17,12 @@
 package top.continew.starter.extension.crud.annotation;
 
 import org.springframework.context.annotation.Import;
-import top.continew.starter.extension.crud.autoconfigure.CrudRequestMappingAutoConfiguration;
-import top.continew.starter.extension.crud.autoconfigure.CrudRestControllerAutoConfiguration;
+import top.continew.starter.extension.crud.autoconfigure.CrudApiAutoConfiguration;
 
 import java.lang.annotation.*;
 
 /**
- * CRUD REST Controller 启用注解
+ * CRUD API 启用注解
  *
  * @author Charles7c
  * @since 1.2.0
@@ -31,5 +30,5 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import({CrudRequestMappingAutoConfiguration.class, CrudRestControllerAutoConfiguration.class})
-public @interface EnableCrudRestController {}
+@Import(CrudApiAutoConfiguration.class)
+public @interface EnableCrudApi {}

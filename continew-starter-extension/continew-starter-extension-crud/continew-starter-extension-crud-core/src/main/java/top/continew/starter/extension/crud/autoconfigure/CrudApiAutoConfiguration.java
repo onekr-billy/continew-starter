@@ -19,25 +19,49 @@ package top.continew.starter.extension.crud.autoconfigure;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
+import org.springframework.format.support.FormattingConversionService;
+import org.springframework.web.accept.ContentNegotiationManager;
+import org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import org.springframework.web.servlet.resource.ResourceUrlProvider;
 import top.continew.starter.extension.crud.annotation.CrudApi;
 import top.continew.starter.extension.crud.aop.CrudApiAnnotationAdvisor;
 import top.continew.starter.extension.crud.aop.CrudApiAnnotationInterceptor;
 
 /**
- * CRUD REST Controller 自动配置
+ * CRUD API 自动配置
  *
  * @author Charles7c
  * @since 2.7.5
  */
 @AutoConfiguration
 @EnableConfigurationProperties(CrudProperties.class)
-public class CrudRestControllerAutoConfiguration {
+public class CrudApiAutoConfiguration extends DelegatingWebMvcConfiguration {
 
-    private static final Logger log = LoggerFactory.getLogger(CrudRestControllerAutoConfiguration.class);
+    private static final Logger log = LoggerFactory.getLogger(CrudApiAutoConfiguration.class);
+
+    /**
+     * CRUD 请求映射器处理器映射器（覆盖默认 RequestMappingHandlerMapping）
+     */
+    @Override
+    public RequestMappingHandlerMapping createRequestMappingHandlerMapping() {
+        return new CrudRequestMappingHandlerMapping();
+    }
+
+    @Bean
+    @Primary
+    @Override
+    public RequestMappingHandlerMapping requestMappingHandlerMapping(@Qualifier("mvcContentNegotiationManager") ContentNegotiationManager contentNegotiationManager,
+                                                                     @Qualifier("mvcConversionService") FormattingConversionService conversionService,
+                                                                     @Qualifier("mvcResourceUrlProvider") ResourceUrlProvider resourceUrlProvider) {
+        return super.requestMappingHandlerMapping(contentNegotiationManager, conversionService, resourceUrlProvider);
+    }
 
     /**
      * CRUD API 注解通知
@@ -59,6 +83,6 @@ public class CrudRestControllerAutoConfiguration {
 
     @PostConstruct
     public void postConstruct() {
-        log.debug("[ContiNew Starter] - Auto Configuration 'Extension-CRUD REST Controller' completed initialization.");
+        log.debug("[ContiNew Starter] - Auto Configuration 'Extension-CRUD API' completed initialization.");
     }
 }
