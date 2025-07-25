@@ -264,6 +264,75 @@ public class RedisUtils {
     }
 
     /**
+     * 设置 Hash 中指定字段的值
+     *
+     * @param key   Hash 键
+     * @param field 字段
+     * @param value 值
+     * @author KAI
+     * @since 2.13.4
+     */
+    public static <T> void hSet(String key, String field, T value) {
+        RMap<String, T> map = CLIENT.getMap(key);
+        map.put(field, value);
+    }
+
+    /**
+     * 获取 Hash 中指定字段的值
+     *
+     * @param key   Hash 键
+     * @param field 字段
+     * @return 值
+     * @author KAI
+     * @since 2.13.4
+     */
+    public static <T> T hGet(String key, String field) {
+        RMap<String, T> map = CLIENT.getMap(key);
+        return map.get(field);
+    }
+
+    /**
+     * 获取整个 Hash 的所有字段值
+     *
+     * @param key Hash 键
+     * @return Map
+     * @author KAI
+     * @since 2.13.4
+     */
+    public static <T> Map<String, T> hGetAll(String key) {
+        RMap<String, T> map = CLIENT.getMap(key);
+        return map.readAllMap();
+    }
+
+    /**
+     * 判断 Hash 中是否存在指定字段
+     *
+     * @param key   Hash 键
+     * @param field 字段
+     * @return true：存在；false：不存在
+     * @author KAI
+     * @since 2.13.4
+     */
+    public static boolean hExists(String key, String field) {
+        RMap<String, ?> map = CLIENT.getMap(key);
+        return map.containsKey(field);
+    }
+
+    /**
+     * 删除 Hash 中指定字段
+     *
+     * @param key    Hash 键
+     * @param fields 字段数组
+     * @return 删除成功的字段数量
+     * @author KAI
+     * @since 2.13.4
+     */
+    public static long hDel(String key, String... fields) {
+        RMap<String, ?> map = CLIENT.getMap(key);
+        return map.fastRemove(fields);
+    }
+
+    /**
      * 添加元素到 ZSet 中
      *
      * @param key   键
@@ -534,69 +603,5 @@ public class RedisUtils {
      */
     public static String formatKey(String... subKeys) {
         return String.join(StringConstants.COLON, ArrayUtil.removeBlank(subKeys));
-    }
-
-    /**
-     * 设置 Hash 中指定字段的值
-     *
-     * @param key   Hash 键
-     * @param field 字段
-     * @param value 值
-     * @since 2.13.4
-     */
-    public static <T> void hSet(String key, String field, T value) {
-        RMap<String, T> map = CLIENT.getMap(key);
-        map.put(field, value);
-    }
-
-    /**
-     * 获取 Hash 中指定字段的值
-     *
-     * @param key   Hash 键
-     * @param field 字段
-     * @return 值
-     * @since 2.13.4
-     */
-    public static <T> T hGet(String key, String field) {
-        RMap<String, T> map = CLIENT.getMap(key);
-        return map.get(field);
-    }
-
-    /**
-     * 获取整个 Hash 的所有字段值
-     *
-     * @param key Hash 键
-     * @return Map
-     * @since 2.13.4
-     */
-    public static <T> Map<String, T> hGetAll(String key) {
-        RMap<String, T> map = CLIENT.getMap(key);
-        return map.readAllMap();
-    }
-
-    /**
-     * 判断 Hash 中是否存在指定字段
-     *
-     * @param key   Hash 键
-     * @param field 字段
-     * @return true：存在；false：不存在
-     * @since 2.13.4
-     */
-    public static boolean hExists(String key, String field) {
-        RMap<String, ?> map = CLIENT.getMap(key);
-        return map.containsKey(field);
-    }
-
-    /**
-     * 删除 Hash 中指定字段
-     *
-     * @param key    Hash 键
-     * @param fields 字段数组
-     * @return 删除成功的字段数量
-     * @since 2.13.4
-     */
-    public static long hDel(String key, String... fields) {
-        RMap<String, ?> map = CLIENT.getMap(key);
-        return map.fastRemove(fields);
     }
 }
