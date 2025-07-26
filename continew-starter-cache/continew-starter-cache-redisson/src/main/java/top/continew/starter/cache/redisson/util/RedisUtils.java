@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 /**
  * Redis 工具类
@@ -49,6 +50,42 @@ public class RedisUtils {
      */
     public static RedissonClient getClient() {
         return CLIENT;
+    }
+
+    /**
+     * 发布消息
+     *
+     * @param name     主题名称
+     * @param msg      发送数据
+     * @param consumer 自定义处理
+     */
+    public static <T> void publish(String name, T msg, Consumer<T> consumer) {
+        RTopic topic = CLIENT.getTopic(name);
+        topic.publish(msg);
+        consumer.accept(msg);
+    }
+
+    /**
+     * 发布消息
+     *
+     * @param name 主题名称
+     * @param msg  发送数据
+     */
+    public static <T> void publish(String name, T msg) {
+        RTopic topic = CLIENT.getTopic(name);
+        topic.publish(msg);
+    }
+
+    /**
+     * 订阅消息
+     *
+     * @param name     主题名称
+     * @param clazz    消息类型
+     * @param consumer 自定义处理
+     */
+    public static <T> void subscribe(String name, Class<T> clazz, Consumer<T> consumer) {
+        RTopic topic = CLIENT.getTopic(name);
+        topic.addListener(clazz, (channel, msg) -> consumer.accept(msg));
     }
 
     /**
@@ -104,7 +141,7 @@ public class RedisUtils {
     /**
      * 设置缓存
      * <p>如果键不存在，则不设置</p>
-     * 
+     *
      * @param key   键
      * @param value 值
      * @return true：设置成功；false：设置失败
@@ -117,7 +154,7 @@ public class RedisUtils {
     /**
      * 设置缓存
      * <p>如果键不存在，则不设置</p>
-     * 
+     *
      * @param key      键
      * @param value    值
      * @param duration 过期时间
