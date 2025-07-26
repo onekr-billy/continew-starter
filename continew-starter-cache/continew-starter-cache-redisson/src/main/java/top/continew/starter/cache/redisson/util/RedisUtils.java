@@ -26,8 +26,6 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 /**
@@ -50,42 +48,6 @@ public class RedisUtils {
      */
     public static RedissonClient getClient() {
         return CLIENT;
-    }
-
-    /**
-     * 发布消息
-     *
-     * @param name     主题名称
-     * @param msg      发送数据
-     * @param consumer 自定义处理
-     */
-    public static <T> void publish(String name, T msg, Consumer<T> consumer) {
-        RTopic topic = CLIENT.getTopic(name);
-        topic.publish(msg);
-        consumer.accept(msg);
-    }
-
-    /**
-     * 发布消息
-     *
-     * @param name 主题名称
-     * @param msg  发送数据
-     */
-    public static <T> void publish(String name, T msg) {
-        RTopic topic = CLIENT.getTopic(name);
-        topic.publish(msg);
-    }
-
-    /**
-     * 订阅消息
-     *
-     * @param name     主题名称
-     * @param clazz    消息类型
-     * @param consumer 自定义处理
-     */
-    public static <T> void subscribe(String name, Class<T> clazz, Consumer<T> consumer) {
-        RTopic topic = CLIENT.getTopic(name);
-        topic.addListener(clazz, (channel, msg) -> consumer.accept(msg));
     }
 
     /**
@@ -559,77 +521,45 @@ public class RedisUtils {
     }
 
     /**
-     * 尝试获取锁
+     * 发布消息
      *
-     * @param key        键
-     * @param expireTime 锁过期时间（单位：毫秒）
-     * @param timeout    获取锁超时时间（单位：毫秒）
-     * @return true：成功；false：失败
-     * @since 2.7.2
+     * @param name     主题名称
+     * @param msg      发送数据
+     * @param consumer 自定义处理
+     * @author lishuyan
+     * @since 2.13.4
      */
-    public static boolean tryLock(String key, long expireTime, long timeout) {
-        return tryLock(key, expireTime, timeout, TimeUnit.MILLISECONDS);
+    public static <T> void publish(String name, T msg, Consumer<T> consumer) {
+        RTopic topic = CLIENT.getTopic(name);
+        topic.publish(msg);
+        consumer.accept(msg);
     }
 
     /**
-     * 释放锁
+     * 发布消息
      *
-     * @param key 键
-     * @return true：释放成功；false：释放失败
-     * @since 2.7.2
+     * @param name 主题名称
+     * @param msg  发送数据
+     * @author lishuyan
+     * @since 2.13.4
      */
-    public static boolean unlock(String key) {
-        RLock lock = getLock(key);
-        return unlock(lock);
+    public static <T> void publish(String name, T msg) {
+        RTopic topic = CLIENT.getTopic(name);
+        topic.publish(msg);
     }
 
     /**
-     * 尝试获取锁
+     * 订阅消息
      *
-     * @param key        键
-     * @param expireTime 锁过期时间
-     * @param timeout    获取锁超时时间
-     * @param unit       时间单位
-     * @return true：成功；false：失败
-     * @since 2.7.2
+     * @param name     主题名称
+     * @param clazz    消息类型
+     * @param consumer 自定义处理
+     * @author lishuyan
+     * @since 2.13.4
      */
-    public static boolean tryLock(String key, long expireTime, long timeout, TimeUnit unit) {
-        RLock lock = getLock(key);
-        try {
-            return lock.tryLock(timeout, expireTime, unit);
-        } catch (InterruptedException e) {
-            return false;
-        }
-    }
-
-    /**
-     * 释放锁
-     *
-     * @param lock 锁实例
-     * @return true：释放成功；false：释放失败
-     * @since 2.7.2
-     */
-    public static boolean unlock(RLock lock) {
-        if (lock.isHeldByCurrentThread()) {
-            try {
-                lock.unlockAsync().get();
-                return true;
-            } catch (ExecutionException | InterruptedException e) {
-                return false;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 获取锁实例
-     *
-     * @param key 键
-     * @return 锁实例
-     * @since 2.7.2
-     */
-    public static RLock getLock(String key) {
-        return CLIENT.getLock(key);
+    public static <T> void subscribe(String name, Class<T> clazz, Consumer<T> consumer) {
+        RTopic topic = CLIENT.getTopic(name);
+        topic.addListener(clazz, (channel, msg) -> consumer.accept(msg));
     }
 
     /**

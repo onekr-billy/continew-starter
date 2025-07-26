@@ -25,9 +25,10 @@ import top.continew.starter.core.util.SpringUtils;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Redisson分布式锁 工具类
+ * Redisson 分布式锁工具类
  *
  * @author lishuyan
+ * @since 2.13.4
  */
 public class RedisLockUtils implements AutoCloseable {
 
