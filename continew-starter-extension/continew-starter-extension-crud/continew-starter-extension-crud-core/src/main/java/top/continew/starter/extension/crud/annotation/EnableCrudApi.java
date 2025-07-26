@@ -18,6 +18,7 @@ package top.continew.starter.extension.crud.annotation;
 
 import org.springframework.context.annotation.Import;
 import top.continew.starter.extension.crud.autoconfigure.CrudApiAutoConfiguration;
+import top.continew.starter.extension.crud.autoconfigure.CrudRequestMappingAutoConfiguration;
 
 import java.lang.annotation.*;
 
@@ -30,5 +31,5 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import(CrudApiAutoConfiguration.class)
+@Import({CrudRequestMappingAutoConfiguration.class, CrudApiAutoConfiguration.class})
 public @interface EnableCrudApi {}

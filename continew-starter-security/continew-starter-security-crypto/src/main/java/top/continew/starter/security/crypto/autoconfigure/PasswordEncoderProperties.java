@@ -19,7 +19,7 @@ package top.continew.starter.security.crypto.autoconfigure;
 import top.continew.starter.security.crypto.enums.PasswordEncoderAlgorithm;
 
 /**
- * 密码编解码配置属性
+ * 密码编码器配置属性
  *
  * @author Jasmine
  * @since 1.3.0
