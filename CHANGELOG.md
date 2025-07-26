@@ -1,3 +1,22 @@
+## [v2.13.4](https://github.com/continew-org/continew-starter/compare/v2.13.3...v2.13.4) (2025-07-26)
+
+### ✨ 新特性
+
+- 【cache/redisson】RedisUtils 新增 Hash 常用操作方法（hSet/hGet/hGetAll/hExists/hDel）(Gitee#77@kiki1373639299) ([8676f9b](https://github.com/continew-org/continew-starter/commit/8676f9b5912914f2bc1025d7695e2b11136bad20))
+- 【extension/crud】CRUD API 新增 DICT（字典列表（下拉选项等场景））、DICT_TREE（字典树列表（树型结构下拉选项等场景）） ([ecabda6](https://github.com/continew-org/continew-starter/commit/ecabda6aecc70fdb49eebd2dcde5bddd63fe337b))
+- 【security/crypto】新增密码编码器配置（由原 security/password 模块融合） ([0ba365d](https://github.com/continew-org/continew-starter/commit/0ba365dabc3c18a7b07eaec05c17a8848642e78f)) ([49c804a](https://github.com/continew-org/continew-starter/commit/49c804ac9e577ccc4019319c812ebcdf20ef5ad6))
+- 【cache/redisson】新增 RedisLockUtils Redisson 分布式锁工具类 (Gitee#78@lishuyanla) ([48783db](https://github.com/continew-org/continew-starter/commit/48783db422525548d7eec5caba788f8ab53d7bec))
+
+### 💎 功能优化
+
+- 【cache/redisson】移除 RedisQueueUtils 类 ([e5354b7](https://github.com/continew-org/continew-starter/commit/e5354b765d27f4ba853865fa6290f706f14a990c))
+- 【extension/crud】优化 CRUD API 自动配置代码，EnableCrudRestController => EnableCrudApi ([ca33851](https://github.com/continew-org/continew-starter/commit/ca33851fbd92f145229844c464a0cf1edbf7b9c7)) ([1fdb029](https://github.com/continew-org/continew-starter/commit/1fdb0291d20975e667232f866e3605712b29f8a9))
+- 【cache/redisson】移除 RedisUtils 中的 Lock 相关工具方法（统一使用 RedisLockUtils） ([cff4f02](https://github.com/continew-org/continew-starter/commit/cff4f02d966836fd291c268d0e44b0047e35d053))
+
+### 🐛 问题修复
+
+- 【security/crypto】修复 构造默认加密上下文时缺失默认加密器 导致找不到加密器的问题 (Gitee#76@lishuyanla) ([d0eddcb](https://github.com/continew-org/continew-starter/commit/d0eddcb9f73282578df6ebb6b8c3d41fe164abd0))
+
 ## [v2.13.3](https://github.com/continew-org/continew-starter/compare/v2.13.2...v2.13.3) (2025-07-22)
 
 ### ✨ 新特性
