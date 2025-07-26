@@ -19,6 +19,7 @@ package top.continew.starter.security.crypto.encryptor;
 import cn.hutool.extra.spring.SpringUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import top.continew.starter.security.crypto.autoconfigure.CryptoContext;
+import top.continew.starter.security.crypto.autoconfigure.CryptoProperties;
 import top.continew.starter.security.crypto.autoconfigure.PasswordEncoderProperties;
 
 /**
@@ -37,7 +38,7 @@ import top.continew.starter.security.crypto.autoconfigure.PasswordEncoderPropert
 public class PasswordEncoderEncryptor extends AbstractEncryptor {
 
     private final PasswordEncoder passwordEncoder = SpringUtil.getBean(PasswordEncoder.class);
-    private final PasswordEncoderProperties properties = SpringUtil.getBean(PasswordEncoderProperties.class);
+    private final CryptoProperties properties = SpringUtil.getBean(CryptoProperties.class);
 
     public PasswordEncoderEncryptor(CryptoContext context) {
         super(context);
@@ -46,7 +47,7 @@ public class PasswordEncoderEncryptor extends AbstractEncryptor {
     @Override
     public String encrypt(String plaintext) {
         // 如果已经是加密格式，直接返回
-        if (properties.getAlgorithm().getPattern().matcher(plaintext).matches()) {
+        if (properties.getPasswordEncoder().getAlgorithm().getPattern().matcher(plaintext).matches()) {
             return plaintext;
         }
         return passwordEncoder.encode(plaintext);
