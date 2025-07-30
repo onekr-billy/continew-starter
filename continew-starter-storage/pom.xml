@@ -10,22 +10,34 @@
     </parent>
 
     <artifactId>continew-starter-storage</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
     <description>ContiNew Starter 存储模块</description>
-
-    <modules>
-        <module>continew-starter-storage-core</module>
-        <module>continew-starter-storage-local</module>
-        <module>continew-starter-storage-oss</module>
-    </modules>
 
     <dependencies>
         <!-- 核心模块 -->
         <dependency>
             <groupId>top.continew.starter</groupId>
             <artifactId>continew-starter-core</artifactId>
+        </dependency>
+
+        <!-- Amazon S3 V2（Amazon Simple Storage Service，亚马逊简单存储服务，通用存储协议 S3，兼容主流云厂商对象存储） -->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+        </dependency>
+
+        <!-- 缩略图生成库 -->
+        <dependency>
+            <groupId>net.coobird</groupId>
+            <artifactId>thumbnailator</artifactId>
+        </dependency>
+
+        <!-- JSON 模块 - Jackson -->
+        <dependency>
+            <groupId>top.continew.starter</groupId>
+            <artifactId>continew-starter-json-jackson</artifactId>
         </dependency>
     </dependencies>
 </project>
