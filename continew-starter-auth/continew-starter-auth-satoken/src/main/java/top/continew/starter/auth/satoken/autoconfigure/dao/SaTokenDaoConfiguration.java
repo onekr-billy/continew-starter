@@ -24,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -64,7 +63,6 @@ public class SaTokenDaoConfiguration {
      * 自定义持久层实现-Redis（默认）
      */
     @ConditionalOnMissingBean(SaTokenDao.class)
-    @ConditionalOnBean(RedissonClient.class)
     @AutoConfigureAfter(RedissonAutoConfiguration.class)
     @ConditionalOnProperty(name = "sa-token.extension.dao.type", havingValue = "redis")
     public static class Redis {
