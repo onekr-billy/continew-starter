@@ -24,7 +24,6 @@ import cn.idev.excel.metadata.GlobalConfiguration;
 import cn.idev.excel.metadata.data.ReadCellData;
 import cn.idev.excel.metadata.data.WriteCellData;
 import cn.idev.excel.metadata.property.ExcelContentProperty;
-import org.springframework.stereotype.Component;
 import top.continew.starter.core.constant.StringConstants;
 
 import java.util.List;
@@ -39,7 +38,6 @@ import java.util.List;
  * @author Charles7c
  * @since 2.0.2
  */
-@Component
 public class ExcelListConverter implements Converter<List> {
 
     @Override
