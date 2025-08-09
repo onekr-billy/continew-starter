@@ -16,10 +16,16 @@
 
 package top.continew.starter.extension.crud.annotation;
 
+import top.continew.starter.extension.crud.model.query.SortQuery;
+
 import java.lang.annotation.*;
 
 /**
  * 字典结构映射
+ *
+ * <p>用于查询字典列表 API（下拉选项等场景）</p>
+ *
+ * @see top.continew.starter.extension.crud.controller.AbstractCrudController#dict(Object, SortQuery)
  *
  * @author Charles7c
  * @since 2.1.0

@@ -65,9 +65,11 @@ public interface CrudService<L, D, Q, C> {
      *
      * @param query     查询条件
      * @param sortQuery 排序查询条件
-     * @param isSimple  是否为简单树结构（不包含基本树结构之外的扩展字段，简单树（下拉列表）使用全局配置结构，复杂树（表格）使用 @TreeField 局部配置）
+     * @param isSimple  是否为简单树结构（不包含基本树结构之外的扩展字段，简单树（例如：下拉列表）使用 CrudTreeDictModelProperties
+     *                  全局树型字典映射配置，复杂树（例如：表格）使用 @TreeField 局部结构配置）
      * @return 树列表信息
      * @see TreeField
+     * @see top.continew.starter.extension.crud.autoconfigure.CrudTreeDictModelProperties
      */
     List<Tree<Long>> tree(@Valid Q query, @Valid SortQuery sortQuery, boolean isSimple);
 
@@ -82,6 +84,7 @@ public interface CrudService<L, D, Q, C> {
      * @author lishuyan
      * @since 2.13.3
      * @see TreeField
+     * @see top.continew.starter.extension.crud.autoconfigure.CrudTreeDictModelProperties
      */
     List<Tree<Long>> tree(@Valid Q query, @Valid SortQuery sortQuery, boolean isSimple, boolean isSingleRoot);
 

@@ -75,7 +75,7 @@ public enum Api {
     DICT,
 
     /**
-     * 字典树列表（树型结构下拉选项等场景）
+     * 树型字典列表（树型结构下拉选项等场景）
      */
-    DICT_TREE
+    TREE_DICT
 }

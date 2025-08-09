@@ -44,7 +44,7 @@ import top.continew.starter.excel.util.ExcelUtils;
 import top.continew.starter.extension.crud.annotation.DictModel;
 import top.continew.starter.extension.crud.annotation.TreeField;
 import top.continew.starter.extension.crud.autoconfigure.CrudProperties;
-import top.continew.starter.extension.crud.autoconfigure.CrudTreeProperties;
+import top.continew.starter.extension.crud.autoconfigure.CrudTreeDictModelProperties;
 import top.continew.starter.extension.crud.model.entity.BaseIdDO;
 import top.continew.starter.extension.crud.model.query.PageQuery;
 import top.continew.starter.extension.crud.model.query.SortQuery;
@@ -103,16 +103,16 @@ public class CrudServiceImpl<M extends BaseMapper<T>, T extends BaseIdDO, L, D, 
             return CollUtil.newArrayList();
         }
         CrudProperties crudProperties = SpringUtil.getBean(CrudProperties.class);
-        CrudTreeProperties treeProperties = crudProperties.getTree();
+        CrudTreeDictModelProperties treeDictModel = crudProperties.getTreeDictModel();
         TreeField treeField = listClass.getDeclaredAnnotation(TreeField.class);
         TreeNodeConfig treeNodeConfig;
         Long rootId;
-        // 简单树（下拉列表）使用全局配置结构，复杂树（表格）使用局部配置
+        // 简单树（例如：下拉列表）使用 CrudTreeDictModelProperties 全局树型字典映射配置，复杂树（例如：表格）使用 @TreeField 局部结构配置
         if (isSimple) {
-            treeNodeConfig = treeProperties.genTreeNodeConfig();
-            rootId = treeProperties.getRootId();
+            treeNodeConfig = treeDictModel.genTreeNodeConfig();
+            rootId = treeDictModel.getRootId();
         } else {
-            treeNodeConfig = treeProperties.genTreeNodeConfig(treeField);
+            treeNodeConfig = treeDictModel.genTreeNodeConfig(treeField);
             rootId = treeField.rootId();
         }
         if (isSingleRoot) {

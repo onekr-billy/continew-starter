@@ -19,20 +19,21 @@ package top.continew.starter.extension.crud.autoconfigure;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import top.continew.starter.core.util.validation.CheckUtils;
 import top.continew.starter.extension.crud.annotation.TreeField;
+import top.continew.starter.extension.crud.model.query.SortQuery;
 
 /**
- * CRUD 树列表配置属性
+ * 树型字典结构映射配置属性
  *
  * <p>
- * 用于简单树场景，例如：树选择（下拉）
+ * 用于查询树型结构字典列表 API（树型结构下拉选项等场景）
  * </p>
  *
- * @see TreeField
+ * @see top.continew.starter.extension.crud.controller.AbstractCrudController#dictTree(Object, SortQuery)
  *
  * @author Charles7c
  * @since 2.7.2
  */
-public class CrudTreeProperties {
+public class CrudTreeDictModelProperties {
 
     /**
      * ID 字段名

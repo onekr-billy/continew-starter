@@ -19,6 +19,7 @@ package top.continew.starter.extension.crud.autoconfigure;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import top.continew.starter.core.constant.PropertiesConstants;
+import top.continew.starter.extension.crud.model.query.SortQuery;
 
 /**
  * CRUD 配置属性
@@ -30,17 +31,19 @@ import top.continew.starter.core.constant.PropertiesConstants;
 public class CrudProperties {
 
     /**
-     * 树配置
-     * <p>用于简单树场景，例如：树选择（下拉）</p>
+     * 树型字典结构映射配置
+     *
+     * @see top.continew.starter.extension.crud.controller.AbstractCrudController#dictTree(Object, SortQuery)
+     * @see top.continew.starter.extension.crud.service.CrudService#tree(Object, SortQuery, boolean)
      */
     @NestedConfigurationProperty
-    private CrudTreeProperties tree = new CrudTreeProperties();
+    private CrudTreeDictModelProperties treeDictModel = new CrudTreeDictModelProperties();
 
-    public CrudTreeProperties getTree() {
-        return tree;
+    public CrudTreeDictModelProperties getTreeDictModel() {
+        return treeDictModel;
     }
 
-    public void setTree(CrudTreeProperties tree) {
-        this.tree = tree;
+    public void setTreeDictModel(CrudTreeDictModelProperties treeDictModel) {
+        this.treeDictModel = treeDictModel;
     }
 }

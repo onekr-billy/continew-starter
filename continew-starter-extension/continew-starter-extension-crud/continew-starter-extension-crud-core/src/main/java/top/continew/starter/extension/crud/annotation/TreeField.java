@@ -16,19 +16,16 @@
 
 package top.continew.starter.extension.crud.annotation;
 
-import top.continew.starter.extension.crud.autoconfigure.CrudTreeProperties;
-
 import java.lang.annotation.*;
 
 /**
- * 树结构字段
+ * 树结构字段映射
  *
  * <p>
- * 用于复杂树场景，例如：表格
+ * 用于复杂树场景，例如：表格列表
  * </p>
  *
  * @see cn.hutool.core.lang.tree.TreeNodeConfig
- * @see CrudTreeProperties
  *
  * @author Charles7c
  * @since 1.0.0

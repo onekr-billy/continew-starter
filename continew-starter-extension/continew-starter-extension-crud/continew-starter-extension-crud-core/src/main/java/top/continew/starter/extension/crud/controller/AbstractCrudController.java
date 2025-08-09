@@ -204,16 +204,16 @@ public abstract class AbstractCrudController<S extends CrudService<L, D, Q, C>, 
     }
 
     /**
-     * 查询字典树列表
+     * 查询树型字典列表
      *
      * @param query     查询条件
      * @param sortQuery 排序查询条件
-     * @return 字典树列表信息
+     * @return 树型字典列表信息
      */
-    @CrudApi(Api.DICT_TREE)
-    @Operation(summary = "查询字典树列表", description = "查询树型结构字典列表（树型结构下拉选项等场景）")
+    @CrudApi(Api.TREE_DICT)
+    @Operation(summary = "查询树型字典列表", description = "查询树型结构字典列表（树型结构下拉选项等场景）")
     @GetMapping("/dict/tree")
-    public List<Tree<Long>> dictTree(@Valid Q query, @Valid SortQuery sortQuery) {
+    public List<Tree<Long>> treeDict(@Valid Q query, @Valid SortQuery sortQuery) {
         return baseService.tree(query, sortQuery, true);
     }
 }
