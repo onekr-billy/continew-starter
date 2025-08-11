@@ -16,8 +16,13 @@
 
 package top.continew.starter.security.crypto.util;
 
+import cn.hutool.core.codec.Base64;
 import cn.hutool.core.text.CharSequenceUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.crypto.SecureUtil;
+import cn.hutool.crypto.asymmetric.KeyType;
+import cn.hutool.crypto.asymmetric.RSA;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.continew.starter.security.crypto.annotation.FieldEncrypt;
@@ -27,6 +32,7 @@ import top.continew.starter.security.crypto.encryptor.IEncryptor;
 import top.continew.starter.security.crypto.enums.Algorithm;
 
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -216,5 +222,99 @@ public class EncryptHelper {
         cryptoContext.setPrivateKey(defaultProperties.getPrivateKey());
         cryptoContext.setPublicKey(defaultProperties.getPublicKey());
         return cryptoContext;
+    }
+
+    /**
+     * Base64编码
+     *
+     * @param data 待编码数据
+     * @return 编码后字符串
+     * @since 2.14.0
+     */
+    public static String encodeByBase64(String data) {
+        return Base64.encode(data, StandardCharsets.UTF_8);
+    }
+
+    /**
+     * Base64解码
+     *
+     * @param data 待解码数据
+     * @return 解码后字符串
+     * @since 2.14.0
+     */
+    public static String decodeByBase64(String data) {
+        return Base64.decodeStr(data, StandardCharsets.UTF_8);
+    }
+
+    /**
+     * AES加密
+     *
+     * @param data     待加密数据
+     * @param password 秘钥字符串
+     * @return 加密后字符串, 采用Base64编码
+     * @since 2.14.0
+     */
+    public static String encryptByAes(String data, String password) {
+        if (CharSequenceUtil.isBlank(password)) {
+            throw new IllegalArgumentException("AES需要传入秘钥信息");
+        }
+        // AES算法的秘钥要求是16位、24位、32位
+        int[] array = {16, 24, 32};
+        if (!ArrayUtil.contains(array, password.length())) {
+            throw new IllegalArgumentException("AES秘钥长度要求为16位、24位、32位");
+        }
+        return SecureUtil.aes(password.getBytes(StandardCharsets.UTF_8)).encryptBase64(data, StandardCharsets.UTF_8);
+    }
+
+    /**
+     * AES解密
+     *
+     * @param data     待解密数据
+     * @param password 秘钥字符串
+     * @return 解密后字符串
+     * @since 2.14.0
+     */
+    public static String decryptByAes(String data, String password) {
+        if (CharSequenceUtil.isBlank(password)) {
+            throw new IllegalArgumentException("AES需要传入秘钥信息");
+        }
+        // AES算法的秘钥要求是16位、24位、32位
+        int[] array = {16, 24, 32};
+        if (!ArrayUtil.contains(array, password.length())) {
+            throw new IllegalArgumentException("AES秘钥长度要求为16位、24位、32位");
+        }
+        return SecureUtil.aes(password.getBytes(StandardCharsets.UTF_8)).decryptStr(data, StandardCharsets.UTF_8);
+    }
+
+    /**
+     * RSA公钥加密
+     *
+     * @param data      待加密数据
+     * @param publicKey 公钥
+     * @return 加密后字符串, 采用Base64编码
+     * @since 2.14.0
+     */
+    public static String encryptByRsa(String data, String publicKey) {
+        if (CharSequenceUtil.isBlank(publicKey)) {
+            throw new IllegalArgumentException("RSA需要传入公钥进行加密");
+        }
+        RSA rsa = SecureUtil.rsa(null, publicKey);
+        return rsa.encryptBase64(data, StandardCharsets.UTF_8, KeyType.PublicKey);
+    }
+
+    /**
+     * RSA私钥解密
+     *
+     * @param data       待解密数据
+     * @param privateKey 私钥
+     * @return 解密后字符串
+     * @since 2.14.0
+     */
+    public static String decryptByRsa(String data, String privateKey) {
+        if (CharSequenceUtil.isBlank(privateKey)) {
+            throw new IllegalArgumentException("RSA需要传入私钥进行解密");
+        }
+        RSA rsa = SecureUtil.rsa(privateKey, null);
+        return rsa.decryptStr(data, KeyType.PrivateKey, StandardCharsets.UTF_8);
     }
 }

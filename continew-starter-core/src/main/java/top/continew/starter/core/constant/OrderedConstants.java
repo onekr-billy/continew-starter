@@ -32,6 +32,11 @@ public class OrderedConstants {
     public static final class Filter {
 
         /**
+         * API加/密过滤器顺序
+         */
+        public static final int API_CRYPTO_FILTER = Ordered.HIGHEST_PRECEDENCE;
+
+        /**
          * 链路追踪过滤器顺序
          */
         public static final int TRACE_FILTER = Ordered.HIGHEST_PRECEDENCE + 100;

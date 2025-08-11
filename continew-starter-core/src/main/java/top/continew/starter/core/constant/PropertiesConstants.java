@@ -55,9 +55,14 @@ public class PropertiesConstants {
     public static final String SECURITY = CONTINEW_STARTER + StringConstants.DOT + "security";
 
     /**
-     * 安全-加/解密配置
+     * 安全-数据加/解密配置
      */
     public static final String SECURITY_CRYPTO = SECURITY + StringConstants.DOT + "crypto";
+
+    /**
+     * 安全-API加/解密配置
+     */
+    public static final String SECURITY_API_CRYPTO = SECURITY + StringConstants.DOT + "api-crypto";
 
     /**
      * 安全-敏感词配置
