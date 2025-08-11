@@ -25,10 +25,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.PropertySource;
 import top.continew.starter.core.constant.OrderedConstants;
 import top.continew.starter.core.constant.PropertiesConstants;
-import top.continew.starter.core.util.GeneralPropertySourceFactory;
 import top.continew.starter.security.crypto.filter.ApiCryptoFilter;
 
 /**
@@ -40,7 +38,6 @@ import top.continew.starter.security.crypto.filter.ApiCryptoFilter;
 @AutoConfiguration
 @EnableConfigurationProperties(ApiCryptoProperties.class)
 @ConditionalOnProperty(prefix = PropertiesConstants.SECURITY_API_CRYPTO, name = PropertiesConstants.ENABLED, havingValue = "true", matchIfMissing = true)
-@PropertySource(value = "classpath:default-api-crypto.yml", factory = GeneralPropertySourceFactory.class)
 public class ApiCryptoAutoConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(ApiCryptoAutoConfiguration.class);

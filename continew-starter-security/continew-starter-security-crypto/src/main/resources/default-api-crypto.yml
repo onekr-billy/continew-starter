@@ -1,6 +1,0 @@
---- ### 安全配置：API加/解密配置
-continew-starter.security:
-  api-crypto:
-    enabled: true
-    # 请求头中 AES 密钥 键名
-    secretKeyHeader: X-Api-Crypto

@@ -33,7 +33,7 @@ public class JacksonExtensionProperties {
     /**
      * 大数值序列化模式
      */
-    private BigNumberSerializeMode bigNumberSerializeMode;
+    private BigNumberSerializeMode bigNumberSerializeMode = BigNumberSerializeMode.FLEXIBLE;
 
     public BigNumberSerializeMode getBigNumberSerializeMode() {
         return bigNumberSerializeMode;
