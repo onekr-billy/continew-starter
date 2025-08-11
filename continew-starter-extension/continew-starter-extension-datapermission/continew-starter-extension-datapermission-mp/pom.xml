@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>ContiNew Starter 扩展模块 - 数据权限 - MyBatis Plus ORM 模块</description>
+    <description>ContiNew Starter 扩展模块 - 数据权限 - MyBatis Plus ORM</description>
 
     <dependencies>
         <!-- 数据权限 - 核心模块 -->
@@ -22,7 +22,7 @@
             <artifactId>continew-starter-extension-datapermission-core</artifactId>
         </dependency>
 
-        <!-- 数据访问模块 - 核心模块-->
+        <!-- 数据访问模块 - 核心模块 -->
         <dependency>
             <groupId>top.continew.starter</groupId>
             <artifactId>continew-starter-data-core</artifactId>

@@ -13,5 +13,5 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>ContiNew Starter 安全模块 - XSS 过滤模块</description>
+    <description>ContiNew Starter 安全模块 - XSS 过滤</description>
 </project>

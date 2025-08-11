@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>ContiNew Starter 安全模块 - 敏感词模块</description>
+    <description>ContiNew Starter 安全模块 - 敏感词</description>
 
     <dependencies>
         <!-- Hutool DFA 模块（基于 DFA 的关键词查找） -->

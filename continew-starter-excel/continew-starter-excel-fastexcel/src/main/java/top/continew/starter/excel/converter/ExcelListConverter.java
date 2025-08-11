@@ -29,7 +29,7 @@ import top.continew.starter.core.constant.StringConstants;
 import java.util.List;
 
 /**
- * Easy Excel List 集合转换器
+ * Excel List 集合转换器
  *
  * <p>
  * 仅适合 List<基本类型> <=> xxx,xxx 转换

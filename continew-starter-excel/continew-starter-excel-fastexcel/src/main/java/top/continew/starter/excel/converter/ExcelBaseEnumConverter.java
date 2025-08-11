@@ -26,7 +26,7 @@ import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.enums.BaseEnum;
 
 /**
- * Easy Excel 枚举接口转换器
+ * Excel 枚举接口转换器
  *
  * @see BaseEnum
  *

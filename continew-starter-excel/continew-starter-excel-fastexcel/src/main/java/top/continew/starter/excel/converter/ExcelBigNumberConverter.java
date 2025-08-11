@@ -26,7 +26,7 @@ import cn.idev.excel.metadata.data.WriteCellData;
 import cn.idev.excel.metadata.property.ExcelContentProperty;
 
 /**
- * Easy Excel 大数值转换器
+ * Excel 大数值转换器
  * <p>
  * Excel 中对长度超过 15 位的数值输入是有限制的，从 16 位开始无论录入什么数字均会变为 0，因此输入时只能以文本的形式进行录入
  * </p>

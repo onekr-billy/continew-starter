@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>ContiNew Starter 扩展模块 - 租户 - MyBatis Plus ORM 模块</description>
+    <description>ContiNew Starter 扩展模块 - 租户 - MyBatis Plus ORM</description>
 
     <dependencies>
         <!-- 租户 - 核心模块 -->
