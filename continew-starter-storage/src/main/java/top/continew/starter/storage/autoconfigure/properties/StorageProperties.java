@@ -18,6 +18,8 @@ package top.continew.starter.storage.autoconfigure.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import top.continew.starter.core.constant.PropertiesConstants;
+import top.continew.starter.storage.common.constant.StorageConstant;
+import top.continew.starter.storage.common.enums.DefaultStorageSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +36,12 @@ public class StorageProperties {
     /**
      * 默认使用的存储平台
      */
-    private String defaultPlatform = "local";
+    private String defaultPlatform = StorageConstant.DEFAULT_STORAGE_PLATFORM;
+
+    /**
+     * 默认存储配置来源 (配置文件/动态配置)
+     */
+    private DefaultStorageSource defaultStorageSource = DefaultStorageSource.DYNAMIC;
 
     /**
      * 本地存储配置列表
@@ -42,9 +49,9 @@ public class StorageProperties {
     private List<LocalStorageConfig> local = new ArrayList<>();
 
     /**
-     * S3 存储配置列表
+     * oss 存储配置列表
      */
-    private List<S3StorageConfig> s3 = new ArrayList<>();
+    private List<OssStorageConfig> oss = new ArrayList<>();
 
     public String getDefaultPlatform() {
         return defaultPlatform;
@@ -52,6 +59,14 @@ public class StorageProperties {
 
     public void setDefaultPlatform(String defaultPlatform) {
         this.defaultPlatform = defaultPlatform;
+    }
+
+    public DefaultStorageSource getDefaultStorageSource() {
+        return defaultStorageSource;
+    }
+
+    public void setDefaultStorageSource(DefaultStorageSource defaultStorageSource) {
+        this.defaultStorageSource = defaultStorageSource;
     }
 
     public List<LocalStorageConfig> getLocal() {
@@ -62,11 +77,11 @@ public class StorageProperties {
         this.local = local;
     }
 
-    public List<S3StorageConfig> getS3() {
-        return s3;
+    public List<OssStorageConfig> getOss() {
+        return oss;
     }
 
-    public void setS3(List<S3StorageConfig> s3) {
-        this.s3 = s3;
+    public void setOss(List<OssStorageConfig> oss) {
+        this.oss = oss;
     }
 }

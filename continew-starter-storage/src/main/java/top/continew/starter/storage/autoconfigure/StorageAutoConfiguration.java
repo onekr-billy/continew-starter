@@ -19,29 +19,29 @@ package top.continew.starter.storage.autoconfigure;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.web.servlet.MultipartProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import top.continew.starter.storage.annotation.PlatformProcessor;
 import top.continew.starter.storage.autoconfigure.properties.StorageProperties;
 import top.continew.starter.storage.core.FileStorageService;
-import top.continew.starter.storage.core.ProcessorRegistry;
-import top.continew.starter.storage.core.StrategyProxyFactory;
-import top.continew.starter.storage.prehandle.*;
-import top.continew.starter.storage.prehandle.impl.*;
-import top.continew.starter.storage.router.StorageStrategyRegistrar;
-import top.continew.starter.storage.router.StorageStrategyRouter;
+import top.continew.starter.storage.engine.StorageDecoratorManager;
+import top.continew.starter.storage.processor.registry.ProcessorRegistry;
+import top.continew.starter.storage.processor.preprocess.*;
+import top.continew.starter.storage.processor.preprocess.impl.*;
+import top.continew.starter.storage.engine.StorageStrategyRegistrar;
+import top.continew.starter.storage.engine.StorageStrategyRouter;
+import top.continew.starter.storage.service.FileProcessor;
 import top.continew.starter.storage.service.FileRecorder;
 import top.continew.starter.storage.service.impl.DefaultFileRecorder;
-import top.continew.starter.storage.strategy.StorageStrategyOverride;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 存储自动配置
@@ -51,15 +51,17 @@ import java.util.List;
  */
 @AutoConfiguration
 @EnableConfigurationProperties(StorageProperties.class)
-@Import({ProcessorRegistry.class, StrategyProxyFactory.class})
+@Import({ProcessorRegistry.class})
 public class StorageAutoConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(StorageAutoConfiguration.class);
 
     private final StorageProperties properties;
+    private final ApplicationContext applicationContext;
 
-    public StorageAutoConfiguration(StorageProperties properties) {
+    public StorageAutoConfiguration(StorageProperties properties, ApplicationContext applicationContext) {
         this.properties = properties;
+        this.applicationContext = applicationContext;
     }
 
     /**
@@ -70,17 +72,27 @@ public class StorageAutoConfiguration {
      */
     @Bean
     public StorageStrategyRouter strategyRouter(List<StorageStrategyRegistrar> registrars) {
-        return new StorageStrategyRouter(registrars);
+        return new StorageStrategyRouter(registrars, properties, storageDecoratorManager());
     }
 
     /**
-     * S3存储自动配置
+     * 存储装饰器管理器
      *
-     * @return {@link S3StorageAutoConfiguration }
+     * @return {@link StorageDecoratorManager }
      */
     @Bean
-    public S3StorageAutoConfiguration s3StorageAutoConfiguration() {
-        return new S3StorageAutoConfiguration(properties);
+    public StorageDecoratorManager storageDecoratorManager() {
+        return new StorageDecoratorManager(applicationContext);
+    }
+
+    /**
+     * oss存储自动配置
+     *
+     * @return {@link OssStorageAutoConfiguration }
+     */
+    @Bean
+    public OssStorageAutoConfiguration ossStorageAutoConfiguration() {
+        return new OssStorageAutoConfiguration(properties);
     }
 
     /**
@@ -99,16 +111,15 @@ public class StorageAutoConfiguration {
      * @param router            路由
      * @param storageProperties 存储属性
      * @param processorRegistry 处理器注册表
-     * @param proxyFactory      代理工厂
+     * @param fileRecorder      文件记录器
      * @return {@link FileStorageService }
      */
     @Bean
     public FileStorageService fileStorageService(StorageStrategyRouter router,
                                                  StorageProperties storageProperties,
                                                  ProcessorRegistry processorRegistry,
-                                                 StrategyProxyFactory proxyFactory,
                                                  FileRecorder fileRecorder) {
-        return new FileStorageService(router, storageProperties, processorRegistry, proxyFactory, fileRecorder);
+        return new FileStorageService(router, storageProperties, processorRegistry, fileRecorder);
     }
 
     /**
@@ -123,124 +134,73 @@ public class StorageAutoConfiguration {
     }
 
     /**
-     * 默认文件名生成器
-     *
-     * @param registry 登记处
-     * @return {@link FileNameGenerator }
+     * 处理器注册中心
      */
     @Bean
-    @ConditionalOnMissingBean(name = "defaultFileNameGenerator")
-    public FileNameGenerator defaultFileNameGenerator(ProcessorRegistry registry) {
-        DefaultFileNameGenerator generator = new DefaultFileNameGenerator();
-        registry.registerGlobalNameGenerator(generator);
-        return generator;
+    public ProcessorRegistry processorRegistry() {
+        ProcessorRegistry registry = new ProcessorRegistry();
+
+        // 自动发现并注册所有 FileProcessor 实现
+        Map<String, FileProcessor> processors = applicationContext.getBeansOfType(FileProcessor.class);
+        processors.values().forEach(processor -> {
+            // 检查是否有平台注解
+            PlatformProcessor annotation = processor.getClass().getAnnotation(PlatformProcessor.class);
+            if (annotation != null) {
+                for (String platform : annotation.platforms()) {
+                    registry.register(processor, platform);
+                }
+            } else {
+                // 注册为全局处理器
+                registry.register(processor);
+            }
+        });
+        return registry;
     }
 
     /**
-     * 默认文件路径生成器
-     *
-     * @param registry 注册
-     * @return {@link FilePathGenerator }
+     * 默认文件名生成器
      */
     @Bean
-    @ConditionalOnMissingBean(name = "defaultFilePathGenerator")
-    public FilePathGenerator defaultFilePathGenerator(ProcessorRegistry registry) {
-        DefaultFilePathGenerator generator = new DefaultFilePathGenerator();
-        registry.registerGlobalPathGenerator(generator);
-        return generator;
+    @ConditionalOnMissingBean(FileNameGenerator.class)
+    public FileNameGenerator defaultFileNameGenerator() {
+        return new DefaultFileNameGenerator();
+    }
+
+    /**
+     * 默认路径生成器
+     */
+    @Bean
+    @ConditionalOnMissingBean(FilePathGenerator.class)
+    public FilePathGenerator defaultFilePathGenerator() {
+        return new DefaultFilePathGenerator();
     }
 
     /**
      * 默认缩略图处理器
-     *
-     * @param registry 注册
-     * @return {@link ThumbnailProcessor }
      */
     @Bean
-    @ConditionalOnMissingBean(name = "defaultThumbnailProcessor")
+    @ConditionalOnMissingBean(ThumbnailProcessor.class)
     @ConditionalOnClass(name = "net.coobird.thumbnailator.Thumbnails")
-    public ThumbnailProcessor defaultThumbnailProcessor(ProcessorRegistry registry) {
-        DefaultThumbnailProcessor processor = new DefaultThumbnailProcessor();
-        registry.registerGlobalThumbnailProcessor(processor);
-        return processor;
+    public ThumbnailProcessor defaultThumbnailProcessor() {
+        return new DefaultThumbnailProcessor();
     }
 
     /**
      * 文件大小验证器
-     *
-     * @param registry 注册
-     * @return {@link FileValidator }
      */
     @Bean
     @ConditionalOnMissingBean(name = "fileSizeValidator")
-    public FileValidator fileSizeValidator(ProcessorRegistry registry, MultipartProperties multipartProperties) {
-        FileSizeValidator validator = new FileSizeValidator(multipartProperties);
-        registry.registerGlobalValidator(validator);
-        return validator;
+    public FileValidator fileSizeValidator(MultipartProperties multipartProperties) {
+        return new FileSizeValidator(multipartProperties);
     }
 
     /**
      * 文件类型验证器
-     *
-     * @param registry 注册
-     * @return {@link FileValidator }
      */
     @Bean
     @ConditionalOnMissingBean(name = "fileTypeValidator")
-    public FileValidator fileTypeValidator(ProcessorRegistry registry) {
-        FileTypeValidator validator = new FileTypeValidator();
-        registry.registerGlobalValidator(validator);
-        return validator;
-    }
-
-    /**
-     * 策略重写自动注册
-     */
-    @Configuration
-    @ConditionalOnBean(StorageStrategyOverride.class)
-    public static class StrategyOverrideConfiguration {
-
-        /**
-         * 注册覆盖
-         */
-        @Autowired
-        public void registerOverrides(List<StorageStrategyOverride<?>> overrides, StrategyProxyFactory proxyFactory) {
-            for (StorageStrategyOverride<?> override : overrides) {
-                proxyFactory.registerOverride(override);
-            }
-        }
-    }
-
-    /**
-     * 处理器自动注册
-     */
-    @Configuration
-    public static class ProcessorAutoConfiguration {
-        @Autowired(required = false)
-        public void registerGlobalProcessors(List<FileNameGenerator> nameGenerators,
-                                             List<FilePathGenerator> pathGenerators,
-                                             List<ThumbnailProcessor> thumbnailProcessors,
-                                             List<FileValidator> validators,
-                                             List<UploadCompleteProcessor> completeProcessors,
-                                             ProcessorRegistry registry) {
-
-            // 注册全局处理器
-            if (nameGenerators != null) {
-                nameGenerators.forEach(registry::registerGlobalNameGenerator);
-            }
-            if (pathGenerators != null) {
-                pathGenerators.forEach(registry::registerGlobalPathGenerator);
-            }
-            if (thumbnailProcessors != null) {
-                thumbnailProcessors.forEach(registry::registerGlobalThumbnailProcessor);
-            }
-            if (validators != null) {
-                validators.forEach(registry::registerGlobalValidator);
-            }
-            if (completeProcessors != null) {
-                completeProcessors.forEach(registry::registerGlobalCompleteProcessor);
-            }
-        }
+    public FileValidator fileTypeValidator() {
+        return new FileTypeValidator();
     }
 
     @PostConstruct

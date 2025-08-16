@@ -19,40 +19,40 @@ package top.continew.starter.storage.autoconfigure;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import top.continew.starter.core.constant.PropertiesConstants;
-import top.continew.starter.storage.autoconfigure.properties.LocalStorageConfig;
+import top.continew.starter.storage.autoconfigure.properties.OssStorageConfig;
 import top.continew.starter.storage.autoconfigure.properties.StorageProperties;
 import top.continew.starter.storage.engine.StorageStrategyRegistrar;
 import top.continew.starter.storage.strategy.StorageStrategy;
-import top.continew.starter.storage.strategy.impl.LocalStorageStrategy;
+import top.continew.starter.storage.strategy.impl.OssStorageStrategy;
 
 import java.util.List;
 
 /**
- * 本地存储自动配置
+ * s3存储自动配置
  *
  * @author echo
  * @since 2.14.0
  */
-@ConditionalOnProperty(prefix = PropertiesConstants.STORAGE, name = "local")
-public class LocalStorageAutoConfiguration implements StorageStrategyRegistrar {
+@ConditionalOnProperty(prefix = PropertiesConstants.STORAGE, name = "oss")
+public class OssStorageAutoConfiguration implements StorageStrategyRegistrar {
 
-    private final StorageProperties storageProperties;
+    private final StorageProperties properties;
 
-    public LocalStorageAutoConfiguration(StorageProperties storageProperties) {
-        this.storageProperties = storageProperties;
+    public OssStorageAutoConfiguration(StorageProperties properties) {
+        this.properties = properties;
     }
 
     /**
-     * 注册本地存储策略
+     * 注册 OSS 存储策略
      *
      * @param strategies 策略列表
      */
-    @Bean
     @Override
+    @Bean
     public void register(List<StorageStrategy> strategies) {
-        for (LocalStorageConfig config : storageProperties.getLocal()) {
+        for (OssStorageConfig config : properties.getOss()) {
             if (config.isEnabled()) {
-                strategies.add(new LocalStorageStrategy(config));
+                strategies.add(new OssStorageStrategy(config));
             }
         }
     }

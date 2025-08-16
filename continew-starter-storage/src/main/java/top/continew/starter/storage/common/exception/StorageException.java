@@ -14,39 +14,35 @@
  * limitations under the License.
  */
 
-package top.continew.starter.storage.service;
+package top.continew.starter.storage.common.exception;
 
-import top.continew.starter.storage.domain.model.context.UploadContext;
+import top.continew.starter.core.exception.BaseException;
+
+import java.io.Serial;
 
 /**
- * 文件处理器接口
+ * 存储异常
  *
  * @author echo
  * @since 2.14.0
  */
-public interface FileProcessor {
+public class StorageException extends BaseException {
 
-    /**
-     * 获取处理器名称
-     * 
-     * @return 处理器名称
-     */
-    String getName();
+    @Serial
+    private static final long serialVersionUID = 1L;
 
-    /**
-     * 获取处理器优先级（数值越大优先级越高）
-     * 
-     * @return 优先级
-     */
-    default int getOrder() {
-        return 0;
+    public StorageException() {
     }
 
-    /**
-     * 是否支持该文件
-     * 
-     * @param context 上传上下文
-     * @return 是否支持
-     */
-    boolean support(UploadContext context);
+    public StorageException(String message) {
+        super(message);
+    }
+
+    public StorageException(Throwable cause) {
+        super(cause);
+    }
+
+    public StorageException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

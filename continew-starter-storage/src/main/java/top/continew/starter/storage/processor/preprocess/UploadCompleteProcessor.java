@@ -14,39 +14,23 @@
  * limitations under the License.
  */
 
-package top.continew.starter.storage.service;
+package top.continew.starter.storage.processor.preprocess;
 
-import top.continew.starter.storage.domain.model.context.UploadContext;
+import top.continew.starter.storage.domain.model.resp.FileInfo;
+import top.continew.starter.storage.service.FileProcessor;
 
 /**
- * 文件处理器接口
+ * 上传完成处理器
  *
  * @author echo
  * @since 2.14.0
  */
-public interface FileProcessor {
+public interface UploadCompleteProcessor extends FileProcessor {
 
     /**
-     * 获取处理器名称
+     * 处理上传完成事件
      * 
-     * @return 处理器名称
+     * @param fileInfo 文件信息
      */
-    String getName();
-
-    /**
-     * 获取处理器优先级（数值越大优先级越高）
-     * 
-     * @return 优先级
-     */
-    default int getOrder() {
-        return 0;
-    }
-
-    /**
-     * 是否支持该文件
-     * 
-     * @param context 上传上下文
-     * @return 是否支持
-     */
-    boolean support(UploadContext context);
+    void onComplete(FileInfo fileInfo);
 }

@@ -17,17 +17,16 @@
 package top.continew.starter.storage.core;
 
 import org.springframework.web.multipart.MultipartFile;
-import top.continew.starter.storage.model.context.UploadContext;
-import top.continew.starter.storage.model.req.MockMultipartFile;
-import top.continew.starter.storage.model.req.ThumbnailInfo;
-import top.continew.starter.storage.model.req.ThumbnailSize;
-import top.continew.starter.storage.model.resp.FileInfo;
-import top.continew.starter.storage.prehandle.*;
-import top.continew.starter.storage.util.StorageUtils;
+import top.continew.starter.storage.domain.model.context.UploadContext;
+import top.continew.starter.storage.domain.model.req.ThumbnailSize;
+import top.continew.starter.storage.domain.model.resp.FileInfo;
+import top.continew.starter.storage.processor.preprocess.*;
+import top.continew.starter.storage.processor.progress.UploadProgressListener;
+import top.continew.starter.storage.service.FileProcessor;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * 上传预处理器，支持链式调用
@@ -39,257 +38,125 @@ public class UploadPretreatment {
 
     private final FileStorageService storageService;
     private final UploadContext context;
-    private final List<FileValidator> validators = new ArrayList<>();
-    private FileNameGenerator nameGenerator;
-    private FilePathGenerator pathGenerator;
-    private ThumbnailProcessor thumbnailProcessor;
-    private final List<UploadCompleteProcessor> completeProcessors = new ArrayList<>();
+    private UploadProgressListener progressListener;
+    private final List<FileProcessor> processors = new ArrayList<>();
 
     public UploadPretreatment(FileStorageService storageService, MultipartFile file) {
         this.storageService = storageService;
         this.context = new UploadContext();
         this.context.setFile(file);
-        // 设置默认平台
         this.context.setPlatform(storageService.getDefaultPlatform());
     }
 
     /**
-     * 设置存储平台
+     * 设置平台
      *
-     * @param platform 站台
+     * @param platform 平台
      * @return {@link UploadPretreatment }
      */
-    public UploadPretreatment setPlatform(String platform) {
+    public UploadPretreatment platform(String platform) {
         context.setPlatform(platform);
         return this;
     }
 
     /**
-     * 设置桶
+     * 设置存储桶
      *
-     * @param bucket 桶
+     * @param bucket 存储桶
      * @return {@link UploadPretreatment }
      */
-    public UploadPretreatment setBucket(String bucket) {
+    public UploadPretreatment bucket(String bucket) {
         context.setBucket(bucket);
         return this;
     }
 
     /**
      * 设置路径
+     *
+     * @param path 路径
+     * @return {@link UploadPretreatment }
      */
-    public UploadPretreatment setPath(String path) {
+    public UploadPretreatment path(String path) {
         context.setPath(path);
         return this;
     }
 
     /**
-     * 设置文件名
+     * 格式化文件名 - 不传则使用全局格式化
+     *
+     * @param fileName 文件名
+     * @return {@link UploadPretreatment }
      */
-    public UploadPretreatment setFileName(String fileName) {
-        context.setFileName(fileName);
+    public UploadPretreatment fileName(String fileName) {
+        context.setFormatFileName(fileName);
         return this;
     }
 
     /**
      * 添加元数据
      */
-    public UploadPretreatment addMetadata(String key, String value) {
+    public UploadPretreatment metadata(String key, String value) {
         context.getMetadata().put(key, value);
         return this;
     }
 
     /**
-     * 添加扩展属性
+     * 添加处理器
+     *
+     * @param processor 处理器
+     * @return {@link UploadPretreatment }
      */
-    public UploadPretreatment addAttribute(String key, Object value) {
-        context.getAttributes().put(key, value);
+    public UploadPretreatment processor(FileProcessor processor) {
+        processors.add(processor);
         return this;
     }
 
     /**
-     * 启用缩略图
+     * 设置缩略图
+     *
+     * @param width  宽度
+     * @param height 高度
+     * @return {@link UploadPretreatment }
      */
-    public UploadPretreatment enableThumbnail(int width, int height) {
+    public UploadPretreatment thumbnail(int width, int height) {
         context.setGenerateThumbnail(true);
         context.setThumbnailSize(new ThumbnailSize(width, height));
         return this;
     }
 
     /**
-     * 添加验证器
+     * 设置进度监听器
      */
-    public UploadPretreatment addValidator(FileValidator validator) {
-        validators.add(validator);
+    public UploadPretreatment onProgress(UploadProgressListener listener) {
+        this.progressListener = listener;
         return this;
     }
 
     /**
-     * 设置文件名生成器
+     * 设置简单的进度监听（只关心百分比）
      */
-    public UploadPretreatment setNameGenerator(FileNameGenerator generator) {
-        this.nameGenerator = generator;
-        return this;
-    }
-
-    public UploadPretreatment setPathGenerator(FilePathGenerator generator) {
-        this.pathGenerator = generator;
-        return this;
-    }
-
-    /**
-     * 设置缩略图处理器
-     */
-    public UploadPretreatment setThumbnailProcessor(ThumbnailProcessor processor) {
-        this.thumbnailProcessor = processor;
-        return this;
-    }
-
-    /**
-     * 添加上传完成处理器
-     */
-    public UploadPretreatment addCompleteProcessor(UploadCompleteProcessor processor) {
-        completeProcessors.add(processor);
+    public UploadPretreatment onProgress(Consumer<Integer> progressConsumer) {
+        this.progressListener = (bytesRead, totalBytes, percentage) -> progressConsumer.accept(percentage);
         return this;
     }
 
     /**
      * 执行上传
+     *
+     * @return {@link FileInfo }
      */
     public FileInfo upload() {
-        // 应用处理器
-        applyProcessors();
-
-        // 执行验证
-        validate();
-
-        // 生成默认存储桶（如果未设置）
-        if (context.getBucket() == null || context.getBucket().trim().isEmpty()) {
-            context.setBucket(generateDefaultBucket());
+        for (FileProcessor processor : processors) {
+            storageService.addProcessor(processor);
         }
 
-        // 生成文件名
-        if (context.getFileName() == null) {
-            context.setFileName(generateFileName());
-        }
-
-        // 生成文件路径
-        if (context.getPath() == null) {
-            context.setPath(generateFilePath());
+        // 设置进度监听器
+        if (progressListener != null) {
+            storageService.onProgress(progressListener);
         }
 
         // 执行上传
-        FileInfo fileInfo = storageService.doUpload(context);
-
-        // 处理缩略图
-        if (context.isGenerateThumbnail()) {
-            processThumbnail(fileInfo);
-        }
-
-        // 触发完成事件
-        triggerCompleteEvent(fileInfo);
-
-        return fileInfo;
-    }
-
-    /**
-     * 应用处理器
-     */
-    private void applyProcessors() {
-        // 从存储服务获取全局处理器
-        ProcessorRegistry registry = storageService.getProcessorRegistry();
-
-        // 合并处理器：自定义 > 平台 > 全局
-        if (nameGenerator == null) {
-            nameGenerator = registry.getNameGenerator(context.getPlatform());
-        }
-
-        if (pathGenerator == null) {
-            pathGenerator = registry.getPathGenerator(context.getPlatform());
-        }
-
-        if (thumbnailProcessor == null && context.isGenerateThumbnail()) {
-            thumbnailProcessor = registry.getThumbnailProcessor(context.getPlatform());
-        }
-
-        // 合并验证器
-        validators.addAll(0, registry.getValidators(context.getPlatform()));
-
-        // 合并完成处理器
-        completeProcessors.addAll(0, registry.getCompleteProcessors(context.getPlatform()));
-    }
-
-    /**
-     * 执行验证
-     */
-    private void validate() {
-        for (FileValidator validator : validators) {
-            if (validator.support(context)) {
-                validator.validate(context);
-            }
-        }
-    }
-
-    /**
-     * 生成文件名
-     */
-    private String generateFileName() {
-        if (nameGenerator != null && nameGenerator.support(context)) {
-            return nameGenerator.generate(context);
-        }
-        return StorageUtils.generateFileName(context.getFile().getOriginalFilename());
-    }
-
-    private String generateFilePath() {
-        if (pathGenerator != null && pathGenerator.support(context)) {
-            return pathGenerator.path(context);
-        }
-        // 默认使用时间戳
-        return StorageUtils.generatePath();
-    }
-
-    /**
-     * 生成默认存储桶
-     */
-    private String generateDefaultBucket() {
-        return storageService.getDefaultBucket(context.getPlatform());
-    }
-
-    /**
-     * 处理缩略图
-     *
-     * @param fileInfo 文件信息
-     */
-    private void processThumbnail(FileInfo fileInfo) {
-        if (thumbnailProcessor != null && thumbnailProcessor.support(context)) {
-            try (InputStream is = storageService.download(context.getPlatform(), fileInfo.getPath())) {
-                ThumbnailInfo thumbnailInfo = thumbnailProcessor.process(context, is);
-                // 上传缩略图
-                String thumbnailPath = fileInfo.getPath() + "_thumb." + thumbnailInfo.getFormat();
-                // 创建模拟的文件信息
-                MockMultipartFile thumbnailFile = new MockMultipartFile("thumbnail", "thumbnail." + thumbnailInfo
-                    .getFormat(), "image/" + thumbnailInfo.getFormat(), thumbnailInfo.getData());
-
-                storageService.upload(context.getPlatform(), context.getBucket(), thumbnailPath, thumbnailFile);
-                fileInfo.setThumbnailPath(thumbnailPath);
-            } catch (Exception e) {
-
-            }
-        }
-    }
-
-    /**
-     * 触发完成事件
-     */
-    private void triggerCompleteEvent(FileInfo fileInfo) {
-        for (UploadCompleteProcessor processor : completeProcessors) {
-            if (processor.support(context)) {
-                try {
-                    processor.onComplete(fileInfo);
-                } catch (Exception e) {
-                }
-            }
-        }
+        return storageService.upload(context);
     }
 
 }

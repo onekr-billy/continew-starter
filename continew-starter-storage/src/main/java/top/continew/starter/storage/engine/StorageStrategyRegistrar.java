@@ -14,39 +14,26 @@
  * limitations under the License.
  */
 
-package top.continew.starter.storage.service;
+package top.continew.starter.storage.engine;
 
-import top.continew.starter.storage.domain.model.context.UploadContext;
+import top.continew.starter.storage.strategy.StorageStrategy;
+
+import java.util.List;
 
 /**
- * 文件处理器接口
+ * 存储策略注册
+ * <p>
+ * 主要针对配置文件
+ * <p/>
  *
  * @author echo
  * @since 2.14.0
  */
-public interface FileProcessor {
+public interface StorageStrategyRegistrar {
 
     /**
-     * 获取处理器名称
-     * 
-     * @return 处理器名称
+     * 注册策略到列表
      */
-    String getName();
+    void register(List<StorageStrategy> strategies);
 
-    /**
-     * 获取处理器优先级（数值越大优先级越高）
-     * 
-     * @return 优先级
-     */
-    default int getOrder() {
-        return 0;
-    }
-
-    /**
-     * 是否支持该文件
-     * 
-     * @param context 上传上下文
-     * @return 是否支持
-     */
-    boolean support(UploadContext context);
 }

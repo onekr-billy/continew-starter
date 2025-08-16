@@ -14,39 +14,40 @@
  * limitations under the License.
  */
 
-package top.continew.starter.storage.service;
-
-import top.continew.starter.storage.domain.model.context.UploadContext;
+package top.continew.starter.storage.processor.progress;
 
 /**
- * 文件处理器接口
+ * 上传进度监听器
  *
  * @author echo
  * @since 2.14.0
- */
-public interface FileProcessor {
+ **/
+public interface UploadProgressListener {
 
     /**
-     * 获取处理器名称
-     * 
-     * @return 处理器名称
+     * 进度更新回调
+     *
+     * @param bytesRead  已读取字节数
+     * @param totalBytes 总字节数（-1表示未知）
+     * @param percentage 百分比（0-100）
      */
-    String getName();
+    void onProgress(long bytesRead, long totalBytes, int percentage);
 
     /**
-     * 获取处理器优先级（数值越大优先级越高）
-     * 
-     * @return 优先级
+     * 上传开始
      */
-    default int getOrder() {
-        return 0;
+    default void onStart() {
     }
 
     /**
-     * 是否支持该文件
-     * 
-     * @param context 上传上下文
-     * @return 是否支持
+     * 上传完成
      */
-    boolean support(UploadContext context);
+    default void onComplete() {
+    }
+
+    /**
+     * 上传失败
+     */
+    default void onError(Exception e) {
+    }
 }

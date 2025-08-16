@@ -24,10 +24,10 @@ import org.springframework.web.multipart.MultipartFile;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.SpringWebUtils;
 import top.continew.starter.storage.autoconfigure.properties.LocalStorageConfig;
-import top.continew.starter.storage.exception.StorageException;
-import top.continew.starter.storage.model.resp.FileInfo;
-import top.continew.starter.storage.model.resp.MultipartInitResp;
-import top.continew.starter.storage.model.resp.MultipartUploadResp;
+import top.continew.starter.storage.common.exception.StorageException;
+import top.continew.starter.storage.domain.model.resp.FileInfo;
+import top.continew.starter.storage.domain.model.resp.MultipartInitResp;
+import top.continew.starter.storage.domain.model.resp.MultipartUploadResp;
 import top.continew.starter.storage.strategy.StorageStrategy;
 
 import java.io.File;

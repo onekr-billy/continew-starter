@@ -14,39 +14,24 @@
  * limitations under the License.
  */
 
-package top.continew.starter.storage.service;
+package top.continew.starter.storage.processor.preprocess;
 
 import top.continew.starter.storage.domain.model.context.UploadContext;
+import top.continew.starter.storage.service.FileProcessor;
 
 /**
- * 文件处理器接口
+ * 文件名生成器
  *
  * @author echo
  * @since 2.14.0
  */
-public interface FileProcessor {
+public interface FileNameGenerator extends FileProcessor {
 
     /**
-     * 获取处理器名称
-     * 
-     * @return 处理器名称
-     */
-    String getName();
-
-    /**
-     * 获取处理器优先级（数值越大优先级越高）
-     * 
-     * @return 优先级
-     */
-    default int getOrder() {
-        return 0;
-    }
-
-    /**
-     * 是否支持该文件
+     * 生成文件名
      * 
      * @param context 上传上下文
-     * @return 是否支持
+     * @return 生成的文件名
      */
-    boolean support(UploadContext context);
+    String generate(UploadContext context);
 }

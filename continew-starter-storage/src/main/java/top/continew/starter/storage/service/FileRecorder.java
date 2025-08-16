@@ -16,8 +16,8 @@
 
 package top.continew.starter.storage.service;
 
-import top.continew.starter.storage.model.resp.FileInfo;
-import top.continew.starter.storage.model.resp.FilePartInfo;
+import top.continew.starter.storage.domain.model.resp.FileInfo;
+import top.continew.starter.storage.domain.model.resp.FilePartInfo;
 
 import java.util.List;
 

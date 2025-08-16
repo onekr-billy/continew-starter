@@ -17,9 +17,9 @@
 package top.continew.starter.storage.strategy;
 
 import org.springframework.web.multipart.MultipartFile;
-import top.continew.starter.storage.model.resp.FileInfo;
-import top.continew.starter.storage.model.resp.MultipartInitResp;
-import top.continew.starter.storage.model.resp.MultipartUploadResp;
+import top.continew.starter.storage.domain.model.resp.FileInfo;
+import top.continew.starter.storage.domain.model.resp.MultipartInitResp;
+import top.continew.starter.storage.domain.model.resp.MultipartUploadResp;
 
 import java.io.InputStream;
 import java.util.List;

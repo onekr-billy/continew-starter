@@ -30,13 +30,13 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 import top.continew.starter.core.constant.StringConstants;
-import top.continew.starter.storage.autoconfigure.properties.S3StorageConfig;
-import top.continew.starter.storage.exception.StorageException;
-import top.continew.starter.storage.model.resp.FileInfo;
-import top.continew.starter.storage.model.resp.MultipartInitResp;
-import top.continew.starter.storage.model.resp.MultipartUploadResp;
+import top.continew.starter.storage.autoconfigure.properties.OssStorageConfig;
+import top.continew.starter.storage.common.exception.StorageException;
+import top.continew.starter.storage.domain.model.resp.FileInfo;
+import top.continew.starter.storage.domain.model.resp.MultipartInitResp;
+import top.continew.starter.storage.domain.model.resp.MultipartUploadResp;
 import top.continew.starter.storage.strategy.StorageStrategy;
-import top.continew.starter.storage.util.StorageUtils;
+import top.continew.starter.storage.common.util.StorageUtils;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -57,9 +57,9 @@ public class OssStorageStrategy implements StorageStrategy {
 
     private final S3Client s3Client;
     private final S3Presigner s3Presigner;
-    private final S3StorageConfig config;
+    private final OssStorageConfig config;
 
-    public OssStorageStrategy(S3StorageConfig config) {
+    public OssStorageStrategy(OssStorageConfig config) {
         this.config = config;
         this.s3Client = createS3Client(config);
         this.s3Presigner = createS3Presigner(config);
@@ -89,7 +89,7 @@ public class OssStorageStrategy implements StorageStrategy {
      * @param config 配置
      * @return {@link S3Client }
      */
-    private S3Client createS3Client(S3StorageConfig config) {
+    private S3Client createS3Client(OssStorageConfig config) {
         // 登录认证账户密码
         StaticCredentialsProvider auth = StaticCredentialsProvider.create(AwsBasicCredentials.create(config
             .getAccessKey(), config.getSecretKey()));
@@ -107,7 +107,7 @@ public class OssStorageStrategy implements StorageStrategy {
      * @param config 配置
      * @return {@link S3Presigner }
      */
-    private S3Presigner createS3Presigner(S3StorageConfig config) {
+    private S3Presigner createS3Presigner(OssStorageConfig config) {
         StaticCredentialsProvider auth = StaticCredentialsProvider.create(AwsBasicCredentials.create(config
             .getAccessKey(), config.getSecretKey()));
 

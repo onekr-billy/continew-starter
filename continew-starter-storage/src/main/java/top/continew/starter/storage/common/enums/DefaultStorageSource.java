@@ -14,39 +14,25 @@
  * limitations under the License.
  */
 
-package top.continew.starter.storage.service;
-
-import top.continew.starter.storage.domain.model.context.UploadContext;
+package top.continew.starter.storage.common.enums;
 
 /**
- * 文件处理器接口
+ * 默认存储配置来源
+ * 决定默认存储平台配置从哪里加载
  *
  * @author echo
  * @since 2.14.0
  */
-public interface FileProcessor {
+public enum DefaultStorageSource {
 
     /**
-     * 获取处理器名称
-     * 
-     * @return 处理器名称
+     * 从配置文件加载默认存储
      */
-    String getName();
+    CONFIG,
 
     /**
-     * 获取处理器优先级（数值越大优先级越高）
-     * 
-     * @return 优先级
+     * 从动态配置加载默认存储
      */
-    default int getOrder() {
-        return 0;
-    }
+    DYNAMIC,
 
-    /**
-     * 是否支持该文件
-     * 
-     * @param context 上传上下文
-     * @return 是否支持
-     */
-    boolean support(UploadContext context);
 }

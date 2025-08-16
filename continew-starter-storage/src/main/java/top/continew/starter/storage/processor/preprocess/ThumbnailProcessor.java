@@ -14,39 +14,28 @@
  * limitations under the License.
  */
 
-package top.continew.starter.storage.service;
+package top.continew.starter.storage.processor.preprocess;
 
 import top.continew.starter.storage.domain.model.context.UploadContext;
+import top.continew.starter.storage.domain.model.req.ThumbnailInfo;
+import top.continew.starter.storage.service.FileProcessor;
+
+import java.io.InputStream;
 
 /**
- * 文件处理器接口
+ * 缩略图处理器
  *
  * @author echo
  * @since 2.14.0
  */
-public interface FileProcessor {
+public interface ThumbnailProcessor extends FileProcessor {
 
     /**
-     * 获取处理器名称
+     * 生成缩略图
      * 
-     * @return 处理器名称
+     * @param context           上传上下文
+     * @param sourceInputStream 原始文件流
+     * @return 缩略图信息
      */
-    String getName();
-
-    /**
-     * 获取处理器优先级（数值越大优先级越高）
-     * 
-     * @return 优先级
-     */
-    default int getOrder() {
-        return 0;
-    }
-
-    /**
-     * 是否支持该文件
-     * 
-     * @param context 上传上下文
-     * @return 是否支持
-     */
-    boolean support(UploadContext context);
+    ThumbnailInfo process(UploadContext context, InputStream sourceInputStream);
 }
