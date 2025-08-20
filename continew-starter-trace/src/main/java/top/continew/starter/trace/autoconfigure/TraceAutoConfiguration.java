@@ -20,6 +20,7 @@ import com.yomahub.tlog.id.TLogIdGenerator;
 import com.yomahub.tlog.id.TLogIdGeneratorLoader;
 import com.yomahub.tlog.spring.TLogPropertyInit;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.DispatcherType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -32,6 +33,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import top.continew.starter.core.constant.OrderedConstants;
 import top.continew.starter.core.constant.PropertiesConstants;
+import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.trace.filter.TLogServletFilter;
 import top.continew.starter.trace.handler.TraceIdGenerator;
 
@@ -77,6 +79,8 @@ public class TraceAutoConfiguration {
         FilterRegistrationBean<TLogServletFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new TLogServletFilter(traceProperties));
         registrationBean.setOrder(OrderedConstants.Filter.TRACE_FILTER);
+        registrationBean.addUrlPatterns(StringConstants.PATH_PATTERN_CURRENT_DIR);
+        registrationBean.setDispatcherTypes(DispatcherType.REQUEST);
         return registrationBean;
     }
 

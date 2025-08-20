@@ -17,6 +17,7 @@
 package top.continew.starter.log.autoconfigure;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.DispatcherType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -26,6 +27,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import top.continew.starter.core.constant.OrderedConstants;
+import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.log.annotation.ConditionalOnEnabledLog;
 import top.continew.starter.log.aspect.AccessLogAspect;
 import top.continew.starter.log.aspect.LogAspect;
@@ -67,6 +69,8 @@ public class LogAutoConfiguration {
         FilterRegistrationBean<LogFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new LogFilter(logProperties));
         registrationBean.setOrder(OrderedConstants.Filter.LOG_FILTER);
+        registrationBean.addUrlPatterns(StringConstants.PATH_PATTERN_CURRENT_DIR);
+        registrationBean.setDispatcherTypes(DispatcherType.REQUEST);
         return registrationBean;
     }
 

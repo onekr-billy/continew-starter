@@ -17,6 +17,7 @@
 package top.continew.starter.log.autoconfigure;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.DispatcherType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -74,6 +75,8 @@ public class LogAutoConfiguration implements WebMvcConfigurer {
         FilterRegistrationBean<LogFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new LogFilter(logProperties));
         registrationBean.setOrder(OrderedConstants.Filter.LOG_FILTER);
+        registrationBean.addUrlPatterns(StringConstants.PATH_PATTERN_CURRENT_DIR);
+        registrationBean.setDispatcherTypes(DispatcherType.REQUEST);
         return registrationBean;
     }
 

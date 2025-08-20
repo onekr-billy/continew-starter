@@ -17,6 +17,7 @@
 package top.continew.starter.security.xss.autoconfigure;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.DispatcherType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -27,6 +28,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import top.continew.starter.core.constant.OrderedConstants;
 import top.continew.starter.core.constant.PropertiesConstants;
+import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.security.xss.filter.XssFilter;
 
 /**
@@ -51,6 +53,8 @@ public class XssAutoConfiguration {
         FilterRegistrationBean<XssFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new XssFilter(xssProperties));
         registrationBean.setOrder(OrderedConstants.Filter.XSS_FILTER);
+        registrationBean.addUrlPatterns(StringConstants.PATH_PATTERN_CURRENT_DIR);
+        registrationBean.setDispatcherTypes(DispatcherType.REQUEST);
         return registrationBean;
     }
 
