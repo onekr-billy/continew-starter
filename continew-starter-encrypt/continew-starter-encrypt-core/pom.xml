@@ -5,27 +5,33 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>top.continew.starter</groupId>
-        <artifactId>continew-starter</artifactId>
+        <artifactId>continew-starter-encrypt</artifactId>
         <version>${revision}</version>
     </parent>
 
-    <artifactId>continew-starter-security</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>continew-starter-encrypt-core</artifactId>
+    <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>ContiNew Starter 安全模块</description>
-
-    <modules>
-        <module>continew-starter-security-mask</module>
-        <module>continew-starter-security-xss</module>
-        <module>continew-starter-security-sensitivewords</module>
-    </modules>
+    <description>ContiNew Starter 加密模块 - 核心模块</description>
 
     <dependencies>
         <!-- 核心模块 -->
         <dependency>
             <groupId>top.continew.starter</groupId>
             <artifactId>continew-starter-core</artifactId>
+        </dependency>
+
+        <!-- Hutool 加密解密模块（封装 JDK 中加密解密算法） -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-crypto</artifactId>
+        </dependency>
+
+        <!-- Spring Security 附带的一个密码加密库 -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
         </dependency>
     </dependencies>
 </project>

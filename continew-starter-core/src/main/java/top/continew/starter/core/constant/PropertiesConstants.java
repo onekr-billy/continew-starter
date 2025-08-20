@@ -50,29 +50,39 @@ public class PropertiesConstants {
     public static final String WEB_RESPONSE = WEB + StringConstants.DOT + "response";
 
     /**
+     * 加密配置
+     */
+    public static final String ENCRYPT = CONTINEW_STARTER + StringConstants.DOT + "encrypt";
+
+    /**
+     * 加密-密码编码器
+     */
+    public static final String ENCRYPT_PASSWORD_ENCODER = ENCRYPT + StringConstants.DOT + "password-encoder";
+
+    /**
+     * 加密-字段加密
+     */
+    public static final String ENCRYPT_FIELD = ENCRYPT + StringConstants.DOT + "field";
+
+    /**
+     * 加密-API 加密
+     */
+    public static final String ENCRYPT_API = ENCRYPT + StringConstants.DOT + "api";
+
+    /**
      * 安全配置
      */
     public static final String SECURITY = CONTINEW_STARTER + StringConstants.DOT + "security";
 
     /**
-     * 安全-数据加/解密配置
+     * 安全-XSS 配置
      */
-    public static final String SECURITY_CRYPTO = SECURITY + StringConstants.DOT + "crypto";
-
-    /**
-     * 安全-API加/解密配置
-     */
-    public static final String SECURITY_API_CRYPTO = SECURITY + StringConstants.DOT + "api-crypto";
+    public static final String SECURITY_XSS = SECURITY + StringConstants.DOT + "xss";
 
     /**
      * 安全-敏感词配置
      */
     public static final String SECURITY_SENSITIVE_WORDS = SECURITY + StringConstants.DOT + "sensitive-words";
-
-    /**
-     * 安全-XSS 配置
-     */
-    public static final String SECURITY_XSS = SECURITY + StringConstants.DOT + "xss";
 
     /**
      * 限流配置

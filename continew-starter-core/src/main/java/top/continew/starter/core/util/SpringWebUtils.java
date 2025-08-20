@@ -20,12 +20,16 @@ import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.server.PathContainer;
 import org.springframework.web.accept.ContentNegotiationManager;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.util.UrlPathHelper;
 import org.springframework.web.util.pattern.PathPattern;
 import org.springframework.web.util.pattern.PathPatternParser;
@@ -134,5 +138,32 @@ public class SpringWebUtils {
             .<SimpleUrlHandlerMapping>invoke(resourceHandlerRegistry, "getHandlerMapping")
             .getUrlMap();
         ReflectUtil.<Void>invoke(resourceHandlerMapping, "registerHandlers", additionalUrlMap);
+    }
+
+    /**
+     * 获取处理器方法
+     *
+     * @param request 请求
+     * @return 处理器方法
+     * @since 2.14.0
+     */
+    public static HandlerMethod getHandlerMethod(HttpServletRequest request) {
+        try {
+            RequestMappingHandlerMapping handlerMapping = SpringUtil
+                .getBean("requestMappingHandlerMapping", RequestMappingHandlerMapping.class);
+            HandlerExecutionChain handlerExecutionChain = handlerMapping.getHandler(request);
+            // 检查是否存在处理链
+            if (handlerExecutionChain == null) {
+                return null;
+            }
+            // 获取处理器
+            Object handler = handlerExecutionChain.getHandler();
+            if (handler instanceof HandlerMethod handlerMethod) {
+                return handlerMethod;
+            }
+            return null;
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

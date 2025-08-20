@@ -104,12 +104,25 @@
                 <version>${revision}</version>
             </dependency>
 
-            <!-- 安全模块 - 加密 -->
+            <!-- 加密模块 - 字段加密 -->
             <dependency>
                 <groupId>top.continew.starter</groupId>
-                <artifactId>continew-starter-security-crypto</artifactId>
+                <artifactId>continew-starter-encrypt-field</artifactId>
                 <version>${revision}</version>
             </dependency>
+            <!-- 加密模块 - API 加密 -->
+            <dependency>
+                <groupId>top.continew.starter</groupId>
+                <artifactId>continew-starter-encrypt-api</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <!-- 加密模块 - 核心模块 -->
+            <dependency>
+                <groupId>top.continew.starter</groupId>
+                <artifactId>continew-starter-encrypt-core</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
             <!-- 安全模块 - 脱敏 -->
             <dependency>
                 <groupId>top.continew.starter</groupId>

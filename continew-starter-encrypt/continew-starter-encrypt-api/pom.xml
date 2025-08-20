@@ -5,27 +5,21 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>top.continew.starter</groupId>
-        <artifactId>continew-starter</artifactId>
+        <artifactId>continew-starter-encrypt</artifactId>
         <version>${revision}</version>
     </parent>
 
-    <artifactId>continew-starter-security</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>continew-starter-encrypt-api</artifactId>
+    <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>ContiNew Starter 安全模块</description>
-
-    <modules>
-        <module>continew-starter-security-mask</module>
-        <module>continew-starter-security-xss</module>
-        <module>continew-starter-security-sensitivewords</module>
-    </modules>
+    <description>ContiNew Starter 加密模块 - API 加密</description>
 
     <dependencies>
-        <!-- 核心模块 -->
+        <!-- 加密模块 - 核心模块 -->
         <dependency>
             <groupId>top.continew.starter</groupId>
-            <artifactId>continew-starter-core</artifactId>
+            <artifactId>continew-starter-encrypt-core</artifactId>
         </dependency>
     </dependencies>
 </project>

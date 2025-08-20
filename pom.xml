@@ -42,6 +42,7 @@
         <module>continew-starter-cache</module>
         <module>continew-starter-auth</module>
         <module>continew-starter-data</module>
+        <module>continew-starter-encrypt</module>
         <module>continew-starter-security</module>
         <module>continew-starter-ratelimiter</module>
         <module>continew-starter-idempotent</module>

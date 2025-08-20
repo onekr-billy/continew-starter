@@ -32,9 +32,9 @@ public class OrderedConstants {
     public static final class Filter {
 
         /**
-         * API加/密过滤器顺序
+         * API 加密过滤器顺序
          */
-        public static final int API_CRYPTO_FILTER = Ordered.HIGHEST_PRECEDENCE;
+        public static final int API_ENCRYPT_FILTER = Ordered.HIGHEST_PRECEDENCE;
 
         /**
          * 链路追踪过滤器顺序

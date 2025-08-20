@@ -160,8 +160,11 @@ continew-starter
 │  ├─ continew-starter-data-core（核心模块）
 │  ├─ continew-starter-data-mp（MyBatis Plus）
 │  └─ continew-starter-data-mf（MyBatis Flex）
+├─ continew-starter-encrypt（加密模块）
+│  ├─ continew-starter-encrypt-core（核心模块）
+│  ├─ continew-starter-encrypt-field（字段加密）
+│  └─ continew-starter-encrypt-api（API 加密）
 ├─ continew-starter-security（安全模块）
-│  ├─ continew-starter-security-crypto（加密：字段加解密）
 │  ├─ continew-starter-security-mask（脱敏：JSON 数据脱敏）
 │  ├─ continew-starter-security-xss（XSS 过滤）
 │  └─ continew-starter-security-sensitivewords（敏感词）

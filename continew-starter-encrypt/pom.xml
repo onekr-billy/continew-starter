@@ -9,23 +9,15 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>continew-starter-security</artifactId>
+    <artifactId>continew-starter-encrypt</artifactId>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
-    <description>ContiNew Starter 安全模块</description>
+    <description>ContiNew Starter 加密模块</description>
 
     <modules>
-        <module>continew-starter-security-mask</module>
-        <module>continew-starter-security-xss</module>
-        <module>continew-starter-security-sensitivewords</module>
+        <module>continew-starter-encrypt-core</module>
+        <module>continew-starter-encrypt-field</module>
+        <module>continew-starter-encrypt-api</module>
     </modules>
-
-    <dependencies>
-        <!-- 核心模块 -->
-        <dependency>
-            <groupId>top.continew.starter</groupId>
-            <artifactId>continew-starter-core</artifactId>
-        </dependency>
-    </dependencies>
 </project>
