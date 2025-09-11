@@ -17,13 +17,21 @@
 package top.continew.starter.storage.domain.file;
 
 import cn.hutool.json.JSONUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Part;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.starter.storage.common.exception.StorageException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 
 /**
  * 文件包装器，用于统一处理不同类型的输入
@@ -32,6 +40,8 @@ import java.nio.charset.StandardCharsets;
  * @since 2.14.0
  */
 public class FileWrapper {
+
+    private static final Logger log = LoggerFactory.getLogger(FileWrapper.class);
 
     private MultipartFile multipartFile;
     private byte[] bytes;
@@ -57,27 +67,51 @@ public class FileWrapper {
 
     /**
      * 从 byte[] 创建
+     *
+     * @param bytes       字节
+     * @param filename    文件名
+     * @param contentType 内容类型
+     * @return {@link FileWrapper }
      */
     public static FileWrapper of(byte[] bytes, String filename, String contentType) {
-        if (filename == null || filename.trim().isEmpty()) {
-            throw new StorageException("文件名不能为空");
-        }
-        if (contentType == null || contentType.trim().isEmpty()) {
-            throw new StorageException("文件类型不能为空");
-        }
-
-        FileWrapper wrapper = new FileWrapper();
+        FileWrapper wrapper = createBaseWrapper(filename, contentType);
         wrapper.bytes = bytes;
-        wrapper.originalFilename = filename;
-        wrapper.contentType = contentType;
-        wrapper.size = bytes.length;
+        wrapper.size = bytes != null ? bytes.length : 0;
         return wrapper;
     }
 
     /**
      * 从 InputStream 创建
+     *
+     * @param inputStream 输入流
+     * @param filename    文件名
+     * @param contentType 内容类型
+     * @return {@link FileWrapper }
      */
     public static FileWrapper of(InputStream inputStream, String filename, String contentType) {
+        FileWrapper wrapper = createBaseWrapper(filename, contentType);
+        wrapper.inputStream = inputStream;
+        wrapper.size = -1;
+        return wrapper;
+    }
+
+    /**
+     * 创建基本包装器
+     *
+     * @param filename    文件名
+     * @param contentType 内容类型
+     * @return {@link FileWrapper }
+     */
+    private static FileWrapper createBaseWrapper(String filename, String contentType) {
+        // 如果没有提供，尝试从请求中获取
+        if (filename == null) {
+            filename = tryGetFilenameFromRequest();
+        }
+        if (contentType == null) {
+            contentType = tryGetContentTypeFromRequest();
+        }
+
+        // 最终校验
         if (filename == null || filename.trim().isEmpty()) {
             throw new StorageException("文件名不能为空");
         }
@@ -86,11 +120,68 @@ public class FileWrapper {
         }
 
         FileWrapper wrapper = new FileWrapper();
-        wrapper.inputStream = inputStream;
         wrapper.originalFilename = filename;
         wrapper.contentType = contentType;
-        wrapper.size = -1;
         return wrapper;
+    }
+
+    /**
+     * 尝试从当前 HTTP 请求中获取文件名
+     */
+    private static String tryGetFilenameFromRequest() {
+        try {
+            RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+            if (requestAttributes instanceof ServletRequestAttributes) {
+                HttpServletRequest request = ((ServletRequestAttributes)requestAttributes).getRequest();
+
+                // 检查是否是 multipart 请求
+                String requestContentType = request.getContentType();
+                if (requestContentType != null && requestContentType.toLowerCase().startsWith("multipart/")) {
+                    Collection<Part> parts = request.getParts();
+
+                    for (Part part : parts) {
+                        String submittedFilename = part.getSubmittedFileName();
+                        if (submittedFilename != null && !submittedFilename.trim().isEmpty()) {
+                            return submittedFilename;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.debug("从请求中获取文件名时发生异常: {}", e.getMessage());
+        }
+        return null;
+    }
+
+    /**
+     * 尝试从当前 HTTP 请求中获取 ContentType
+     */
+    private static String tryGetContentTypeFromRequest() {
+        try {
+            RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+            if (requestAttributes instanceof ServletRequestAttributes) {
+                HttpServletRequest request = ((ServletRequestAttributes)requestAttributes).getRequest();
+
+                // 检查是否是 multipart 请求
+                String requestContentType = request.getContentType();
+                if (requestContentType != null && requestContentType.toLowerCase().startsWith("multipart/")) {
+                    Collection<Part> parts = request.getParts();
+
+                    for (Part part : parts) {
+                        // 只处理文件部分
+                        if (part.getSubmittedFileName() != null) {
+                            String partContentType = part.getContentType();
+                            if (partContentType != null && !partContentType.trim().isEmpty()) {
+                                return partContentType;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.debug("从请求中获取 ContentType 时发生异常: {}", e.getMessage());
+        }
+        return null;
     }
 
     /**
@@ -115,17 +206,11 @@ public class FileWrapper {
 
         // 如果是 byte[]
         if (obj instanceof byte[]) {
-            if (filename == null || contentType == null) {
-                throw new StorageException("byte[] 类型必须指定文件名和文件类型");
-            }
             return of((byte[])obj, filename, contentType);
         }
 
         // 如果是 InputStream
         if (obj instanceof InputStream) {
-            if (filename == null || contentType == null) {
-                throw new StorageException("InputStream 类型必须指定文件名和文件类型");
-            }
             return of((InputStream)obj, filename, contentType);
         }
 

@@ -93,8 +93,8 @@ public class StorageStrategyRouter implements ApplicationListener<ApplicationEve
      */
     private StorageStrategy getOriginalStrategy(String platform) {
         return Optional.ofNullable(dynamicStrategies.get(platform))
-                .or(() -> Optional.ofNullable(configStrategies.get(platform)))
-                .orElseThrow(() -> new StorageException(String.format("不支持的存储平台: %s", platform)));
+            .or(() -> Optional.ofNullable(configStrategies.get(platform)))
+            .orElseThrow(() -> new StorageException(String.format("不支持的存储平台: %s", platform)));
     }
 
     /**

@@ -16,11 +16,11 @@
 
 package top.continew.starter.storage.core;
 
+import cn.hutool.core.util.StrUtil;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.starter.storage.domain.model.context.UploadContext;
 import top.continew.starter.storage.domain.model.req.ThumbnailSize;
 import top.continew.starter.storage.domain.model.resp.FileInfo;
-import top.continew.starter.storage.processor.preprocess.*;
 import top.continew.starter.storage.processor.progress.UploadProgressListener;
 import top.continew.starter.storage.service.FileProcessor;
 
@@ -45,7 +45,6 @@ public class UploadPretreatment {
         this.storageService = storageService;
         this.context = new UploadContext();
         this.context.setFile(file);
-        this.context.setPlatform(storageService.getDefaultPlatform());
     }
 
     /**
@@ -146,6 +145,8 @@ public class UploadPretreatment {
      * @return {@link FileInfo }
      */
     public FileInfo upload() {
+
+        // 添加文件处理器
         for (FileProcessor processor : processors) {
             storageService.addProcessor(processor);
         }
@@ -153,6 +154,11 @@ public class UploadPretreatment {
         // 设置进度监听器
         if (progressListener != null) {
             storageService.onProgress(progressListener);
+        }
+
+        // 如果没有设置平台，则获取默认平台 (延迟获取默认存储平台)
+        if (StrUtil.isBlank(context.getPlatform())) {
+            context.setPlatform(storageService.getDefaultPlatform());
         }
 
         // 执行上传
