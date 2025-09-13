@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.starter.encrypt.autoconfigure;
+package top.continew.starter.encrypt.password.encoder.autoconfigure;
 
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
@@ -29,8 +29,8 @@ import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import top.continew.starter.core.constant.PropertiesConstants;
 import top.continew.starter.core.util.validation.CheckUtils;
-import top.continew.starter.encrypt.enums.PasswordEncoderAlgorithm;
-import top.continew.starter.encrypt.util.PasswordEncoderUtil;
+import top.continew.starter.encrypt.password.encoder.enums.PasswordEncoderAlgorithm;
+import top.continew.starter.encrypt.password.encoder.util.PasswordEncoderUtil;
 
 import java.util.HashMap;
 import java.util.Map;

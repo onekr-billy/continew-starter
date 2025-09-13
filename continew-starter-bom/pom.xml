@@ -116,6 +116,12 @@
                 <artifactId>continew-starter-encrypt-api</artifactId>
                 <version>${revision}</version>
             </dependency>
+            <!-- 加密模块 - 密码编码器 -->
+            <dependency>
+                <groupId>top.continew.starter</groupId>
+                <artifactId>continew-starter-encrypt-password-encoder</artifactId>
+                <version>${revision}</version>
+            </dependency>
             <!-- 加密模块 - 核心模块 -->
             <dependency>
                 <groupId>top.continew.starter</groupId>

@@ -17,9 +17,7 @@
 package top.continew.starter.encrypt.field.autoconfigure;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import top.continew.starter.core.constant.PropertiesConstants;
-import top.continew.starter.encrypt.autoconfigure.PasswordEncoderProperties;
 import top.continew.starter.encrypt.enums.Algorithm;
 
 /**
@@ -56,12 +54,6 @@ public class FieldEncryptProperties {
      * 非对称加密算法私钥
      */
     private String privateKey;
-
-    /**
-     * 密码编码器配置
-     */
-    @NestedConfigurationProperty
-    private PasswordEncoderProperties passwordEncoder;
 
     public Boolean getEnabled() {
         return enabled;
@@ -101,13 +93,5 @@ public class FieldEncryptProperties {
 
     public void setPrivateKey(String privateKey) {
         this.privateKey = privateKey;
-    }
-
-    public PasswordEncoderProperties getPasswordEncoder() {
-        return passwordEncoder;
-    }
-
-    public void setPasswordEncoder(PasswordEncoderProperties passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
     }
 }

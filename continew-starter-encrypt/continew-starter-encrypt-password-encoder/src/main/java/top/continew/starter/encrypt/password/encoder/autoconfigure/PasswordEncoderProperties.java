@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package top.continew.starter.encrypt.autoconfigure;
+package top.continew.starter.encrypt.password.encoder.autoconfigure;
 
-import top.continew.starter.encrypt.enums.PasswordEncoderAlgorithm;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import top.continew.starter.core.constant.PropertiesConstants;
+import top.continew.starter.encrypt.password.encoder.enums.PasswordEncoderAlgorithm;
 
 /**
  * 密码编码器配置属性
@@ -25,6 +27,7 @@ import top.continew.starter.encrypt.enums.PasswordEncoderAlgorithm;
  * @author Charles7c
  * @since 1.3.0
  */
+@ConfigurationProperties(PropertiesConstants.ENCRYPT_PASSWORD_ENCODER)
 public class PasswordEncoderProperties {
 
     /**

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.starter.encrypt.exception;
+package top.continew.starter.encrypt.password.encoder.exception;
 
 import top.continew.starter.core.exception.BaseException;
 

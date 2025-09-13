@@ -164,6 +164,7 @@ continew-starter
 │  ├─ continew-starter-encrypt-core（核心模块）
 │  ├─ continew-starter-encrypt-field（字段加密）
 │  └─ continew-starter-encrypt-api（API 加密）
+│  └─ continew-starter-encrypt-password-encoder（密码编码器）
 ├─ continew-starter-security（安全模块）
 │  ├─ continew-starter-security-mask（脱敏：JSON 数据脱敏）
 │  ├─ continew-starter-security-xss（XSS 过滤）

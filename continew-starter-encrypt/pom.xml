@@ -19,5 +19,6 @@
         <module>continew-starter-encrypt-core</module>
         <module>continew-starter-encrypt-field</module>
         <module>continew-starter-encrypt-api</module>
+        <module>continew-starter-encrypt-password-encoder</module>
     </modules>
 </project>

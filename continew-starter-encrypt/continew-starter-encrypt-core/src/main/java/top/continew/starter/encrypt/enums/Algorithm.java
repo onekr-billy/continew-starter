@@ -55,12 +55,7 @@ public enum Algorithm {
     /**
      * Base64
      */
-    BASE64(Base64Encryptor.class),
-
-    /**
-     * 密码编码器，支持算法：BCrypt、SCRYPT、PBKDF2、ARGON2
-     */
-    PASSWORD_ENCODER(PasswordEncoderEncryptor.class);
+    BASE64(Base64Encryptor.class);
 
     /**
      * 加密/解密处理器

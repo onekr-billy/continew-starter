@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package top.continew.starter.encrypt.encryptor;
+package top.continew.starter.encrypt.password.encoder.encryptor;
 
 import cn.hutool.extra.spring.SpringUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import top.continew.starter.core.util.SpringUtils;
-import top.continew.starter.encrypt.autoconfigure.PasswordEncoderProperties;
 import top.continew.starter.encrypt.context.CryptoContext;
+import top.continew.starter.encrypt.encryptor.AbstractEncryptor;
+import top.continew.starter.encrypt.password.encoder.autoconfigure.PasswordEncoderProperties;
 
 /**
  * 密码编码器加密器
