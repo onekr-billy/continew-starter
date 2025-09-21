@@ -30,7 +30,6 @@ import top.continew.starter.core.exception.BadRequestException;
 import top.continew.starter.core.util.ReflectUtils;
 import top.continew.starter.core.util.validation.ValidationUtils;
 import top.continew.starter.data.annotation.Query;
-import top.continew.starter.data.annotation.QueryIgnore;
 import top.continew.starter.data.enums.QueryType;
 
 import java.lang.reflect.Field;
@@ -140,18 +139,13 @@ public class QueryWrapperHelper {
             if (ObjectUtil.isEmpty(fieldValue)) {
                 return Collections.emptyList();
             }
-            // 设置了 @QueryIgnore 注解，直接忽略
-            QueryIgnore queryIgnoreAnnotation = AnnotationUtil.getAnnotation(field, QueryIgnore.class);
-            if (queryIgnoreAnnotation != null) {
+            // 没有 @Query 注解，直接返回
+            Query queryAnnotation = AnnotationUtil.getAnnotation(field, Query.class);
+            if (queryAnnotation == null) {
                 return Collections.emptyList();
             }
             // 建议：数据库表列建议采用下划线连接法命名，程序变量建议采用驼峰法命名
             String fieldName = ReflectUtil.getFieldName(field);
-            // 没有 @Query 注解，默认等值查询
-            Query queryAnnotation = AnnotationUtil.getAnnotation(field, Query.class);
-            if (queryAnnotation == null) {
-                return Collections.singletonList(q -> q.eq(CharSequenceUtil.toUnderlineCase(fieldName), fieldValue));
-            }
             // 解析单列查询
             QueryType queryType = queryAnnotation.type();
             String[] columns = queryAnnotation.columns();
