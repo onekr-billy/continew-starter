@@ -14,13 +14,15 @@ body:
       options:
         - label: 重启项目和 IDE 后，仍然能够复现此问题
           required: true
+        - label: 尝试 [最新版本](https://central.sonatype.com/artifact/top.continew.starter/continew-starter/versions)（还可以尝试本地编译安装 dev 分支的最新快照版本），仍有相同问题
+          required: true
         - label: 查看过控制台是否有报错，如果有报错，下拉控制台到最下查找过 Caused 提示（如果有 Caused 关键字，一般其后都有直观提示，请自行翻译英文），并百度或 Google 后，仍无法解决
           required: true
         - label: 查阅过 [使用指南](https://continew.top/docs/starter/guide/introduction.html) 和 [常见问题](https://continew.top/docs/starter/faq.html) ，仍无解决方法
           required: true
         - label: 搜索了 [吐槽广场](https://continew.top/docs/starter/issue-hub.html)，没有其他人提交过类似的 Bug（如果对应 Bug 尚未解决，您可以先订阅关注该 Issue，为了方便后来者查找问题解决方法，请避免创建重复的 Issue）
           required: true
-        - label: 尝试 [最新版本](https://central.sonatype.com/artifact/top.continew.starter/continew-starter/versions)（还可以尝试本地编译安装 dev 分支的最新快照版本），仍有相同问题
+        - label: 问过 [DeepWiki](https://deepwiki.com/continew-org/continew-starter) 及知名 AI 大模型，仍无解决方法
           required: true
         - label: 阅读了源码并在 IDE 中进行断点调试
           required: false
