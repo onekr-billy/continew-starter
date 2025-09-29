@@ -17,6 +17,7 @@
 package top.continew.starter.extension.tenant.handler.datasource;
 
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
+import jakarta.annotation.Nonnull;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import top.continew.starter.extension.tenant.context.TenantContextHolder;
@@ -38,10 +39,10 @@ public class TenantDataSourceInterceptor implements MethodInterceptor {
     }
 
     @Override
-    public Object invoke(MethodInvocation invocation) throws Throwable {
+    public Object invoke(@Nonnull MethodInvocation invocation) throws Throwable {
         // 忽略租户
         if (TenantContextHolder.isIgnore()) {
-            return true;
+            return invocation.proceed();
         }
         // 忽略行级隔离
         if (TenantIsolationLevel.LINE.equals(TenantContextHolder.getIsolationLevel())) {
