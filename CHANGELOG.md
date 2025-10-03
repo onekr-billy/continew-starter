@@ -1,3 +1,27 @@
+## [v2.14.0](https://github.com/continew-org/continew-starter/compare/v2.13.4...v2.14.0) (2025-10-03)
+
+### ✨ 新特性
+
+- 【security/crypto】新增 API 加/解密功能 ([26effb6](https://github.com/continew-org/continew-starter/commit/26effb6ee2a98cbedc0dd3ea1d15b453cdf0c0d8)) (Gitcode#3@lishuyanla)
+- 【core】MapUtils增加深度合并两个map的方法 ([5ca34ee](https://github.com/continew-org/continew-starter/commit/5ca34eebd1228b445d9882d0d2777affd4393bca))  (Github#16@luoqiz) 
+- 【encrypt/password-encoder】新增密码编码器模块（经过考量重新拆分出来） ([e414abc](https://github.com/continew-org/continew-starter/commit/e414abc73536c57a774f2c6d5dbeff78349310ae))
+
+### 💎 功能优化
+
+- 【storage】重构存储模块为统一入口 ([ae1258a](https://github.com/continew-org/continew-starter/commit/ae1258aee65c534564372b6fa2a2cf37a74fc601)) ([e5002b8](https://github.com/continew-org/continew-starter/commit/e5002b8bfc4aa20b99be9f699ac55a300a2525fd)) ([7ead337](https://github.com/continew-org/continew-starter/commit/7ead337165f930771b86a1b5d36f4f4bdacfbb12)) (Gitcode#1@QAQ_Z)
+- 【excel/fastexcel】移除 ExcelListConverter 中的冗余注解 ([5d7c3be](https://github.com/continew-org/continew-starter/commit/5d7c3bedd74274cedbf27b31ecd9b68458ab735f))
+- 【extension/crud】优化树型结构字典配置相关命名及注释 DICT_TREE -> TREE_DICT ([3ee1112](https://github.com/continew-org/continew-starter/commit/3ee1112c4ce9b1acfa7ac5959a4e1ffd19ee0fce))
+- 【encrypt】拆分字段加密、API 加密模块 ([e9bf92e](https://github.com/continew-org/continew-starter/commit/e9bf92ea1f090068c2f849f5be36c372ffb1bf3e))
+- 统一过滤器配置 ([637d92b](https://github.com/continew-org/continew-starter/commit/637d92be237eced80c4c17acae344d31c4cc4eb2))
+- 【core】重构线程池自动配置代码 ([6889578](https://github.com/continew-org/continew-starter/commit/68895787a758606f226da7fe7478ae9b60a8926e))
+- 【data】移除 QueryIgnore 注解，并取消默认 eq 逻辑处理 ([e9a6f36](https://github.com/continew-org/continew-starter/commit/e9a6f36136319d65ba6379506264c94a4994d269))
+- 【messaging/mail】提供 JavaMailSenderImpl 默认配置，并重构 MailConfigurer 配置代码 ([75aeb26](https://github.com/continew-org/continew-starter/commit/75aeb26a4f117acab8bf6e4b60c0efbc01a5d0fb))
+
+### 🐛 问题修复
+
+- 【auth/satoken】修复 ConditionalOnBean 校验导致的 SaToken 持久层 Redis 实现注册失败的问题 ([61fbb04](https://github.com/continew-org/continew-starter/commit/61fbb04a331358a7b18f5373625ab169f882ae4d))
+- 【extension/tenant】修复多租户下开启多数据源拦截器返回结果异常的情况 ([d1db737](https://github.com/continew-org/continew-starter/commit/d1db737f7a62a8afe7585075789d05a72b9d55e9)) (Gitee#80@kiki1373639299) 
+
 ## [v2.13.4](https://github.com/continew-org/continew-starter/compare/v2.13.3...v2.13.4) (2025-07-26)
 
 ### ✨ 新特性
