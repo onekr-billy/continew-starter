@@ -17,12 +17,10 @@
 package top.continew.starter.messaging.mail.core;
 
 import cn.hutool.core.map.MapUtil;
-import top.continew.starter.core.util.validation.ValidationUtils;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * 邮件配置
@@ -160,25 +158,6 @@ public class MailConfig {
 
     public Map<String, String> getProperties() {
         return properties;
-    }
-
-    /**
-     * 将当前配置转换为 JavaMail 的 Properties 对象
-     *
-     * @return Properties 对象
-     */
-    public Properties toJavaMailProperties() {
-        Properties javaMailProperties = new Properties();
-        javaMailProperties.putAll(this.getProperties());
-        javaMailProperties.put("mail.from", this.getFrom());
-        javaMailProperties.put("mail.smtp.auth", true);
-        javaMailProperties.put("mail.smtp.ssl.enable", this.isSslEnabled());
-        if (this.isSslEnabled()) {
-            ValidationUtils.throwIfNull(this.getSslPort(), "邮件配置不正确：SSL端口不能为空");
-            javaMailProperties.put("mail.smtp.socketFactory.port", this.sslPort);
-            javaMailProperties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        }
-        return javaMailProperties;
     }
 
     static {

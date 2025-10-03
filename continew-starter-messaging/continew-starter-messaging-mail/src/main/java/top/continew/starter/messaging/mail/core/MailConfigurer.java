@@ -19,6 +19,8 @@ package top.continew.starter.messaging.mail.core;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import top.continew.starter.core.util.validation.ValidationUtils;
 
+import java.util.Properties;
+
 /**
  * 邮件配置
  *
@@ -62,8 +64,17 @@ public interface MailConfigurer {
             sender.setDefaultEncoding(mailConfig.getDefaultEncoding().name());
         }
 
+        Properties javaMailProperties = new Properties();
         if (!mailConfig.getProperties().isEmpty()) {
-            sender.setJavaMailProperties(mailConfig.toJavaMailProperties());
+            javaMailProperties.putAll(mailConfig.getProperties());
+            javaMailProperties.put("mail.from", mailConfig.getFrom());
         }
+        javaMailProperties.put("mail.smtp.auth", true);
+        if (mailConfig.isSslEnabled()) {
+            ValidationUtils.throwIfNull(mailConfig.getSslPort(), "邮件配置不正确：SSL端口不能为空");
+            javaMailProperties.put("mail.smtp.socketFactory.port", mailConfig.getSslPort());
+            javaMailProperties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        }
+        sender.setJavaMailProperties(javaMailProperties);
     }
 }
