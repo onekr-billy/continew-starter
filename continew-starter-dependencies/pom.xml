@@ -17,26 +17,26 @@
         <revision>2.15.0-SNAPSHOT</revision>
 
         <!-- Core Framework Versions -->
-        <spring-boot.version>3.3.12</spring-boot.version>
-        <spring-cloud.version>2023.0.5</spring-cloud.version>
+        <spring-boot.version>3.4.10</spring-boot.version>
+        <spring-cloud.version>2024.0.2</spring-cloud.version>
 
         <!-- Cache and Storage Versions -->
-        <redisson.version>3.49.0</redisson.version>
+        <redisson.version>3.52.0</redisson.version>
         <jetcache.version>2.7.8</jetcache.version>
 
         <!-- Security and Authentication Versions -->
         <sa-token.version>1.44.0</sa-token.version>
-        <just-auth.version>1.16.7</just-auth.version>
+        <justauth.version>1.16.7</justauth.version>
 
         <!-- Database and ORM Versions -->
-        <mybatis-plus.version>3.5.12</mybatis-plus.version>
-        <mybatis-flex.version>1.10.9</mybatis-flex.version>
+        <mybatis-plus.version>3.5.14</mybatis-plus.version>
+        <mybatis-flex.version>1.11.3</mybatis-flex.version>
         <dynamic-datasource.version>4.3.1</dynamic-datasource.version>
         <p6spy.version>3.9.1</p6spy.version>
 
         <!-- ID Generator and Job Scheduler Versions -->
-        <cosid.version>2.13.0</cosid.version>
-        <snail-job.version>1.5.0</snail-job.version>
+        <cosid.version>2.13.3</cosid.version>
+        <snail-job.version>1.8.0</snail-job.version>
 
         <!-- Messaging and Notification Versions -->
         <sms4j.version>3.3.5</sms4j.version>
@@ -46,19 +46,19 @@
         <easy-captcha.version>1.6.2</easy-captcha.version>
 
         <!-- Excel Processing Versions -->
-        <fastexcel.version>1.2.0</fastexcel.version>
+        <fastexcel.version>1.3.0</fastexcel.version>
         <poi.version>5.4.1</poi.version>
 
         <!-- File Storage Versions -->
         <x-file-storage.version>2.2.1</x-file-storage.version>
-        <aws-s3-v1.version>1.12.783</aws-s3-v1.version>
-        <aws-sdk.version>2.31.63</aws-sdk.version>
-        <aws-crt.version>0.38.5</aws-crt.version>
-        <thumbnails.version>0.4.20</thumbnails.version>
+        <aws-sdk-v1.version>1.12.792</aws-sdk-v1.version>
+        <aws-sdk.version>2.35.10</aws-sdk.version>
+        <aws-crt.version>0.39.3</aws-crt.version>
+        <thumbnails.version>0.4.21</thumbnails.version>
 
         <!-- Validation and Response Processing Versions -->
         <graceful-response.version>5.0.5-boot3</graceful-response.version>
-        <spel-validator.version>0.5.2-beta</spel-validator.version>
+        <spel-validator.version>0.6.0-beta</spel-validator.version>
         <crane4j.version>2.9.0</crane4j.version>
 
         <!-- API Documentation Versions -->
@@ -74,20 +74,20 @@
         <!-- HTTP Client and Utilities Versions -->
         <okhttp.version>4.12.0</okhttp.version>
         <ttl.version>2.14.5</ttl.version>
-        <ip2region.version>3.3.6</ip2region.version>
-        <hutool.version>5.8.38</hutool.version>
-        <snakeyaml.version>2.4</snakeyaml.version>
-        <nashorn.version>15.6</nashorn.version>
+        <ip2region.version>3.4.7</ip2region.version>
+        <hutool.version>5.8.41</hutool.version>
+        <snakeyaml.version>2.5</snakeyaml.version>
+        <nashorn.version>15.7</nashorn.version>
 
         <!-- Security Vulnerability Fix Versions -->
         <commons-beanutils.version>1.11.0</commons-beanutils.version>
-        <commons-io.version>2.17.0</commons-io.version>
-        <commons-compress.version>1.26.0</commons-compress.version>
+        <commons-io.version>2.20.0</commons-io.version>
+        <commons-compress.version>1.28.0</commons-compress.version>
 
         <!-- Maven Plugin Versions -->
-        <flatten.version>1.7.0</flatten.version>
-        <spotless.version>2.44.3</spotless.version>
-        <sonar.version>3.11.0.3922</sonar.version>
+        <flatten.version>1.7.3</flatten.version>
+        <spotless.version>3.0.0</spotless.version>
+        <sonar.version>5.2.0.4988</sonar.version>
     </properties>
 
     <dependencyManagement>
@@ -126,15 +126,6 @@
                 <scope>import</scope>
             </dependency>
 
-            <!-- CosId（通用、灵活、高性能的分布式 ID 生成器） -->
-            <dependency>
-                <groupId>me.ahoo.cosid</groupId>
-                <artifactId>cosid-bom</artifactId>
-                <version>${cosid.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
             <!-- Sa-Token（轻量级 Java 权限认证框架，让鉴权变得简单、优雅） -->
             <dependency>
                 <groupId>cn.dev33</groupId>
@@ -148,7 +139,7 @@
             <dependency>
                 <groupId>me.zhyd.oauth</groupId>
                 <artifactId>JustAuth</artifactId>
-                <version>${just-auth.version}</version>
+                <version>${justauth.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.xkcoding.justauth</groupId>
@@ -194,6 +185,15 @@
                 <version>${p6spy.version}</version>
             </dependency>
 
+            <!-- CosId（通用、灵活、高性能的分布式 ID 生成器） -->
+            <dependency>
+                <groupId>me.ahoo.cosid</groupId>
+                <artifactId>cosid-bom</artifactId>
+                <version>${cosid.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
             <!-- SnailJob（灵活，可靠和快速的分布式任务重试和分布式任务调度平台） -->
             <dependency>
                 <groupId>com.aizuda</groupId>
@@ -230,13 +230,6 @@
                 <groupId>com.github.whvcse</groupId>
                 <artifactId>easy-captcha</artifactId>
                 <version>${easy-captcha.version}</version>
-            </dependency>
-
-            <!-- JS 引擎（纯编译的 JavaScript 引擎） -->
-            <dependency>
-                <groupId>org.openjdk.nashorn</groupId>
-                <artifactId>nashorn-core</artifactId>
-                <version>${nashorn.version}</version>
             </dependency>
 
             <!-- FastExcel（基于 Java 的快速、简洁、解决大文件内存溢出的 Excel 处理工具） -->
@@ -285,7 +278,7 @@
             <dependency>
                 <groupId>com.amazonaws</groupId>
                 <artifactId>aws-java-sdk-s3</artifactId>
-                <version>${aws-s3-v1.version}</version>
+                <version>${aws-sdk-v1.version}</version>
             </dependency>
 
             <!-- Amazon SDK -->
@@ -401,6 +394,13 @@
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
                 <version>${snakeyaml.version}</version>
+            </dependency>
+
+            <!-- JS 引擎（纯编译的 JavaScript 引擎） -->
+            <dependency>
+                <groupId>org.openjdk.nashorn</groupId>
+                <artifactId>nashorn-core</artifactId>
+                <version>${nashorn.version}</version>
             </dependency>
 
             <!-- 解决部分传递依赖漏洞问题 -->
