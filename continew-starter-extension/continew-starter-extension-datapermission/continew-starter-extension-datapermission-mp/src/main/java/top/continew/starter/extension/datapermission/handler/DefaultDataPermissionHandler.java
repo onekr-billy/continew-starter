@@ -16,20 +16,9 @@
 
 package top.continew.starter.extension.datapermission.handler;
 
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.Set;
-
-import javax.sql.DataSource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import cn.hutool.extra.spring.SpringUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.handler.DataPermissionHandler;
-
-import cn.hutool.core.text.CharSequenceUtil;
-import cn.hutool.extra.spring.SpringUtil;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Function;
 import net.sf.jsqlparser.expression.LongValue;
@@ -42,6 +31,8 @@ import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.select.ParenthesedSelect;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.SelectItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.data.enums.DatabaseType;
 import top.continew.starter.data.util.MetaUtils;
@@ -49,9 +40,16 @@ import top.continew.starter.extension.datapermission.annotation.DataPermission;
 import top.continew.starter.extension.datapermission.constant.DataPermissionConstants;
 import top.continew.starter.extension.datapermission.enums.DataScope;
 import top.continew.starter.extension.datapermission.exception.DataPermissionException;
-import top.continew.starter.extension.datapermission.provider.DataPermissionUserDataProvider;
 import top.continew.starter.extension.datapermission.model.RoleData;
 import top.continew.starter.extension.datapermission.model.UserData;
+import top.continew.starter.extension.datapermission.provider.DataPermissionUserDataProvider;
+
+import javax.sql.DataSource;
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 默认数据权限处理器
@@ -64,6 +62,10 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(DefaultDataPermissionHandler.class);
     private final DataPermissionUserDataProvider dataPermissionUserDataProvider;
+    /**
+     * Mapper类中所有方法数据权限注解缓存
+     */
+    private final Map<String, Map<String, DataPermission>> annotationCache = new ConcurrentHashMap<>();
 
     public DefaultDataPermissionHandler(DataPermissionUserDataProvider dataPermissionUserDataProvider) {
         this.dataPermissionUserDataProvider = dataPermissionUserDataProvider;
@@ -98,19 +100,36 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
             String className = mappedStatementId.substring(0, lastDotIndex);
             String methodName = mappedStatementId.substring(lastDotIndex + 1);
 
+            // 先根据类名从缓存获取，如果methodAnnotations不为空，则说明该类中的所有方法都已缓存， 只是值为null。
+            Map<String, DataPermission> methodAnnotations = annotationCache.get(className);
+            if (methodAnnotations != null) {
+                // methodName 可能是 ** 或者 **_COUNT
+                return methodAnnotations.getOrDefault(methodName, methodAnnotations
+                    .get(methodName + DataPermissionConstants.COUNT_METHOD_SUFFIX));
+            }
+
+            // 缓存未命中，执行反射操作
             Class<?> clazz = Class.forName(className);
             Method[] methods = clazz.getMethods();
 
+            // 创建新的缓存映射
+            Map<String, DataPermission> newMethodAnnotations = new ConcurrentHashMap<>();
+
+            // 缓存所有带@DataPermission注解的方法
             for (Method method : methods) {
                 String name = method.getName();
-                if (CharSequenceUtil.equalsAny(methodName, name, name + DataPermissionConstants.COUNT_METHOD_SUFFIX)) {
-                    return method.getAnnotation(DataPermission.class);
+                DataPermission annotation = method.getAnnotation(DataPermission.class);
+                if (annotation != null) {
+                    newMethodAnnotations.put(name, annotation);
                 }
             }
+            // 存入缓存
+            annotationCache.put(className, newMethodAnnotations);
+
+            return newMethodAnnotations.get(methodName);
         } catch (ClassNotFoundException e) {
             throw DataPermissionException.methodNotFound(mappedStatementId);
         }
-        return null;
     }
 
     /**
