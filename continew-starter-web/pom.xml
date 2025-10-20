@@ -22,11 +22,10 @@
             <artifactId>continew-starter-json-jackson</artifactId>
         </dependency>
 
-        <!-- API 文档模块 -->
+        <!-- Swagger 注解 -->
         <dependency>
-            <groupId>top.continew.starter</groupId>
-            <artifactId>continew-starter-api-doc</artifactId>
-            <optional>true</optional>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations-jakarta</artifactId>
         </dependency>
 
         <!-- Spring Boot Web（提供 Spring MVC Web 开发能力，默认内置 Tomcat 服务器） -->
