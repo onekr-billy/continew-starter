@@ -17,6 +17,7 @@
 package top.continew.starter.apidoc.autoconfigure;
 
 import cn.hutool.core.map.MapUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
@@ -29,32 +30,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springdoc.core.configuration.SpringDocConfiguration;
 import org.springdoc.core.customizers.GlobalOpenApiCustomizer;
-import org.springdoc.core.customizers.OpenApiBuilderCustomizer;
-import org.springdoc.core.customizers.ServerBaseUrlCustomizer;
-import org.springdoc.core.properties.SpringDocConfigProperties;
-import org.springdoc.core.providers.JavadocProvider;
-import org.springdoc.core.service.OpenAPIService;
-import org.springdoc.core.service.SecurityService;
-import org.springdoc.core.utils.PropertyResolverUtils;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.http.CacheControl;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import top.continew.starter.apidoc.handler.BaseEnumParameterHandler;
-import top.continew.starter.apidoc.handler.OpenApiHandler;
 import top.continew.starter.core.autoconfigure.application.ApplicationProperties;
 import top.continew.starter.core.util.CollUtils;
 import top.continew.starter.core.util.GeneralPropertySourceFactory;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 /**
  * API 文档自动配置
@@ -73,10 +63,6 @@ public class SpringDocAutoConfiguration implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/favicon.ico").addResourceLocations("classpath:/");
-        registry.addResourceHandler("/doc.html").addResourceLocations("classpath:/META-INF/resources/");
-        registry.addResourceHandler("/webjars/**")
-            .addResourceLocations("classpath:/META-INF/resources/webjars/")
-            .setCacheControl(CacheControl.maxAge(5, TimeUnit.HOURS).cachePublic());
     }
 
     /**
@@ -140,28 +126,14 @@ public class SpringDocAutoConfiguration implements WebMvcConfigurer {
     }
 
     /**
-     * 自定义 OpenApi 处理器
-     */
-    @Bean
-    public OpenAPIService openApiBuilder(Optional<OpenAPI> openAPI,
-                                         SecurityService securityParser,
-                                         SpringDocConfigProperties springDocConfigProperties,
-                                         PropertyResolverUtils propertyResolverUtils,
-                                         Optional<List<OpenApiBuilderCustomizer>> openApiBuilderCustomisers,
-                                         Optional<List<ServerBaseUrlCustomizer>> serverBaseUrlCustomisers,
-                                         Optional<JavadocProvider> javadocProvider) {
-        return new OpenApiHandler(openAPI, securityParser, springDocConfigProperties, propertyResolverUtils, openApiBuilderCustomisers, serverBaseUrlCustomisers, javadocProvider);
-    }
-
-    /**
      * 自定义 BaseEnum 枚举参数配置（针对实现了 BaseEnum 的枚举，优化其枚举值和描述展示）
      *
      * @return {@link BaseEnumParameterHandler }
      * @since 2.4.0
      */
     @Bean
-    public BaseEnumParameterHandler customParameterCustomizer() {
-        return new BaseEnumParameterHandler();
+    public BaseEnumParameterHandler customParameterCustomizer(ObjectMapper mapper) {
+        return new BaseEnumParameterHandler(mapper);
     }
 
     @PostConstruct

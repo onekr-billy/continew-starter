@@ -18,19 +18,23 @@ package top.continew.starter.apidoc.handler;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.ClassUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.SimpleType;
 import io.swagger.v3.core.converter.AnnotatedType;
+import io.swagger.v3.core.converter.ModelConverter;
+import io.swagger.v3.core.converter.ModelConverterContext;
+import io.swagger.v3.core.jackson.ModelResolver;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.parameters.Parameter;
 import org.springdoc.core.customizers.ParameterCustomizer;
-import org.springdoc.core.customizers.PropertyCustomizer;
 import org.springframework.core.MethodParameter;
 import top.continew.starter.apidoc.util.ApiDocUtils;
 import top.continew.starter.core.enums.BaseEnum;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -42,7 +46,11 @@ import java.util.List;
  * @author echo
  * @since 2.5.2
  */
-public class BaseEnumParameterHandler implements ParameterCustomizer, PropertyCustomizer {
+public class BaseEnumParameterHandler extends ModelResolver implements ParameterCustomizer {
+
+    public BaseEnumParameterHandler(ObjectMapper mapper) {
+        super(mapper);
+    }
 
     @Override
     public Parameter customize(Parameter parameterModel, MethodParameter methodParameter) {
@@ -62,16 +70,18 @@ public class BaseEnumParameterHandler implements ParameterCustomizer, PropertyCu
     }
 
     @Override
-    public Schema customize(Schema schema, AnnotatedType type) {
+    public Schema resolve(AnnotatedType type, ModelConverterContext context, Iterator<ModelConverter> chain) {
+        Schema resolve = super.resolve(type, context, chain);
         Class<?> rawClass = resolveRawClass(type.getType());
         // 判断是否为 BaseEnum 的子类型
         if (!ClassUtil.isAssignable(BaseEnum.class, rawClass)) {
-            return schema;
+            return resolve;
         }
+
         // 自定义参数描述并封装参数配置
-        configureSchema(schema, rawClass);
-        schema.setDescription(appendEnumDescription(schema.getDescription(), rawClass));
-        return schema;
+        configureSchema(resolve, rawClass);
+        resolve.setDescription(appendEnumDescription(resolve.getDescription(), rawClass));
+        return resolve;
     }
 
     /**

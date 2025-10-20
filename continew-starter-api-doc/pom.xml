@@ -22,10 +22,11 @@
             <artifactId>continew-starter-core</artifactId>
         </dependency>
 
-        <!-- Knife4j（前身是 swagger-bootstrap-ui，集 Swagger2 和 OpenAPI3 为一体的增强解决方案） -->
+        <!--NextDoc4j (现代化 API 文档 UI 工具 全面替代 Swagger UI) -->
         <dependency>
-            <groupId>com.github.xiaoymin</groupId>
-            <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+            <groupId>top.nextdoc4j</groupId>
+            <artifactId>nextdoc4j-springboot3-starter</artifactId>
         </dependency>
+
     </dependencies>
 </project>

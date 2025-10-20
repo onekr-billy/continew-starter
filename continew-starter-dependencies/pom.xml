@@ -62,7 +62,8 @@
         <crane4j.version>2.9.0</crane4j.version>
 
         <!-- API Documentation Versions -->
-        <knife4j.version>4.5.0</knife4j.version>
+        <nextdoc4j.version>1.0.1</nextdoc4j.version>
+        <swagger-annotations.version>2.2.36</swagger-annotations.version>
 
         <!-- Tracing and Logging Versions -->
         <tlog.version>1.5.2</tlog.version>
@@ -325,11 +326,11 @@
                 <version>${crane4j.version}</version>
             </dependency>
 
-            <!-- Knife4j（前身是 swagger-bootstrap-ui，集 Swagger2 和 OpenAPI3 为一体的增强解决方案） -->
+            <!--NextDoc4j (现代化 API 文档 UI 工具 全面替代 Swagger UI) -->
             <dependency>
-                <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-dependencies</artifactId>
-                <version>${knife4j.version}</version>
+                <groupId>top.nextdoc4j</groupId>
+                <artifactId>nextdoc4j-bom</artifactId>
+                <version>${nextdoc4j.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -420,6 +421,13 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-compress</artifactId>
                 <version>${commons-compress.version}</version>
+            </dependency>
+
+            <!-- Swagger 注解 -->
+            <dependency>
+                <groupId>io.swagger.core.v3</groupId>
+                <artifactId>swagger-annotations-jakarta</artifactId>
+                <version>${swagger-annotations.version}</version>
             </dependency>
 
             <!-- ContiNew Starter 依赖 -->
