@@ -23,6 +23,7 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.server.PathContainer;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExecutionChain;
@@ -49,6 +50,8 @@ public class SpringWebUtils {
 
     private SpringWebUtils() {
     }
+
+    private static final AntPathMatcher matcher = new AntPathMatcher();
 
     /**
      * 路径是否匹配
@@ -86,6 +89,30 @@ public class SpringWebUtils {
         PathPattern pathPattern = PathPatternParser.defaultInstance.parse(pattern);
         PathContainer pathContainer = PathContainer.parsePath(path);
         return pathPattern.matches(pathContainer);
+    }
+
+    /**
+     * 路径是否匹配 - Ant 风格
+     *
+     * @param path    路径
+     * @param pattern 匹配模式
+     * @return 是否匹配
+     * @since 2.4.0
+     */
+    public static boolean isMatchAnt(String path, String pattern) {
+        return matcher.match(pattern, path);
+    }
+
+    /**
+     * 路径是否匹配 - Ant 风格
+     *
+     * @param path     路径
+     * @param patterns 匹配模式列表
+     * @return 是否匹配
+     * @since 2.6.0
+     */
+    public static boolean isMatchAnt(String path, List<String> patterns) {
+        return patterns.stream().anyMatch(pattern -> isMatchAnt(path, pattern));
     }
 
     /**

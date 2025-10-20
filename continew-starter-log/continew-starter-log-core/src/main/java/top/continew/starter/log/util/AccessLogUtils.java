@@ -40,10 +40,10 @@ public class AccessLogUtils {
     }
 
     /**
-     * 资源路径 - doc 路径
+     * 静态资源路径模式
      */
     private static final List<String> RESOURCE_PATH = List
-        .of("/doc/**", "/v2/api-docs/**", "/v3/api-docs/**", "/webjars/**", "/swagger-resources/**", "/swagger-ui.html");
+        .of("/**/doc/**", "/**/doc.html", "/**/nextdoc/**", "/**/v*/api-docs/**", "/**/api-docs/**", "/**/swagger-ui/**", "/**/swagger-ui.html", "/**/swagger-resources/**", "/**/webjars/**", "/**/favicon.ico", "/**/static/**", "/**/assets/**", "/**/actuator/**", "/error", "/health");
 
     /**
      * 获取参数信息
@@ -91,7 +91,7 @@ public class AccessLogUtils {
     public static boolean exclusionPath(LogProperties properties, String path) {
         // 放行路由配置的排除检查
         return properties.isMatch(path) || RESOURCE_PATH.stream()
-            .anyMatch(resourcePath -> SpringWebUtils.isMatch(path, resourcePath));
+            .anyMatch(resourcePath -> SpringWebUtils.isMatchAnt(path, resourcePath));
     }
 
     /**
