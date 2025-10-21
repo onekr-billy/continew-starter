@@ -107,16 +107,14 @@ public class SpringDocAutoConfiguration implements WebMvcConfigurer {
     public GlobalOpenApiCustomizer globalOpenApiCustomizer(SpringDocExtensionProperties properties) {
         return openApi -> {
             if (openApi.getPaths() != null) {
-                openApi.getPaths().forEach((s, pathItem) -> {
+                openApi.getPaths().forEach((path, pathItem) -> {
                     // 为所有接口添加鉴权
                     Components components = properties.getComponents();
                     if (components != null && MapUtil.isNotEmpty(components.getSecuritySchemes())) {
                         Map<String, SecurityScheme> securitySchemeMap = components.getSecuritySchemes();
                         pathItem.readOperations().forEach(operation -> {
                             SecurityRequirement securityRequirement = new SecurityRequirement();
-                            List<String> list = CollUtils.mapToList(securitySchemeMap
-                                .values(), SecurityScheme::getName);
-                            list.forEach(securityRequirement::addList);
+                            securitySchemeMap.keySet().forEach(securityRequirement::addList);
                             operation.addSecurityItem(securityRequirement);
                         });
                     }
