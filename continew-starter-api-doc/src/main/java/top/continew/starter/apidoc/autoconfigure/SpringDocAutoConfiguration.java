@@ -40,10 +40,8 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import top.continew.starter.apidoc.handler.BaseEnumParameterHandler;
 import top.continew.starter.core.autoconfigure.application.ApplicationProperties;
-import top.continew.starter.core.util.CollUtils;
 import top.continew.starter.core.util.GeneralPropertySourceFactory;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -87,12 +85,10 @@ public class SpringDocAutoConfiguration implements WebMvcConfigurer {
         Components components = properties.getComponents();
         if (components != null) {
             openApi.components(components);
-            // 鉴权配置
             Map<String, SecurityScheme> securitySchemeMap = components.getSecuritySchemes();
             if (MapUtil.isNotEmpty(securitySchemeMap)) {
                 SecurityRequirement securityRequirement = new SecurityRequirement();
-                List<String> list = CollUtils.mapToList(securitySchemeMap.values(), SecurityScheme::getName);
-                list.forEach(securityRequirement::addList);
+                securitySchemeMap.keySet().forEach(securityRequirement::addList);
                 openApi.addSecurityItem(securityRequirement);
             }
         }
