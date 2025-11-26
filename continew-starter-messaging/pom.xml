@@ -18,6 +18,7 @@
     <modules>
         <module>continew-starter-messaging-mail</module>
         <module>continew-starter-messaging-websocket</module>
+        <module>continew-starter-messaging-mqtt</module>
     </modules>
 
     <dependencies>

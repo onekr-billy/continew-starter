@@ -125,6 +125,11 @@ public class PropertiesConstants {
     public static final String MESSAGING_WEBSOCKET = MESSAGING + StringConstants.DOT + "websocket";
 
     /**
+     * MQTT 配置
+     */
+    public static final String MESSAGING_MQTT = MESSAGING + StringConstants.DOT + "mqtt";
+
+    /**
      * 日志配置
      */
     public static final String LOG = CONTINEW_STARTER + StringConstants.DOT + "log";
