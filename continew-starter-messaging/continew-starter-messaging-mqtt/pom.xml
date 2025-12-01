@@ -8,7 +8,6 @@
         <version>${revision}</version>
     </parent>
 
-
     <artifactId>continew-starter-messaging-mqtt</artifactId>
     <packaging>jar</packaging>
 
@@ -16,12 +15,10 @@
     <description>ContiNew Starter 消息模块 - MQTT</description>
 
     <dependencies>
-        <!--spring MQTT消息模块-->
+        <!-- Spring MQTT 消息模块 -->
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-mqtt</artifactId>
         </dependency>
-
     </dependencies>
-
 </project>

@@ -51,7 +51,7 @@ public class SpringWebUtils {
     private SpringWebUtils() {
     }
 
-    private static final AntPathMatcher matcher = new AntPathMatcher();
+    private static final AntPathMatcher MATCHER = new AntPathMatcher();
 
     /**
      * 路径是否匹配
@@ -100,7 +100,7 @@ public class SpringWebUtils {
      * @since 2.4.0
      */
     public static boolean isMatchAnt(String path, String pattern) {
-        return matcher.match(pattern, path);
+        return MATCHER.match(pattern, path);
     }
 
     /**

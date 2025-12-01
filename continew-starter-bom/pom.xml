@@ -190,17 +190,17 @@
                 <version>${revision}</version>
             </dependency>
 
-            <!-- 消息模块 - MQTT -->
-            <dependency>
-                <groupId>top.continew.starter</groupId>
-                <artifactId>continew-starter-messaging-mqtt</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
             <!-- 消息模块 - WebSocket -->
             <dependency>
                 <groupId>top.continew.starter</groupId>
                 <artifactId>continew-starter-messaging-websocket</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <!-- 消息模块 - MQTT -->
+            <dependency>
+                <groupId>top.continew.starter</groupId>
+                <artifactId>continew-starter-messaging-mqtt</artifactId>
                 <version>${revision}</version>
             </dependency>
 

@@ -33,6 +33,7 @@ import java.util.function.Function;
  * @since 1.0.0
  */
 public class ExceptionUtils {
+
     private static final Logger log = LoggerFactory.getLogger(ExceptionUtils.class);
 
     private ExceptionUtils() {
