@@ -80,6 +80,8 @@
         <snakeyaml.version>2.5</snakeyaml.version>
         <nashorn.version>15.7</nashorn.version>
 
+        <commons-fileupload.version>1.6.0</commons-fileupload.version>
+
         <!-- Security Vulnerability Fix Versions -->
         <commons-beanutils.version>1.11.0</commons-beanutils.version>
         <commons-io.version>2.20.0</commons-io.version>
@@ -402,6 +404,13 @@
                 <groupId>org.openjdk.nashorn</groupId>
                 <artifactId>nashorn-core</artifactId>
                 <version>${nashorn.version}</version>
+            </dependency>
+
+            <!-- 文件上传组件（用于处理 multipart/form-data 类型的请求，支持文件上传） -->
+            <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>${commons-fileupload.version}</version>
             </dependency>
 
             <!-- 解决部分传递依赖漏洞问题 -->

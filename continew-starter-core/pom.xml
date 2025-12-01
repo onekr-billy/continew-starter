@@ -63,6 +63,13 @@
             <artifactId>mica-ip2region</artifactId>
         </dependency>
 
+        <!-- 文件上传组件（用于处理 multipart/form-data 类型的请求，支持文件上传） -->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!-- Hutool 核心模块（核心方法及数据结构包） -->
         <dependency>
             <groupId>cn.hutool</groupId>
