@@ -50,6 +50,11 @@ public class PropertiesConstants {
     public static final String WEB_RESPONSE = WEB + StringConstants.DOT + "response";
 
     /**
+     * 认证-JustAuth 配置
+     */
+    public static final String AUTH_JUSTAUTH = CONTINEW_STARTER + StringConstants.DOT + "justauth";
+
+    /**
      * 加密配置
      */
     public static final String ENCRYPT = CONTINEW_STARTER + StringConstants.DOT + "encrypt";

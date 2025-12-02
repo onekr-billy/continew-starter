@@ -18,38 +18,46 @@ package top.continew.starter.auth.justauth.autoconfigure;
 
 import jakarta.annotation.PostConstruct;
 import me.zhyd.oauth.cache.AuthStateCache;
-import org.redisson.client.RedisClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import top.continew.starter.auth.justauth.core.AuthStateCacheRedisDefaultImpl;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import top.continew.starter.auth.justauth.AuthRequestFactory;
 import top.continew.starter.core.constant.PropertiesConstants;
 
 /**
  * JustAuth 自动配置
  *
  * @author Charles7c
+ * @author <a href="https://gitee.com/justauth/justauth-spring-boot-starter">yangkai.shen</a>
  * @since 1.0.0
  */
-@AutoConfiguration(before = com.xkcoding.justauth.autoconfigure.JustAuthAutoConfiguration.class)
-@ConditionalOnProperty(prefix = "justauth", name = PropertiesConstants.ENABLED, havingValue = "true", matchIfMissing = true)
+@AutoConfiguration
+@EnableConfigurationProperties(JustAuthProperties.class)
+@ConditionalOnProperty(prefix = PropertiesConstants.AUTH_JUSTAUTH, name = PropertiesConstants.ENABLED, havingValue = "true", matchIfMissing = true)
 public class JustAuthAutoConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(JustAuthAutoConfiguration.class);
 
     /**
-     * State 缓存 Redis 实现（默认）
+     * AuthRequest 工厂配置
      */
     @Bean
-    @ConditionalOnClass(RedisClient.class)
-    @ConditionalOnProperty(prefix = "justauth.cache", name = "type", havingValue = "redis")
-    public AuthStateCache authStateCache() {
-        AuthStateCacheRedisDefaultImpl impl = new AuthStateCacheRedisDefaultImpl();
-        log.debug("[ContiNew Starter] - Auto Configuration 'JustAuth-AuthStateCache-Redis' completed initialization.");
-        return impl;
+    public AuthRequestFactory authRequestFactory(JustAuthProperties properties, AuthStateCache stateCache) {
+        return new AuthRequestFactory(properties, stateCache);
+    }
+
+    /**
+     * 缓存自动配置
+     */
+    @Configuration
+    @Import({JustAuthStateCacheConfiguration.Default.class, JustAuthStateCacheConfiguration.Redis.class,
+        JustAuthStateCacheConfiguration.Custom.class})
+    protected static class AuthStateCacheAutoConfiguration {
     }
 
     @PostConstruct

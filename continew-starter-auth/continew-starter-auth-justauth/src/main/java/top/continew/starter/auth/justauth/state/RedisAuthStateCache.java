@@ -14,22 +14,27 @@
  * limitations under the License.
  */
 
-package top.continew.starter.auth.justauth.core;
+package top.continew.starter.auth.justauth.state;
 
 import me.zhyd.oauth.cache.AuthStateCache;
+import top.continew.starter.auth.justauth.autoconfigure.JustAuthCacheProperties;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 
 import java.time.Duration;
 
 /**
- * 默认 State 缓存 Redis 实现
+ * Redis State 缓存实现
  *
  * @author Charles7c
  * @since 1.0.0
  */
-public class AuthStateCacheRedisDefaultImpl implements AuthStateCache {
+public class RedisAuthStateCache implements AuthStateCache {
 
-    private static final String KEY_PREFIX = "SOCIAL_AUTH_STATE";
+    public final JustAuthCacheProperties cacheProperties;
+
+    public RedisAuthStateCache(JustAuthCacheProperties cacheProperties) {
+        this.cacheProperties = cacheProperties;
+    }
 
     /**
      * 存入缓存
@@ -39,8 +44,7 @@ public class AuthStateCacheRedisDefaultImpl implements AuthStateCache {
      */
     @Override
     public void cache(String key, String value) {
-        // 参考：在 JustAuth 中，内置了一个基于 map 的 state 缓存器，默认缓存有效期为 3 分钟
-        RedisUtils.set(RedisUtils.formatKey(KEY_PREFIX, key), value, Duration.ofMinutes(3));
+        this.cache(key, value, cacheProperties.getTimeout().toMillis());
     }
 
     /**
@@ -52,7 +56,7 @@ public class AuthStateCacheRedisDefaultImpl implements AuthStateCache {
      */
     @Override
     public void cache(String key, String value, long timeout) {
-        RedisUtils.set(RedisUtils.formatKey(KEY_PREFIX, key), value, Duration.ofMillis(timeout));
+        RedisUtils.set(RedisUtils.formatKey(cacheProperties.getPrefix(), key), value, Duration.ofMillis(timeout));
     }
 
     /**
@@ -63,7 +67,7 @@ public class AuthStateCacheRedisDefaultImpl implements AuthStateCache {
      */
     @Override
     public String get(String key) {
-        return RedisUtils.get(RedisUtils.formatKey(KEY_PREFIX, key));
+        return RedisUtils.get(RedisUtils.formatKey(cacheProperties.getPrefix(), key));
     }
 
     /**
@@ -74,6 +78,6 @@ public class AuthStateCacheRedisDefaultImpl implements AuthStateCache {
      */
     @Override
     public boolean containsKey(String key) {
-        return RedisUtils.exists(RedisUtils.formatKey(KEY_PREFIX, key));
+        return RedisUtils.exists(RedisUtils.formatKey(cacheProperties.getPrefix(), key));
     }
 }
