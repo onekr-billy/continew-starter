@@ -17,6 +17,7 @@
 package top.continew.starter.cache.redisson.util;
 
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import org.redisson.api.*;
 import org.redisson.api.options.KeysScanOptions;
@@ -136,6 +137,18 @@ public class RedisUtils {
     public static <T> T get(String key) {
         RBucket<T> bucket = CLIENT.getBucket(key);
         return bucket.get();
+    }
+
+    /**
+     * 查询指定缓存，若不存在则返回默认值
+     *
+     * @param key          键
+     * @param defaultValue 默认值
+     * @return 值
+     * @since 2.15.0
+     */
+    public static <T> T getOrDefault(String key, T defaultValue) {
+        return ObjectUtil.defaultIfNull(get(key), defaultValue);
     }
 
     /**
