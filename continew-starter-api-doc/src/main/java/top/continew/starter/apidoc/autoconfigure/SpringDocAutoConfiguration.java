@@ -31,6 +31,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import top.continew.starter.apidoc.processor.BaseEnumProcessor;
 import top.continew.starter.core.autoconfigure.application.ApplicationProperties;
 import top.continew.starter.core.util.GeneralPropertySourceFactory;
 
@@ -72,6 +73,17 @@ public class SpringDocAutoConfiguration implements WebMvcConfigurer {
         OpenAPI openApi = new OpenAPI();
         openApi.info(info);
         return openApi;
+    }
+
+    /**
+     * 基础枚举处理器
+     *
+     * @return {@link BaseEnumProcessor }
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public BaseEnumProcessor baseEnumProcessor() {
+        return new BaseEnumProcessor();
     }
 
     @PostConstruct

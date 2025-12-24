@@ -28,5 +28,11 @@
             <artifactId>nextdoc4j-springboot3-starter</artifactId>
         </dependency>
 
+        <!--nextdoc4j - 枚举插件-->
+        <dependency>
+            <groupId>top.nextdoc4j</groupId>
+            <artifactId>nextdoc4j-plugin-enums</artifactId>
+        </dependency>
+
     </dependencies>
 </project>
