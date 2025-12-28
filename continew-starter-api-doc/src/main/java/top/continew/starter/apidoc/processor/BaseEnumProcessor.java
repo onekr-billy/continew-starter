@@ -22,13 +22,14 @@ import top.continew.starter.core.enums.BaseEnum;
 import top.nextdoc4j.enums.resolver.EnumMetadataResolver;
 
 /**
- * 基础枚举处理器 - nextdoc4j 枚举插件展示枚举值
+ * BaseEnum 枚举处理器 - NexDoc4j 枚举插件展示枚举值
  *
  * @author echo
  * @since 2.15.0
  */
 @Component
 public class BaseEnumProcessor implements EnumMetadataResolver {
+
     @Override
     public boolean supports(Class<?> aClass) {
         return aClass != null && aClass.isEnum() && ClassUtil.isAssignable(BaseEnum.class, aClass);

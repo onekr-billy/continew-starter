@@ -76,7 +76,7 @@ public class SpringDocAutoConfiguration implements WebMvcConfigurer {
     }
 
     /**
-     * 基础枚举处理器
+     * BaseEnum 枚举处理器
      *
      * @return {@link BaseEnumProcessor }
      */
