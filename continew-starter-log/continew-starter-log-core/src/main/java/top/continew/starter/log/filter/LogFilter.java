@@ -56,18 +56,14 @@ public class LogFilter extends OncePerRequestFilter {
             return;
         }
 
+        // 包装可重复读取请求及响应
         boolean isExcludeUri = logProperties.isMatch(request.getRequestURI());
-
-        // 处理可重复读取的请求
         HttpServletRequest requestWrapper = (isExcludeUri || !this.isRequestWrapper(request))
             ? request
             : new RepeatReadRequestWrapper(request);
-
-        // 处理可重复读取的响应
         HttpServletResponse responseWrapper = (isExcludeUri || !this.isResponseWrapper(response))
             ? response
             : new RepeatReadResponseWrapper(response);
-
         filterChain.doFilter(requestWrapper, responseWrapper);
 
         // 如果响应被包装了，复制缓存数据到原始响应
