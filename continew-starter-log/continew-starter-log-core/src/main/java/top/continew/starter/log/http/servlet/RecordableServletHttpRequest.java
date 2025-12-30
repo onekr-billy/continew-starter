@@ -17,12 +17,12 @@
 package top.continew.starter.log.http.servlet;
 
 import cn.hutool.core.text.CharSequenceUtil;
-import cn.hutool.extra.servlet.JakartaServletUtil;
 import cn.hutool.json.JSONUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 import top.continew.starter.core.constant.StringConstants;
+import top.continew.starter.core.util.ServletUtils;
 import top.continew.starter.core.wrapper.RepeatReadRequestWrapper;
 import top.continew.starter.log.http.RecordableHttpRequest;
 
@@ -75,7 +75,7 @@ public final class RecordableServletHttpRequest implements RecordableHttpRequest
 
     @Override
     public Map<String, String> getHeaders() {
-        return JakartaServletUtil.getHeaderMap(request);
+        return ServletUtils.getHeaderMap(request);
     }
 
     @Override
@@ -83,7 +83,7 @@ public final class RecordableServletHttpRequest implements RecordableHttpRequest
         try {
             RepeatReadRequestWrapper wrappedRequest = WebUtils
                 .getNativeRequest(request, RepeatReadRequestWrapper.class);
-            if (wrappedRequest == null || wrappedRequest.isMultipartContent(request)) {
+            if (wrappedRequest == null || ServletUtils.isMultipart(request)) {
                 return null;
             }
             String body = wrappedRequest.getContentAsString();
@@ -96,12 +96,12 @@ public final class RecordableServletHttpRequest implements RecordableHttpRequest
     @Override
     public String getParams() {
         String body = this.getBody();
-        return CharSequenceUtil.isNotBlank(body) ? body : JSONUtil.toJsonStr(JakartaServletUtil.getParamMap(request));
+        return CharSequenceUtil.isNotBlank(body) ? body : JSONUtil.toJsonStr(ServletUtils.getParamMap(request));
     }
 
     @Override
     public String getIp() {
-        return JakartaServletUtil.getClientIP(request);
+        return ServletUtils.getClientIP(request);
     }
 
     /**

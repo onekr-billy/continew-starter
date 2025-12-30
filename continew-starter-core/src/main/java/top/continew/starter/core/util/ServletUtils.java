@@ -18,6 +18,7 @@ package top.continew.starter.core.util;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.text.CharSequenceUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.servlet.JakartaServletUtil;
 import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
@@ -189,5 +190,38 @@ public class ServletUtils extends JakartaServletUtil {
         write(response, data, MediaType.APPLICATION_JSON_VALUE);
     }
 
+    /**
+     * 检查请求是否为 {@code multipart/form-data} 格式（常用于文件上传）
+     *
+     * @param request 请求对象
+     * @return true: 是; false: 否
+     * @since 2.15.1
+     */
+    public static boolean isMultipart(HttpServletRequest request) {
+        return StrUtil.startWithIgnoreCase(request.getContentType(), "multipart/");
+    }
 
+    /**
+     * 检查 HTTP 请求是否为 {@code application/x-www-form-urlencoded} 格式（标准表单提交）
+     *
+     * @param request 请求对象
+     * @return true: 是; false: 否
+     * @see MediaType#APPLICATION_FORM_URLENCODED_VALUE
+     * @since 2.15.1
+     */
+    public static boolean isForm(HttpServletRequest request) {
+        return StrUtil.contains(request.getContentType(), MediaType.APPLICATION_FORM_URLENCODED_VALUE);
+    }
+
+    /**
+     * 检查 HTTP 响应是否为 {@code Server-Sent Events (SSE)} 流格式
+     *
+     * @param response 响应对象
+     * @return true: 是; false: 否
+     * @see MediaType#TEXT_EVENT_STREAM_VALUE
+     * @since 2.15.1
+     */
+    public static boolean isStream(HttpServletResponse response) {
+        return StrUtil.contains(response.getContentType(), MediaType.TEXT_EVENT_STREAM_VALUE);
+    }
 }
