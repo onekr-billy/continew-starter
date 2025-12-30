@@ -18,6 +18,7 @@ package top.continew.starter.log.http.servlet;
 
 import cn.hutool.json.JSONUtil;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.util.WebUtils;
 import top.continew.starter.core.util.ServletUtils;
 import top.continew.starter.core.wrapper.RepeatReadResponseWrapper;
 import top.continew.starter.log.http.RecordableHttpResponse;
@@ -54,11 +55,17 @@ public final class RecordableServletHttpResponse implements RecordableHttpRespon
 
     @Override
     public String getBody() {
-        if (response instanceof RepeatReadResponseWrapper wrapper && !wrapper.isStreamingResponse()) {
-            String body = wrapper.getResponseContent();
+        try {
+            RepeatReadResponseWrapper wrappedResponse = WebUtils
+                .getNativeResponse(response, RepeatReadResponseWrapper.class);
+            if (wrappedResponse == null || wrappedResponse.isStreamingResponse()) {
+                return null;
+            }
+            String body = wrappedResponse.getResponseContent();
             return JSONUtil.isTypeJSON(body) ? body : null;
+        } catch (Exception e) {
+            return null;
         }
-        return null;
     }
 
     @Override

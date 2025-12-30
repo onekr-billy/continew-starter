@@ -51,40 +51,41 @@ public class LogFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
-        if (!this.isFilter(request)) {
+        if (this.isNotFilter(request)) {
             filterChain.doFilter(request, response);
             return;
         }
 
         // 包装可重复读取请求及响应
-        boolean isExcludeUri = logProperties.isMatch(request.getRequestURI());
-        HttpServletRequest requestWrapper = (isExcludeUri || !this.isRequestWrapper(request))
-            ? request
+        RepeatReadRequestWrapper wrappedRequest = request instanceof RepeatReadRequestWrapper wrapped
+            ? wrapped
             : new RepeatReadRequestWrapper(request);
-        HttpServletResponse responseWrapper = (isExcludeUri || !this.isResponseWrapper(response))
-            ? response
+        RepeatReadResponseWrapper wrappedResponse = response instanceof RepeatReadResponseWrapper wrapped
+            ? wrapped
             : new RepeatReadResponseWrapper(response);
-        filterChain.doFilter(requestWrapper, responseWrapper);
+        filterChain.doFilter(wrappedRequest, wrappedResponse);
 
-        // 如果响应被包装了，复制缓存数据到原始响应
-        if (responseWrapper instanceof RepeatReadResponseWrapper wrappedResponse) {
-            wrappedResponse.copyBodyToResponse();
-        }
+        // 复制缓存数据到原始响应
+        wrappedResponse.copyBodyToResponse();
     }
 
     /**
-     * 是否过滤请求
+     * 是否不过滤
      *
      * @param request 请求对象
-     * @return 是否过滤请求
+     * @return true: 不过滤; false: 过滤
      */
-    private boolean isFilter(HttpServletRequest request) {
+    private boolean isNotFilter(HttpServletRequest request) {
         if (!isRequestValid(request)) {
-            return false;
+            return true;
         }
         // 不拦截 /error
         ServerProperties serverProperties = SpringUtil.getBean(ServerProperties.class);
-        return !request.getRequestURI().equals(serverProperties.getError().getPath());
+        if (request.getRequestURI().equals(serverProperties.getError().getPath())) {
+            return true;
+        }
+        // 放行路径
+        return logProperties.isMatchExcludeUri(request.getRequestURI());
     }
 
     /**
@@ -100,25 +101,5 @@ public class LogFilter extends OncePerRequestFilter {
         } catch (URISyntaxException e) {
             return false;
         }
-    }
-
-    /**
-     * 是否需要包装输入流
-     *
-     * @param request 请求对象
-     * @return true：是；false：否
-     */
-    private boolean isRequestWrapper(HttpServletRequest request) {
-        return !(request instanceof RepeatReadRequestWrapper);
-    }
-
-    /**
-     * 是否需要包装输出流
-     *
-     * @param response 响应对象
-     * @return true：是；false：否
-     */
-    private boolean isResponseWrapper(HttpServletResponse response) {
-        return !(response instanceof RepeatReadResponseWrapper);
     }
 }

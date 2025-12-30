@@ -21,6 +21,7 @@ import cn.hutool.extra.servlet.JakartaServletUtil;
 import cn.hutool.json.JSONUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.util.UriUtils;
+import org.springframework.web.util.WebUtils;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.wrapper.RepeatReadRequestWrapper;
 import top.continew.starter.log.http.RecordableHttpRequest;
@@ -79,11 +80,17 @@ public final class RecordableServletHttpRequest implements RecordableHttpRequest
 
     @Override
     public String getBody() {
-        if (request instanceof RepeatReadRequestWrapper wrapper && !wrapper.isMultipartContent(request)) {
-            String body = JakartaServletUtil.getBody(request);
+        try {
+            RepeatReadRequestWrapper wrappedRequest = WebUtils
+                .getNativeRequest(request, RepeatReadRequestWrapper.class);
+            if (wrappedRequest == null || wrappedRequest.isMultipartContent(request)) {
+                return null;
+            }
+            String body = wrappedRequest.getContentAsString();
             return JSONUtil.isTypeJSON(body) ? body : null;
+        } catch (Exception e) {
+            return null;
         }
-        return null;
     }
 
     @Override

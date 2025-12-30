@@ -96,7 +96,7 @@ public class AccessLogUtils {
      */
     public static boolean exclusionPath(LogProperties properties, String path) {
         // 放行路由配置的排除检查
-        return properties.isMatch(path) || RESOURCE_PATH.stream()
+        return properties.isMatchExcludeUri(path) || RESOURCE_PATH.stream()
             .anyMatch(resourcePath -> SpringWebUtils.isMatchAnt(path, resourcePath));
     }
 

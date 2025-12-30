@@ -125,7 +125,7 @@ public class LogAspect {
             return false;
         }
         // 如果接口匹配排除列表，不记录日志
-        if (logProperties.isMatch(attributes.getRequest().getRequestURI())) {
+        if (logProperties.isMatchExcludeUri(attributes.getRequest().getRequestURI())) {
             return false;
         }
         return logHandler.isRecord(targetMethod, targetClass);
