@@ -19,8 +19,8 @@ package top.continew.starter.log.model;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import top.continew.starter.core.constant.PropertiesConstants;
+import top.continew.starter.core.util.SpringUtils;
 import top.continew.starter.log.enums.Include;
-import top.continew.starter.core.util.SpringWebUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,6 +95,6 @@ public class LogProperties {
      * @return true: 匹配; false: 不匹配
      */
     public boolean isMatchExcludeUri(String uri) {
-        return this.getExcludePatterns().stream().anyMatch(pattern -> SpringWebUtils.isMatch(uri, pattern));
+        return this.getExcludePatterns().stream().anyMatch(pattern -> SpringUtils.isMatch(uri, pattern));
     }
 }

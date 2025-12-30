@@ -22,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.starter.core.constant.StringConstants;
-import top.continew.starter.core.util.SpringWebUtils;
+import top.continew.starter.core.util.SpringUtils;
 import top.continew.starter.storage.autoconfigure.properties.LocalStorageConfig;
 import top.continew.starter.storage.common.exception.StorageException;
 import top.continew.starter.storage.domain.model.resp.FileInfo;
@@ -70,7 +70,7 @@ public class LocalStorageStrategy implements StorageStrategy {
      */
     public void registerResources(LocalStorageConfig config) {
         // 注册资源映射
-        SpringWebUtils.registerResourceHandler(MapUtil.of(URLUtil.url(config.getEndpoint()).getPath(), config
+        SpringUtils.registerResourceHandler(MapUtil.of(URLUtil.url(config.getEndpoint()).getPath(), config
             .getBucketName()));
     }
 
@@ -426,7 +426,7 @@ public class LocalStorageStrategy implements StorageStrategy {
     public void cleanup() {
         // 清理静态资源映射
         if (config != null) {
-            SpringWebUtils.deRegisterResourceHandler(MapUtil.of(URLUtil.url(config.getEndpoint()).getPath(), config
+            SpringUtils.deRegisterResourceHandler(MapUtil.of(URLUtil.url(config.getEndpoint()).getPath(), config
                 .getBucketName()));
         }
     }

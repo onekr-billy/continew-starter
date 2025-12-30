@@ -18,7 +18,7 @@ package top.continew.starter.log.util;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.json.JSONUtil;
-import top.continew.starter.core.util.SpringWebUtils;
+import top.continew.starter.core.util.SpringUtils;
 import top.continew.starter.log.http.RecordableHttpRequest;
 import top.continew.starter.log.model.AccessLogProperties;
 import top.continew.starter.log.model.LogProperties;
@@ -97,7 +97,7 @@ public class AccessLogUtils {
     public static boolean exclusionPath(LogProperties properties, String path) {
         // 放行路由配置的排除检查
         return properties.isMatchExcludeUri(path) || RESOURCE_PATH.stream()
-            .anyMatch(resourcePath -> SpringWebUtils.isMatchAnt(path, resourcePath));
+            .anyMatch(resourcePath -> SpringUtils.isMatchAnt(path, resourcePath));
     }
 
     /**

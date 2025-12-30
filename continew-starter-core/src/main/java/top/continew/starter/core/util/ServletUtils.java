@@ -188,4 +188,6 @@ public class ServletUtils extends JakartaServletUtil {
     public static void writeJSON(HttpServletResponse response, String data) {
         write(response, data, MediaType.APPLICATION_JSON_VALUE);
     }
+
+
 }
