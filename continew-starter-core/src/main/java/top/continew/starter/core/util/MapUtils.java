@@ -63,17 +63,15 @@ public class MapUtils {
         if (MapUtil.isEmpty(to) && MapUtil.isEmpty(from)) {
             return new HashMap<>();
         }
-        Set<Map.Entry<String, Object>> entries = to.entrySet();
-        Iterator<Map.Entry<String, Object>> iterator = entries.iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, Object> kv = iterator.next();
+        
+        for (Map.Entry<String, Object> kv : to.entrySet()) {
             String toKey = kv.getKey();
             Object toValue = kv.getValue();
             Object fromValue = from.get(toKey);
             if (fromValue != null) {
                 if (toValue instanceof Map) {
-                    Map<String, Object> childTo = (Map<String, Object>)toValue;
-                    mergeMap(childTo, (Map<String, Object>)fromValue);
+                    Map<String, Object> childTo = (Map<String, Object>) toValue;
+                    mergeMap(childTo, (Map<String, Object>) fromValue);
                 } else {
                     to.put(toKey, fromValue);
                 }
