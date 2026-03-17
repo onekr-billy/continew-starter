@@ -21,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 import top.continew.starter.core.constant.StringConstants;
-import top.continew.starter.storage.autoconfigure.properties.StorageProperties;
 import top.continew.starter.storage.common.constant.StorageConstant;
 import top.continew.starter.storage.common.exception.StorageException;
 import top.continew.starter.storage.domain.file.EnhancedMultipartFile;
@@ -56,18 +55,15 @@ public class FileStorageService {
     private static final Logger log = LoggerFactory.getLogger(FileStorageService.class);
 
     private final StorageStrategyRouter router;
-    private final StorageProperties storageProperties;
     private final ProcessorRegistry processorRegistry;
     private final FileRecorder fileRecorder;
     private final ThreadLocal<List<FileProcessor>> tempProcessors = ThreadLocal.withInitial(ArrayList::new);
     private final ThreadLocal<UploadProgressListener> progressListener = new ThreadLocal<>();
 
     public FileStorageService(StorageStrategyRouter router,
-                              StorageProperties storageProperties,
                               ProcessorRegistry processorRegistry,
                               FileRecorder fileRecorder) {
         this.router = router;
-        this.storageProperties = storageProperties;
         this.processorRegistry = processorRegistry;
         this.fileRecorder = fileRecorder;
     }
@@ -600,8 +596,6 @@ public class FileStorageService {
                     .getOriginalFileName()));
                 fileInfo.getMetadata()
                     .put("fileMd5", StrUtil.blankToDefault(session.getFileMd5(), StringConstants.EMPTY));
-                fileInfo.getMetadata()
-                    .put("sha256", StrUtil.blankToDefault(session.getFileMd5(), StringConstants.EMPTY));
             }
             fileInfo.getMetadata().put("uploadId", uploadId);
             fileInfo.getMetadata().put("status", "COMPLETED");

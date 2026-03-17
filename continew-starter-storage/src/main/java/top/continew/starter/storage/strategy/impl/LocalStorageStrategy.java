@@ -65,6 +65,11 @@ public class LocalStorageStrategy implements StorageStrategy {
      */
     private final String multipartTempDir;
 
+    /**
+     * 动态注册的静态资源路径模式
+     */
+    private String resourceHandlerPath;
+
     public LocalStorageStrategy(LocalStorageConfig config) {
         this.config = config;
         this.multipartUploadPartSize = resolveMultipartUploadPartSize(config);
@@ -79,9 +84,21 @@ public class LocalStorageStrategy implements StorageStrategy {
      * @param config 配置
      */
     public void registerResources(LocalStorageConfig config) {
-        // 注册资源映射
-        SpringUtils.registerResourceHandler(MapUtil.of(URLUtil.url(config.getEndpoint()).getPath(), config
-            .getBucketName()));
+        if (StrUtil.hasBlank(config.getEndpoint(), config.getBucketName())) {
+            return;
+        }
+        try {
+            String endpointPath = URLUtil.url(config.getEndpoint()).getPath();
+            if (StrUtil.isBlank(endpointPath)) {
+                return;
+            }
+            // 注册资源映射
+            SpringUtils.registerResourceHandler(MapUtil.of(endpointPath, config.getBucketName()));
+            this.resourceHandlerPath = endpointPath;
+        } catch (Exception e) {
+            // 避免因运行环境差异导致启动失败
+            log.warn("注册本地存储静态资源映射失败，将继续使用存储功能: platform={}", config.getPlatform(), e);
+        }
     }
 
     /**
@@ -480,7 +497,13 @@ public class LocalStorageStrategy implements StorageStrategy {
         while (normalized.startsWith(StringConstants.SLASH)) {
             normalized = normalized.substring(1);
         }
-        return normalized;
+
+        Path normalizedPath = Paths.get(normalized).normalize();
+        String safePath = normalizedPath.toString().replace("\\", StringConstants.SLASH);
+        if (StringConstants.DOUBLE_DOT.equals(safePath) || safePath.startsWith("../")) {
+            throw new StorageException("非法路径，包含目录穿越风险: " + rawPath);
+        }
+        return safePath;
     }
 
     private long resolveMultipartUploadPartSize(LocalStorageConfig localStorageConfig) {
@@ -520,9 +543,13 @@ public class LocalStorageStrategy implements StorageStrategy {
     @Override
     public void cleanup() {
         // 清理静态资源映射
-        if (config != null) {
-            SpringUtils.deRegisterResourceHandler(MapUtil.of(URLUtil.url(config.getEndpoint()).getPath(), config
-                .getBucketName()));
+        if (StrUtil.hasBlank(resourceHandlerPath, config.getBucketName())) {
+            return;
+        }
+        try {
+            SpringUtils.deRegisterResourceHandler(MapUtil.of(resourceHandlerPath, config.getBucketName()));
+        } catch (Exception e) {
+            log.warn("清理本地存储静态资源映射失败: platform={}", config.getPlatform(), e);
         }
     }
 

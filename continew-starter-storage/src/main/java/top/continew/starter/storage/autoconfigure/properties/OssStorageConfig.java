@@ -82,6 +82,11 @@ public class OssStorageConfig {
     private Long multipartUploadPartSize;
 
     /**
+     * 分片落盘临时目录（可选）
+     */
+    private String multipartTempDir;
+
+    /**
      * 请求超时时间（秒）
      */
     private int requestTimeout = 30;
@@ -182,6 +187,14 @@ public class OssStorageConfig {
 
     public void setMultipartUploadPartSize(Long multipartUploadPartSize) {
         this.multipartUploadPartSize = multipartUploadPartSize;
+    }
+
+    public String getMultipartTempDir() {
+        return multipartTempDir;
+    }
+
+    public void setMultipartTempDir(String multipartTempDir) {
+        this.multipartTempDir = multipartTempDir;
     }
 
     public int getRequestTimeout() {

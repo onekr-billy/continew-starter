@@ -19,6 +19,7 @@ package top.continew.starter.storage.autoconfigure;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -27,6 +28,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.annotation.AnnotationUtils;
 import top.continew.starter.storage.annotation.PlatformProcessor;
 import top.continew.starter.storage.autoconfigure.properties.StorageProperties;
 import top.continew.starter.storage.core.FileStorageService;
@@ -51,7 +53,7 @@ import java.util.Map;
  */
 @AutoConfiguration
 @EnableConfigurationProperties(StorageProperties.class)
-@Import({ProcessorRegistry.class})
+@Import({OssStorageAutoConfiguration.class, LocalStorageAutoConfiguration.class})
 public class StorageAutoConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(StorageAutoConfiguration.class);
@@ -71,8 +73,9 @@ public class StorageAutoConfiguration {
      * @return {@link StorageStrategyRouter }
      */
     @Bean
-    public StorageStrategyRouter strategyRouter(List<StorageStrategyRegistrar> registrars) {
-        return new StorageStrategyRouter(registrars, properties, storageDecoratorManager());
+    public StorageStrategyRouter strategyRouter(List<StorageStrategyRegistrar> registrars,
+                                                StorageDecoratorManager storageDecoratorManager) {
+        return new StorageStrategyRouter(registrars, properties, storageDecoratorManager);
     }
 
     /**
@@ -86,40 +89,18 @@ public class StorageAutoConfiguration {
     }
 
     /**
-     * oss存储自动配置
-     *
-     * @return {@link OssStorageAutoConfiguration }
-     */
-    @Bean
-    public OssStorageAutoConfiguration ossStorageAutoConfiguration() {
-        return new OssStorageAutoConfiguration(properties);
-    }
-
-    /**
-     * 本地存储自动配置
-     *
-     * @return {@link LocalStorageAutoConfiguration }
-     */
-    @Bean
-    public LocalStorageAutoConfiguration localStorageAutoConfiguration() {
-        return new LocalStorageAutoConfiguration(properties);
-    }
-
-    /**
      * 文件存储服务
      *
      * @param router            路由
-     * @param storageProperties 存储属性
      * @param processorRegistry 处理器注册表
      * @param fileRecorder      文件记录器
      * @return {@link FileStorageService }
      */
     @Bean
     public FileStorageService fileStorageService(StorageStrategyRouter router,
-                                                 StorageProperties storageProperties,
                                                  ProcessorRegistry processorRegistry,
                                                  FileRecorder fileRecorder) {
-        return new FileStorageService(router, storageProperties, processorRegistry, fileRecorder);
+        return new FileStorageService(router, processorRegistry, fileRecorder);
     }
 
     /**
@@ -143,8 +124,9 @@ public class StorageAutoConfiguration {
         // 自动发现并注册所有 FileProcessor 实现
         Map<String, FileProcessor> processors = applicationContext.getBeansOfType(FileProcessor.class);
         processors.values().forEach(processor -> {
-            // 检查是否有平台注解
-            PlatformProcessor annotation = processor.getClass().getAnnotation(PlatformProcessor.class);
+            // 检查是否有平台注解（兼容代理类）
+            Class<?> targetClass = AopUtils.getTargetClass(processor);
+            PlatformProcessor annotation = AnnotationUtils.findAnnotation(targetClass, PlatformProcessor.class);
             if (annotation != null) {
                 for (String platform : annotation.platforms()) {
                     registry.register(processor, platform);

@@ -16,15 +16,14 @@
 
 package top.continew.starter.storage.autoconfigure;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Bean;
-import top.continew.starter.core.constant.PropertiesConstants;
+import org.springframework.context.annotation.Configuration;
 import top.continew.starter.storage.autoconfigure.properties.OssStorageConfig;
 import top.continew.starter.storage.autoconfigure.properties.StorageProperties;
 import top.continew.starter.storage.engine.StorageStrategyRegistrar;
 import top.continew.starter.storage.strategy.StorageStrategy;
 import top.continew.starter.storage.strategy.impl.OssStorageStrategy;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -33,7 +32,7 @@ import java.util.List;
  * @author echo
  * @since 2.14.0
  */
-@ConditionalOnProperty(prefix = PropertiesConstants.STORAGE, name = "oss")
+@Configuration(proxyBeanMethods = false)
 public class OssStorageAutoConfiguration implements StorageStrategyRegistrar {
 
     private final StorageProperties properties;
@@ -48,9 +47,9 @@ public class OssStorageAutoConfiguration implements StorageStrategyRegistrar {
      * @param strategies 策略列表
      */
     @Override
-    @Bean
     public void register(List<StorageStrategy> strategies) {
-        for (OssStorageConfig config : properties.getOss()) {
+        List<OssStorageConfig> ossConfigs = properties.getOss() == null ? Collections.emptyList() : properties.getOss();
+        for (OssStorageConfig config : ossConfigs) {
             if (config.isEnabled()) {
                 if (config.getMultipartUploadThreshold() == null || config.getMultipartUploadThreshold() <= 0) {
                     config.setMultipartUploadThreshold(properties.getMultipartUploadThreshold());

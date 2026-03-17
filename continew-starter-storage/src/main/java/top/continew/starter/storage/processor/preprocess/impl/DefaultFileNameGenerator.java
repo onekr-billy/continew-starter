@@ -31,7 +31,7 @@ public class DefaultFileNameGenerator implements FileNameGenerator {
 
     @Override
     public String getName() {
-        return DefaultFilePathGenerator.class.getSimpleName();
+        return DefaultFileNameGenerator.class.getSimpleName();
     }
 
     @Override

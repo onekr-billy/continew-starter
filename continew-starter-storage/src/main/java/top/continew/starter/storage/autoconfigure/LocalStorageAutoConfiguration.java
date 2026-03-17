@@ -17,15 +17,14 @@
 package top.continew.starter.storage.autoconfigure;
 
 import cn.hutool.core.util.StrUtil;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Bean;
-import top.continew.starter.core.constant.PropertiesConstants;
+import org.springframework.context.annotation.Configuration;
 import top.continew.starter.storage.autoconfigure.properties.LocalStorageConfig;
 import top.continew.starter.storage.autoconfigure.properties.StorageProperties;
 import top.continew.starter.storage.engine.StorageStrategyRegistrar;
 import top.continew.starter.storage.strategy.StorageStrategy;
 import top.continew.starter.storage.strategy.impl.LocalStorageStrategy;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -34,7 +33,7 @@ import java.util.List;
  * @author echo
  * @since 2.14.0
  */
-@ConditionalOnProperty(prefix = PropertiesConstants.STORAGE, name = "local")
+@Configuration(proxyBeanMethods = false)
 public class LocalStorageAutoConfiguration implements StorageStrategyRegistrar {
 
     private final StorageProperties storageProperties;
@@ -48,10 +47,12 @@ public class LocalStorageAutoConfiguration implements StorageStrategyRegistrar {
      *
      * @param strategies 策略列表
      */
-    @Bean
     @Override
     public void register(List<StorageStrategy> strategies) {
-        for (LocalStorageConfig config : storageProperties.getLocal()) {
+        List<LocalStorageConfig> localConfigs = storageProperties.getLocal() == null
+            ? Collections.emptyList()
+            : storageProperties.getLocal();
+        for (LocalStorageConfig config : localConfigs) {
             if (config.isEnabled()) {
                 if (config.getMultipartUploadThreshold() == null || config.getMultipartUploadThreshold() <= 0) {
                     config.setMultipartUploadThreshold(storageProperties.getMultipartUploadThreshold());

@@ -148,28 +148,66 @@ public class StorageStrategyRouter implements ApplicationListener<ApplicationEve
      * 注册动态默认存储
      */
     public void registerDynamicDefaultStorage(String platform) {
-        this.dynamicDefaultPlatform = platform;
+        this.dynamicDefaultPlatform = StrUtil.isBlank(platform) ? null : platform.trim();
     }
 
     /**
      * 获取默认存储平台
      */
     public String getDefaultStorage() {
-        DefaultStorageSource defaultStorageSource = storageProperties.getDefaultStorageSource();
-        return switch (defaultStorageSource) {
-            case DYNAMIC -> {
-                if (StrUtil.isBlank(dynamicDefaultPlatform)) {
-                    throw new StorageException("动态默认存储平台配置为空");
-                }
-                yield dynamicDefaultPlatform;
+        DefaultStorageSource defaultStorageSource = ObjectUtil.defaultIfNull(storageProperties
+            .getDefaultStorageSource(), DefaultStorageSource.DYNAMIC);
+        List<String> candidates = resolveDefaultStorageCandidates(defaultStorageSource);
+        for (String candidate : candidates) {
+            if (hasStrategy(candidate)) {
+                return candidate;
             }
-            case CONFIG -> {
-                if (StrUtil.isBlank(configDefaultPlatform)) {
-                    throw new StorageException("配置默认存储平台配置为空");
-                }
-                yield configDefaultPlatform;
-            }
-        };
+        }
+
+        throw new StorageException(String
+            .format("未找到可用默认存储平台: source=%s, candidates=%s, available=%s", defaultStorageSource, candidates, getAllPlatform()));
+    }
+
+    /**
+     * 解决默认存储候选
+     *
+     * @param defaultStorageSource 默认存储源
+     * @return {@link List }<{@link String }>
+     */
+    private List<String> resolveDefaultStorageCandidates(DefaultStorageSource defaultStorageSource) {
+        Set<String> orderedCandidates = new LinkedHashSet<>();
+        if (defaultStorageSource == DefaultStorageSource.DYNAMIC) {
+            addCandidate(orderedCandidates, dynamicDefaultPlatform);
+            addCandidate(orderedCandidates, configDefaultPlatform);
+        } else {
+            addCandidate(orderedCandidates, configDefaultPlatform);
+            addCandidate(orderedCandidates, dynamicDefaultPlatform);
+        }
+        addCandidate(orderedCandidates, StorageConstant.DEFAULT_STORAGE_PLATFORM);
+        return new ArrayList<>(orderedCandidates);
+    }
+
+    /**
+     * 添加候选人
+     *
+     * @param candidates 候选人
+     * @param platform   站台
+     */
+    private void addCandidate(Set<String> candidates, String platform) {
+        String normalizedPlatform = StrUtil.trim(platform);
+        if (StrUtil.isNotBlank(normalizedPlatform)) {
+            candidates.add(normalizedPlatform);
+        }
+    }
+
+    /**
+     * 有策略
+     *
+     * @param platform 站台
+     * @return boolean
+     */
+    private boolean hasStrategy(String platform) {
+        return dynamicStrategies.containsKey(platform) || configStrategies.containsKey(platform);
     }
 
     /**

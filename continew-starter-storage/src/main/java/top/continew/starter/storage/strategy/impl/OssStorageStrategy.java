@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.core.client.config.ClientOverrideConfiguration;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3Configuration;
@@ -41,8 +42,13 @@ import top.continew.starter.storage.domain.model.resp.MultipartUploadResp;
 import top.continew.starter.storage.strategy.StorageStrategy;
 import top.continew.starter.storage.common.util.StorageUtils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -61,11 +67,17 @@ public class OssStorageStrategy implements StorageStrategy {
     private final S3Client s3Client;
     private final S3Presigner s3Presigner;
     private final OssStorageConfig config;
+    private final long multipartUploadThreshold;
     private final long multipartUploadPartSize;
+    private final String multipartTempDir;
+    private final long uploadPartInMemoryThreshold;
 
     public OssStorageStrategy(OssStorageConfig config) {
         this.config = config;
+        this.multipartUploadThreshold = resolveMultipartUploadThreshold(config);
         this.multipartUploadPartSize = resolveMultipartUploadPartSize(config);
+        this.multipartTempDir = resolveMultipartTempDir(config);
+        this.uploadPartInMemoryThreshold = resolveUploadPartInMemoryThreshold();
         this.s3Client = createS3Client(config);
         this.s3Presigner = createS3Presigner(config);
     }
@@ -103,7 +115,8 @@ public class OssStorageStrategy implements StorageStrategy {
             .credentialsProvider(auth)
             .endpointOverride(URI.create(config.getEndpoint()))
             .region(StorageUtils.getRegion(config.getRegion()))
-            .serviceConfiguration(S3Configuration.builder().pathStyleAccessEnabled(true).build())
+            .serviceConfiguration(buildS3Configuration(config))
+            .overrideConfiguration(buildTimeoutConfig(config))
             .build();
     }
 
@@ -123,9 +136,7 @@ public class OssStorageStrategy implements StorageStrategy {
             .credentialsProvider(auth)
             .endpointOverride(URI.create(domain))
             .region(StorageUtils.getRegion(config.getRegion()))
-            .serviceConfiguration(S3Configuration.builder()
-                .pathStyleAccessEnabled(config.isPathStyleAccessEnabled())
-                .build())
+            .serviceConfiguration(buildS3Configuration(config))
             .build();
     }
 
@@ -216,8 +227,11 @@ public class OssStorageStrategy implements StorageStrategy {
         try {
             s3Client.headObject(HeadObjectRequest.builder().bucket(bucket).key(normalizeKey(path)).build());
             return true;
-        } catch (NoSuchKeyException e) {
-            return false;
+        } catch (S3Exception e) {
+            if (e.statusCode() == 404) {
+                return false;
+            }
+            throw new StorageException("S3检查文件存在性失败: " + e.getMessage(), e);
         } catch (Exception e) {
             throw new StorageException("S3检查文件存在性失败: " + e.getMessage(), e);
         }
@@ -257,8 +271,11 @@ public class OssStorageStrategy implements StorageStrategy {
 
             return fileInfo;
 
-        } catch (NoSuchKeyException e) {
-            return null;
+        } catch (S3Exception e) {
+            if (e.statusCode() == 404) {
+                return null;
+            }
+            throw new StorageException("S3获取文件信息失败: " + e.getMessage(), e);
         } catch (Exception e) {
             throw new StorageException("S3获取文件信息失败: " + e.getMessage(), e);
         }
@@ -340,9 +357,6 @@ public class OssStorageStrategy implements StorageStrategy {
         return config.getBucketName();
     }
 
-    /**
-     * 生成预签名URL
-     */
     @Override
     public String generatePresignedUrl(String bucket, String path, long expireSeconds) {
         try {
@@ -369,14 +383,14 @@ public class OssStorageStrategy implements StorageStrategy {
     public String generateUploadPresignedUrl(String bucket, String path, long expireSeconds) {
         try {
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                    .bucket(bucket)
-                    .key(normalizeKey(path))
-                    .build();
+                .bucket(bucket)
+                .key(normalizeKey(path))
+                .build();
 
             PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
-                    .signatureDuration(Duration.ofSeconds(expireSeconds))
-                    .putObjectRequest(putObjectRequest)
-                    .build();
+                .signatureDuration(Duration.ofSeconds(expireSeconds))
+                .putObjectRequest(putObjectRequest)
+                .build();
 
             PresignedPutObjectRequest presignedRequest = s3Presigner.presignPutObject(presignRequest);
             return presignedRequest.url().toString();
@@ -389,11 +403,15 @@ public class OssStorageStrategy implements StorageStrategy {
      * 获取文件URL
      */
     private String getFileUrl(String path) {
-        if (config.getEndpoint() != null && !config.getEndpoint().isEmpty()) {
-            return config.getEndpoint() + StringConstants.SLASH + path;
-        } else {
-            return String.format("%s/%s/%s", config.getEndpoint(), config.getBucketName(), path);
+        String baseUrl = StrUtil.isNotBlank(config.getDomain()) ? config.getDomain() : config.getEndpoint();
+        if (StrUtil.isBlank(baseUrl)) {
+            return StringConstants.SLASH + path;
         }
+        baseUrl = StrUtil.removeSuffix(baseUrl, StringConstants.SLASH);
+        if (StrUtil.isNotBlank(config.getDomain())) {
+            return baseUrl + StringConstants.SLASH + path;
+        }
+        return String.format("%s/%s/%s", baseUrl, config.getBucketName(), path);
     }
 
     /**
@@ -468,6 +486,9 @@ public class OssStorageStrategy implements StorageStrategy {
                                           String uploadId,
                                           int partNumber,
                                           InputStream data) {
+        byte[] partBytes = null;
+        Path tempFile = null;
+        long partSize = 0L;
         try {
             String key = normalizeKey(path);
 
@@ -475,8 +496,11 @@ public class OssStorageStrategy implements StorageStrategy {
                 throw new StorageException("无效的uploadId: " + uploadId);
             }
 
-            // 读取数据到内存（注意：实际使用时可能需要优化大文件处理）
-            byte[] bytes = data.readAllBytes();
+            // 小分片优先走内存，超过阈值自动切换到临时文件，兼顾吞吐和内存控制
+            PartPayload payload = readPartPayload(data);
+            partBytes = payload.bytes();
+            tempFile = payload.tempFile();
+            partSize = payload.size();
 
             // 构建请求
             UploadPartRequest request = UploadPartRequest.builder()
@@ -484,16 +508,20 @@ public class OssStorageStrategy implements StorageStrategy {
                 .key(key)
                 .uploadId(uploadId)
                 .partNumber(partNumber)
-                .contentLength((long)bytes.length)
+                .contentLength(partSize)
                 .build();
 
             // 执行上传
-            UploadPartResponse response = s3Client.uploadPart(request, RequestBody.fromBytes(bytes));
+            RequestBody requestBody = partBytes != null
+                ? RequestBody.fromBytes(partBytes)
+                : RequestBody.fromFile(tempFile);
+            UploadPartResponse response = s3Client.uploadPart(request, requestBody);
 
             // 构建返回结果
             MultipartUploadResp result = new MultipartUploadResp();
             result.setPartNumber(partNumber);
             result.setPartETag(response.eTag());
+            result.setPartSize(partSize);
             result.setSuccess(true);
             return result;
 
@@ -503,6 +531,14 @@ public class OssStorageStrategy implements StorageStrategy {
             result.setSuccess(false);
             result.setErrorMessage(e.getMessage());
             return result;
+        } finally {
+            if (tempFile != null) {
+                try {
+                    Files.deleteIfExists(tempFile);
+                } catch (Exception e) {
+                    log.warn("删除临时分片文件失败: {}", tempFile, e);
+                }
+            }
         }
     }
 
@@ -665,11 +701,95 @@ public class OssStorageStrategy implements StorageStrategy {
         return key;
     }
 
+    private long resolveMultipartUploadThreshold(OssStorageConfig ossStorageConfig) {
+        Long threshold = ossStorageConfig.getMultipartUploadThreshold();
+        if (threshold == null || threshold <= 0) {
+            return StorageConstant.DEFAULT_MULTIPART_UPLOAD_THRESHOLD;
+        }
+        return threshold;
+    }
+
     private long resolveMultipartUploadPartSize(OssStorageConfig ossStorageConfig) {
         Long partSize = ossStorageConfig.getMultipartUploadPartSize();
         if (partSize == null || partSize <= 0) {
             return StorageConstant.DEFAULT_MULTIPART_UPLOAD_PART_SIZE;
         }
         return partSize;
+    }
+
+    private long resolveUploadPartInMemoryThreshold() {
+        // 复用现有配置：以内存分片阈值=min(分片阈值, 分片大小)
+        long threshold = Math.min(multipartUploadThreshold, multipartUploadPartSize);
+        return Math.max(1L, threshold);
+    }
+
+    private String resolveMultipartTempDir(OssStorageConfig ossStorageConfig) {
+        if (StrUtil.isBlank(ossStorageConfig.getMultipartTempDir())) {
+            return StorageConstant.DEFAULT_LOCAL_MULTIPART_TEMP_DIR;
+        }
+        return ossStorageConfig.getMultipartTempDir().trim();
+    }
+
+    private S3Configuration buildS3Configuration(OssStorageConfig ossStorageConfig) {
+        return S3Configuration.builder()
+            .pathStyleAccessEnabled(ossStorageConfig.isPathStyleAccessEnabled())
+            .accelerateModeEnabled(ossStorageConfig.isTransferAccelerationEnabled())
+            .build();
+    }
+
+    private ClientOverrideConfiguration buildTimeoutConfig(OssStorageConfig ossStorageConfig) {
+        int requestTimeoutSeconds = Math.max(1, ossStorageConfig.getRequestTimeout());
+        Duration timeout = Duration.ofSeconds(requestTimeoutSeconds);
+        return ClientOverrideConfiguration.builder()
+            .apiCallAttemptTimeout(timeout)
+            .apiCallTimeout(timeout.multipliedBy(2))
+            .build();
+    }
+
+    private PartPayload readPartPayload(InputStream data) throws IOException {
+        byte[] buffer = new byte[8192];
+        ByteArrayOutputStream memoryBuffer = new ByteArrayOutputStream();
+        OutputStream fileOutput = null;
+        Path tempFile = null;
+        long totalRead = 0L;
+
+        try {
+            int bytesRead;
+            while ((bytesRead = data.read(buffer)) != -1) {
+                totalRead += bytesRead;
+                if (fileOutput != null) {
+                    fileOutput.write(buffer, 0, bytesRead);
+                    continue;
+                }
+                if (totalRead <= uploadPartInMemoryThreshold) {
+                    memoryBuffer.write(buffer, 0, bytesRead);
+                    continue;
+                }
+
+                // 超过阈值后，切换到文件模式，先写入已缓存内存数据
+                tempFile = createMultipartTempFile();
+                fileOutput = Files.newOutputStream(tempFile);
+                memoryBuffer.writeTo(fileOutput);
+                fileOutput.write(buffer, 0, bytesRead);
+            }
+        } finally {
+            if (fileOutput != null) {
+                fileOutput.close();
+            }
+        }
+
+        if (tempFile != null) {
+            return new PartPayload(null, tempFile, totalRead);
+        }
+        return new PartPayload(memoryBuffer.toByteArray(), null, totalRead);
+    }
+
+    private Path createMultipartTempFile() throws IOException {
+        Path tempDir = Path.of(multipartTempDir);
+        Files.createDirectories(tempDir);
+        return Files.createTempFile(tempDir, "storage-part-", ".tmp");
+    }
+
+    private record PartPayload(byte[] bytes, Path tempFile, long size) {
     }
 }

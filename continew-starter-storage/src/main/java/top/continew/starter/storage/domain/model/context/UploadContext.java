@@ -17,6 +17,7 @@
 package top.continew.starter.storage.domain.model.context;
 
 import org.springframework.web.multipart.MultipartFile;
+import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.storage.domain.model.req.ThumbnailSize;
 import top.continew.starter.storage.processor.progress.UploadProgressListener;
 
@@ -85,7 +86,18 @@ public class UploadContext {
      * 获取完整路径
      */
     public String getFullPath() {
-        return path + formatFileName;
+        String safePath = path == null ? "" : path.trim();
+        String safeFileName = formatFileName == null ? "" : formatFileName.trim();
+
+        if (safePath.isEmpty()) {
+            return safeFileName;
+        }
+        if (safeFileName.isEmpty()) {
+            return safePath;
+        }
+        return safePath.endsWith(StringConstants.SLASH)
+            ? safePath + safeFileName
+            : safePath + StringConstants.SLASH + safeFileName;
     }
 
     public MultipartFile getFile() {
