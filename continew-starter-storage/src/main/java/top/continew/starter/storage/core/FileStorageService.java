@@ -726,7 +726,7 @@ public class FileStorageService {
      * 使用默认存储下载
      */
     public InputStream download(String bucket, String path) {
-        return download(storageProperties.getDefaultPlatform(), bucket, path);
+        return download(getDefaultPlatform(), bucket, path);
     }
 
     /**
