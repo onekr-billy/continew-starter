@@ -817,8 +817,29 @@ public class FileStorageService {
     /**
      * 生成预签名URL
      */
+    public String generatePresignedUrl(String bucket, String path, long expireSeconds) {
+        return generatePresignedUrl(getDefaultPlatform(), bucket, path, expireSeconds);
+    }
+
+    /**
+     * 生成预签名URL
+     */
     public String generatePresignedUrl(String platform, String bucket, String path, long expireSeconds) {
         return router.route(platform).generatePresignedUrl(bucket, path, expireSeconds);
+    }
+
+    /**
+     * 生成上传预签名URL
+     */
+    public String generateUploadPresignedUrl(String bucket, String path, long expireSeconds) {
+        return generateUploadPresignedUrl(getDefaultPlatform(), bucket, path, expireSeconds);
+    }
+
+    /**
+     * 生成上传预签名URL
+     */
+    public String generateUploadPresignedUrl(String platform, String bucket, String path, long expireSeconds) {
+        return router.route(platform).generateUploadPresignedUrl(bucket, path, expireSeconds);
     }
 
     /**

@@ -109,6 +109,11 @@ public interface StorageStrategy {
     String generatePresignedUrl(String bucket, String path, long expireSeconds);
 
     /**
+     * 生成上传预签名URL
+     */
+    String generateUploadPresignedUrl(String bucket, String path, long expireSeconds);
+
+    /**
      * 初始化分片上传
      *
      * @param bucket      存储桶

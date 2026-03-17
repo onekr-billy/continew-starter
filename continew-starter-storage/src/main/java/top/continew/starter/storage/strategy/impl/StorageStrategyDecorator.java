@@ -132,6 +132,11 @@ public abstract class StorageStrategyDecorator<T extends StorageStrategy> implem
     }
 
     @Override
+    public String generateUploadPresignedUrl(String bucket, String path, long expireSeconds) {
+        return getDelegate().generateUploadPresignedUrl(bucket, path, expireSeconds);
+    }
+
+    @Override
     public MultipartInitResp initMultipartUpload(String bucket,
                                                  String path,
                                                  String contentType,

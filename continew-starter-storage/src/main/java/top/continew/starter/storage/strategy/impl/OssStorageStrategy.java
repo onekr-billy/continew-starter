@@ -29,6 +29,8 @@ import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.storage.autoconfigure.properties.OssStorageConfig;
 import top.continew.starter.storage.common.constant.StorageConstant;
@@ -360,6 +362,26 @@ public class OssStorageStrategy implements StorageStrategy {
 
         } catch (Exception e) {
             throw new StorageException("S3生成预签名URL失败: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public String generateUploadPresignedUrl(String bucket, String path, long expireSeconds) {
+        try {
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                    .bucket(bucket)
+                    .key(normalizeKey(path))
+                    .build();
+
+            PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
+                    .signatureDuration(Duration.ofSeconds(expireSeconds))
+                    .putObjectRequest(putObjectRequest)
+                    .build();
+
+            PresignedPutObjectRequest presignedRequest = s3Presigner.presignPutObject(presignRequest);
+            return presignedRequest.url().toString();
+        } catch (Exception e) {
+            throw new StorageException("S3生成上传预签名URL失败: " + e.getMessage(), e);
         }
     }
 

@@ -280,6 +280,14 @@ public class LocalStorageStrategy implements StorageStrategy {
     }
 
     /**
+     * 生成上传预签名URL（本地存储返回普通URL）
+     */
+    @Override
+    public String generateUploadPresignedUrl(String bucket, String path, long expireSeconds) {
+        return config.getEndpoint() + StringConstants.SLASH + normalizePath(path);
+    }
+
+    /**
      * 删除空的父目录
      */
     private void deleteEmptyParentDirectories(Path dir) {
