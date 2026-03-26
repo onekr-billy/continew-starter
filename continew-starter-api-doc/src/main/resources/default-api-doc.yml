@@ -12,3 +12,11 @@ springdoc:
 ## 接口文档增强配置
 nextdoc4j:
   enabled: true
+  # 启用插件
+  plugin:
+    # 认证展示插件
+    security:
+      enabled: true
+    # 枚举展示插件
+    enum:
+      enabled: true

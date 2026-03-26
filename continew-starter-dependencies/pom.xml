@@ -62,7 +62,7 @@
         <crane4j.version>2.9.0</crane4j.version>
 
         <!-- API Documentation Versions -->
-        <nextdoc4j.version>1.1.5</nextdoc4j.version>
+        <nextdoc4j.version>1.2.0</nextdoc4j.version>
         <swagger.version>2.2.38</swagger.version>
 
         <!-- Tracing and Logging Versions -->
@@ -320,7 +320,7 @@
             <!-- NextDoc4j (现代化 API 文档 UI 工具，全面替代 Swagger UI) -->
             <dependency>
                 <groupId>top.nextdoc4j</groupId>
-                <artifactId>nextdoc4j-bom</artifactId>
+                <artifactId>nextdoc4j-bom-springboot3</artifactId>
                 <version>${nextdoc4j.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
