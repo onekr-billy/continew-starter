@@ -32,7 +32,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -55,6 +54,7 @@ import java.util.Map;
 @EnableConfigurationProperties(MyBatisPlusExtensionProperties.class)
 @ConditionalOnProperty(prefix = "mybatis-plus.extension", name = PropertiesConstants.ENABLED, havingValue = "true")
 @PropertySource(value = "classpath:default-data-mybatis-plus.yml", factory = GeneralPropertySourceFactory.class)
+@Import({MyBatisPlusIdGeneratorConfiguration.class})
 public class MybatisPlusAutoConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(MybatisPlusAutoConfiguration.class);
@@ -97,14 +97,6 @@ public class MybatisPlusAutoConfiguration {
         }
         return interceptor;
     }
-
-    /**
-     * ID 生成器配置
-     */
-    @Configuration
-    @Import({MyBatisPlusIdGeneratorConfiguration.Default.class, MyBatisPlusIdGeneratorConfiguration.CosId.class,
-        MyBatisPlusIdGeneratorConfiguration.Custom.class})
-    protected static class MyBatisPlusIdGeneratorAutoConfiguration {}
 
     /**
      * 分页插件配置（<a href="https://baomidou.com/pages/97710a/#paginationinnerinterceptor">PaginationInnerInterceptor</a>）

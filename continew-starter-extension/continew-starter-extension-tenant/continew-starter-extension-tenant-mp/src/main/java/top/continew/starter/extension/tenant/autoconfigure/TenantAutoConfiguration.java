@@ -25,7 +25,9 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.ResolvableType;
 import top.continew.starter.extension.tenant.annotation.ConditionalOnEnabledTenant;
 import top.continew.starter.extension.tenant.aop.TenantIgnoreAspect;
@@ -46,6 +48,8 @@ import javax.sql.DataSource;
  */
 @AutoConfiguration
 @ConditionalOnEnabledTenant
+@EnableConfigurationProperties(TenantProperties.class)
+@Import({TenantWebConfiguration.class})
 public class TenantAutoConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(TenantAutoConfiguration.class);
@@ -119,7 +123,7 @@ public class TenantAutoConfiguration {
     @ConditionalOnMissingBean
     public TenantProvider tenantProvider() {
         if (log.isErrorEnabled()) {
-            log.error("Consider defining a bean of type '{}' in your configuration.", ResolvableType
+            log.error("[ContiNew Starter] - Consider defining a bean of type '{}' in your configuration.", ResolvableType
                 .forClass(TenantProvider.class));
         }
         throw new NoSuchBeanDefinitionException(TenantProvider.class);

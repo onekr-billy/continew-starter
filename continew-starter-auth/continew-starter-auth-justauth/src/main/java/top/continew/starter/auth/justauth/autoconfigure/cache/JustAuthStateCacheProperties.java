@@ -14,36 +14,36 @@
  * limitations under the License.
  */
 
-package top.continew.starter.auth.justauth.autoconfigure;
+package top.continew.starter.auth.justauth.autoconfigure.cache;
 
 import java.time.Duration;
 
 /**
- * JustAuth 缓存配置属性
+ * JustAuth State 缓存配置属性
  *
  * @author <a href="https://gitee.com/justauth/justauth-spring-boot-starter">yangkai.shen</a>
  * @author Charles7c
  * @since 2.15.0
  */
-public class JustAuthCacheProperties {
+public class JustAuthStateCacheProperties {
 
     /**
-     * 缓存类型
+     * 类型
      */
     private CacheType type = CacheType.DEFAULT;
 
     /**
-     * 缓存前缀
+     * 前缀
      * <p>
-     * 目前仅 {@link #type CacheType.REDIS} 缓存生效（默认：{@code JUSTAUTH::STATE::}）
+     * 目前仅 {@link #type CacheType.REDIS} 生效
      * </p>
      */
-    private String prefix = "JUSTAUTH::STATE::";
+    private String prefix = "CONTINEW-STARTER::JUSTAUTH::STATE::";
 
     /**
      * 超时时长
      * <p>
-     * 目前仅 {@link #type CacheType.REDIS} 缓存生效（默认：3分钟）
+     * 目前仅 {@link #type CacheType.REDIS} 生效
      * </p>
      */
     private Duration timeout = Duration.ofMinutes(3);
@@ -78,17 +78,17 @@ public class JustAuthCacheProperties {
     public enum CacheType {
 
         /**
-         * 使用 JustAuth 内置缓存
+         * 使用内存
          */
         DEFAULT,
 
         /**
-         * 使用 Redis 缓存
+         * 使用 Redis
          */
         REDIS,
 
         /**
-         * 自定义缓存
+         * 自定义
          */
         CUSTOM
     }

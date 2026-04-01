@@ -35,9 +35,9 @@ public class SaTokenExtensionProperties {
     private boolean enabled = false;
 
     /**
-     * 启用 JWT
+     * 是否启用 JWT
      */
-    private boolean enableJwt = false;
+    private boolean jwtEnabled = false;
 
     /**
      * 持久层配置
@@ -59,12 +59,12 @@ public class SaTokenExtensionProperties {
         this.enabled = enabled;
     }
 
-    public boolean isEnableJwt() {
-        return enableJwt;
+    public boolean isJwtEnabled() {
+        return jwtEnabled;
     }
 
-    public void setEnableJwt(boolean enableJwt) {
-        this.enableJwt = enableJwt;
+    public void setJwtEnabled(boolean jwtEnabled) {
+        this.jwtEnabled = jwtEnabled;
     }
 
     public SaTokenDaoProperties getDao() {

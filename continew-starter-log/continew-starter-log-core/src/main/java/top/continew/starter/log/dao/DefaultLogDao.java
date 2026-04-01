@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package top.continew.starter.log.dao.impl;
+package top.continew.starter.log.dao;
 
-import top.continew.starter.log.dao.LogDao;
 import top.continew.starter.log.model.LogRecord;
 
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 日志持久层接口默认实现类（基于内存）
+ * 日志持久层接口默认实现类 - 使用内存
  *
  * @author Dave Syer（Spring Boot Actuator）
  * @author Olivier Bourgain（Spring Boot Actuator）
  * @author Charles7c
  * @since 1.1.0
  */
-public class DefaultLogDaoImpl implements LogDao {
+public class DefaultLogDao implements LogDao {
 
     /**
      * 容量

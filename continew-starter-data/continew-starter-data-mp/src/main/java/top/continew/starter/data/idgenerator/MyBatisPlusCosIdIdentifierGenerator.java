@@ -14,28 +14,29 @@
  * limitations under the License.
  */
 
-package top.continew.starter.data.enums;
+package top.continew.starter.data.idgenerator;
+
+import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
+import me.ahoo.cosid.snowflake.SnowflakeId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Lazy;
 
 /**
- * MyBatis ID 生成器类型枚举
+ * MyBatis Plus ID 生成器 - CosId
  *
  * @author Charles7c
  * @since 1.4.0
  */
-public enum MyBatisPlusIdGeneratorType {
+public class MyBatisPlusCosIdIdentifierGenerator implements IdentifierGenerator {
 
-    /**
-     * 默认
-     */
-    DEFAULT,
+    @Qualifier("__share__SnowflakeId")
+    @Lazy
+    @Autowired
+    private SnowflakeId snowflakeId;
 
-    /**
-     * CosId
-     */
-    COSID,
-
-    /**
-     * 自定义
-     */
-    CUSTOM
+    @Override
+    public Number nextId(Object entity) {
+        return snowflakeId.generate();
+    }
 }

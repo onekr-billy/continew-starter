@@ -24,9 +24,9 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import top.continew.starter.auth.justauth.AuthRequestFactory;
+import top.continew.starter.auth.justauth.autoconfigure.cache.JustAuthStateCacheConfiguration;
 import top.continew.starter.core.constant.PropertiesConstants;
 
 /**
@@ -39,6 +39,7 @@ import top.continew.starter.core.constant.PropertiesConstants;
 @AutoConfiguration
 @EnableConfigurationProperties(JustAuthProperties.class)
 @ConditionalOnProperty(prefix = PropertiesConstants.AUTH_JUSTAUTH, name = PropertiesConstants.ENABLED, havingValue = "true", matchIfMissing = true)
+@Import({JustAuthStateCacheConfiguration.class})
 public class JustAuthAutoConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(JustAuthAutoConfiguration.class);
@@ -49,15 +50,6 @@ public class JustAuthAutoConfiguration {
     @Bean
     public AuthRequestFactory authRequestFactory(JustAuthProperties properties, AuthStateCache stateCache) {
         return new AuthRequestFactory(properties, stateCache);
-    }
-
-    /**
-     * 缓存自动配置
-     */
-    @Configuration
-    @Import({JustAuthStateCacheConfiguration.Default.class, JustAuthStateCacheConfiguration.Redis.class,
-        JustAuthStateCacheConfiguration.Custom.class})
-    protected static class AuthStateCacheAutoConfiguration {
     }
 
     @PostConstruct

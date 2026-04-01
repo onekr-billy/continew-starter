@@ -16,8 +16,6 @@
 
 package top.continew.starter.auth.satoken.autoconfigure.dao;
 
-import top.continew.starter.auth.satoken.enums.SaTokenDaoType;
-
 /**
  * SaToken 持久层配置属性
  *
@@ -29,13 +27,34 @@ public class SaTokenDaoProperties {
     /**
      * 持久层类型
      */
-    private SaTokenDaoType type = SaTokenDaoType.DEFAULT;
+    private DaoType type = DaoType.DEFAULT;
 
-    public SaTokenDaoType getType() {
+    public DaoType getType() {
         return type;
     }
 
-    public void setType(SaTokenDaoType type) {
+    public void setType(DaoType type) {
         this.type = type;
+    }
+
+    /**
+     * 持久层类型枚举
+     */
+    public enum DaoType {
+
+        /**
+         * 使用内存
+         */
+        DEFAULT,
+
+        /**
+         * 使用 Redis
+         */
+        REDIS,
+
+        /**
+         * 自定义
+         */
+        CUSTOM
     }
 }

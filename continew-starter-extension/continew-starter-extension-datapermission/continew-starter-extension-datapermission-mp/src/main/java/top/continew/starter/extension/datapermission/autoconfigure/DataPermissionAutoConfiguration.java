@@ -72,7 +72,7 @@ public class DataPermissionAutoConfiguration {
     @ConditionalOnMissingBean
     public DataPermissionUserDataProvider dataPermissionUserDataProvider() {
         if (log.isErrorEnabled()) {
-            log.error("Consider defining a bean of type '{}' in your configuration.", ResolvableType
+            log.error("[ContiNew Starter] - Consider defining a bean of type '{}' in your configuration.", ResolvableType
                 .forClass(DataPermissionUserDataProvider.class));
         }
         throw new NoSuchBeanDefinitionException(DataPermissionUserDataProvider.class);

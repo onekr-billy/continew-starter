@@ -19,6 +19,7 @@ package top.continew.starter.auth.justauth.autoconfigure;
 import me.zhyd.oauth.config.AuthConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import top.continew.starter.auth.justauth.autoconfigure.cache.JustAuthStateCacheProperties;
 import top.continew.starter.core.constant.PropertiesConstants;
 
 import java.util.Map;
@@ -53,7 +54,7 @@ public class JustAuthProperties {
      * 缓存配置
      */
     @NestedConfigurationProperty
-    private JustAuthCacheProperties cache;
+    private JustAuthStateCacheProperties cache;
 
     /**
      * HTTP 配置
@@ -85,11 +86,11 @@ public class JustAuthProperties {
         this.extend = extend;
     }
 
-    public JustAuthCacheProperties getCache() {
+    public JustAuthStateCacheProperties getCache() {
         return cache;
     }
 
-    public void setCache(JustAuthCacheProperties cache) {
+    public void setCache(JustAuthStateCacheProperties cache) {
         this.cache = cache;
     }
 

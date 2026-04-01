@@ -16,10 +16,8 @@
 
 package top.continew.starter.data.autoconfigure.idgenerator;
 
-import top.continew.starter.data.enums.MyBatisPlusIdGeneratorType;
-
 /**
- * MyBatis ID 生成器配置属性
+ * MyBatis Plus ID 生成器配置属性
  *
  * @author Charles7c
  * @since 1.4.0
@@ -27,15 +25,37 @@ import top.continew.starter.data.enums.MyBatisPlusIdGeneratorType;
 public class MyBatisPlusIdGeneratorProperties {
 
     /**
-     * ID 生成器类型
+     * 类型
      */
-    private MyBatisPlusIdGeneratorType type = MyBatisPlusIdGeneratorType.DEFAULT;
+    private IdGeneratorType type = IdGeneratorType.DEFAULT;
 
-    public MyBatisPlusIdGeneratorType getType() {
+    public IdGeneratorType getType() {
         return type;
     }
 
-    public void setType(MyBatisPlusIdGeneratorType type) {
+    public void setType(IdGeneratorType type) {
         this.type = type;
     }
+
+    /**
+     * ID 生成器类型枚举
+     */
+    public enum IdGeneratorType {
+
+        /**
+         * 使用雪花算法（使用网卡信息绑定雪花生成器，防止集群雪花 ID 重复）
+         */
+        DEFAULT,
+
+        /**
+         * 使用 CosId
+         */
+        COSID,
+
+        /**
+         * 自定义
+         */
+        CUSTOM
+    }
+
 }

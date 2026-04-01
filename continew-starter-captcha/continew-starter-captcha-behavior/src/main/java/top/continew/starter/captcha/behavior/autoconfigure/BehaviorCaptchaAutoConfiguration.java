@@ -32,9 +32,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import top.continew.starter.captcha.behavior.autoconfigure.cache.BehaviorCaptchaCacheConfiguration;
 import top.continew.starter.core.constant.PropertiesConstants;
 
 import java.util.HashMap;
@@ -50,22 +52,18 @@ import java.util.Properties;
 @AutoConfiguration
 @EnableConfigurationProperties(BehaviorCaptchaProperties.class)
 @ConditionalOnProperty(prefix = PropertiesConstants.CAPTCHA_BEHAVIOR, name = PropertiesConstants.ENABLED, havingValue = "true", matchIfMissing = true)
+@Import({BehaviorCaptchaCacheConfiguration.class})
 public class BehaviorCaptchaAutoConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(BehaviorCaptchaAutoConfiguration.class);
-    private final BehaviorCaptchaProperties properties;
-
-    public BehaviorCaptchaAutoConfiguration(BehaviorCaptchaProperties properties) {
-        this.properties = properties;
-    }
 
     /**
-     * 行为验证码服务接口
+     * 行为验证码服务
      */
     @Bean
     @DependsOn("captchaCacheService")
     @ConditionalOnMissingBean
-    public CaptchaService captchaService() {
+    public CaptchaService captchaService(BehaviorCaptchaProperties properties) {
         Properties config = new Properties();
         config.put(Const.CAPTCHA_CACHETYPE, properties.getCacheType().name().toLowerCase());
         config.put(Const.CAPTCHA_WATER_MARK, properties.getWaterMark());

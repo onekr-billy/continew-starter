@@ -16,39 +16,43 @@
 
 package top.continew.starter.extension.tenant.autoconfigure;
 
-import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import top.continew.starter.core.constant.OrderedConstants;
-import top.continew.starter.extension.tenant.annotation.ConditionalOnEnabledTenant;
 import top.continew.starter.extension.tenant.config.TenantProvider;
 import top.continew.starter.extension.tenant.interceptor.TenantInterceptor;
 
 /**
- * 租户 Web MVC 自动配置
+ * 租户 Web 层配置（拦截器等）
  *
  * @author Charles7c
  * @since 2.7.0
  */
-@AutoConfiguration
-@ConditionalOnEnabledTenant
-@ConditionalOnWebApplication
-@EnableConfigurationProperties(TenantProperties.class)
-public class TenantWebMvcAutoConfiguration implements WebMvcConfigurer {
+@Configuration(proxyBeanMethods = false)
+@ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
+public class TenantWebConfiguration implements WebMvcConfigurer {
 
-    private final TenantProperties tenantProperties;
-    private final TenantProvider tenantProvider;
+    private final TenantInterceptor tenantInterceptor;
 
-    public TenantWebMvcAutoConfiguration(TenantProperties tenantProperties, TenantProvider tenantProvider) {
-        this.tenantProperties = tenantProperties;
-        this.tenantProvider = tenantProvider;
+    public TenantWebConfiguration(TenantInterceptor tenantInterceptor) {
+        this.tenantInterceptor = tenantInterceptor;
+    }
+
+    /**
+     * 租户拦截器
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public TenantInterceptor tenantInterceptor(TenantProperties properties, TenantProvider provider) {
+        return new TenantInterceptor(properties, provider);
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new TenantInterceptor(tenantProperties, tenantProvider))
-            .order(OrderedConstants.Interceptor.TENANT_INTERCEPTOR);
+        registry.addInterceptor(this.tenantInterceptor).order(OrderedConstants.Interceptor.TENANT_INTERCEPTOR);
     }
 }

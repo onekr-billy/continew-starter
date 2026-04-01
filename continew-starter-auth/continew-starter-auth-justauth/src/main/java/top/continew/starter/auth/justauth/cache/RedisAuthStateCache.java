@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package top.continew.starter.auth.justauth.state;
+package top.continew.starter.auth.justauth.cache;
 
 import me.zhyd.oauth.cache.AuthStateCache;
-import top.continew.starter.auth.justauth.autoconfigure.JustAuthCacheProperties;
+import top.continew.starter.auth.justauth.autoconfigure.cache.JustAuthStateCacheProperties;
 import top.continew.starter.cache.redisson.util.RedisUtils;
 
 import java.time.Duration;
@@ -30,9 +30,9 @@ import java.time.Duration;
  */
 public class RedisAuthStateCache implements AuthStateCache {
 
-    public final JustAuthCacheProperties cacheProperties;
+    public final JustAuthStateCacheProperties cacheProperties;
 
-    public RedisAuthStateCache(JustAuthCacheProperties cacheProperties) {
+    public RedisAuthStateCache(JustAuthStateCacheProperties cacheProperties) {
         this.cacheProperties = cacheProperties;
     }
 

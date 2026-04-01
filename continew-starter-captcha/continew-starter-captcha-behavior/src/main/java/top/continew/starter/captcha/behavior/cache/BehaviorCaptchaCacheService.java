@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.continew.starter.captcha.behavior.autoconfigure.cache;
+package top.continew.starter.captcha.behavior.cache;
 
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.NumberUtil;
@@ -25,12 +25,13 @@ import top.continew.starter.captcha.behavior.enums.StorageType;
 import java.time.Duration;
 
 /**
- * 行为验证码 Redis 缓存实现
+ * 行为验证码缓存 - 使用 Redis
  *
  * @author Bull-BCLS
  * @since 1.1.0
  */
-public class BehaviorCaptchaCacheServiceImpl implements CaptchaCacheService {
+public class BehaviorCaptchaCacheService implements CaptchaCacheService {
+
     @Override
     public void set(String key, String value, long expiresInSeconds) {
         if (NumberUtil.isNumber(value)) {

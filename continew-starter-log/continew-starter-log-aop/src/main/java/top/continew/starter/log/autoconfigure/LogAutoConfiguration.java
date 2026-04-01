@@ -20,19 +20,19 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.DispatcherType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import top.continew.starter.core.constant.OrderedConstants;
 import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.log.annotation.ConditionalOnEnabledLog;
 import top.continew.starter.log.aspect.AccessLogAspect;
 import top.continew.starter.log.aspect.LogAspect;
+import top.continew.starter.log.dao.DefaultLogDao;
 import top.continew.starter.log.dao.LogDao;
-import top.continew.starter.log.dao.impl.DefaultLogDaoImpl;
 import top.continew.starter.log.filter.LogFilter;
 import top.continew.starter.log.handler.AopLogHandler;
 import top.continew.starter.log.handler.LogHandler;
@@ -45,7 +45,7 @@ import top.continew.starter.log.model.LogProperties;
  * @author echo
  * @since 1.1.0
  */
-@Configuration
+@AutoConfiguration
 @ConditionalOnEnabledLog
 @EnableConfigurationProperties(LogProperties.class)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
@@ -111,7 +111,7 @@ public class LogAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public LogDao logDao() {
-        return new DefaultLogDaoImpl();
+        return new DefaultLogDao();
     }
 
     @PostConstruct
