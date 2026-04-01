@@ -56,11 +56,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class GlobalResponseAutoConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalResponseAutoConfiguration.class);
-    private final GlobalResponseProperties globalResponseProperties;
-
-    public GlobalResponseAutoConfiguration(GlobalResponseProperties globalResponseProperties) {
-        this.globalResponseProperties = globalResponseProperties;
-    }
 
     /**
      * 全局响应体处理（非 void）
@@ -85,8 +80,8 @@ public class GlobalResponseAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean
-    public BeforeControllerAdviceProcess beforeControllerAdviceProcess() {
-        return new DefaultBeforeControllerAdviceProcessImpl(globalResponseProperties);
+    public BeforeControllerAdviceProcess beforeControllerAdviceProcess(GlobalResponseProperties globalResponseProperties) {
+        return new DefaultBeforeControllerAdviceProcess(globalResponseProperties);
     }
 
     /**

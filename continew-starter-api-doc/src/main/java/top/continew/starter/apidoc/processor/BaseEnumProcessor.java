@@ -17,7 +17,6 @@
 package top.continew.starter.apidoc.processor;
 
 import cn.hutool.core.util.ClassUtil;
-import org.springframework.stereotype.Component;
 import top.continew.starter.core.enums.BaseEnum;
 import top.nextdoc4j.enums.resolver.EnumMetadataResolver;
 
@@ -27,7 +26,6 @@ import top.nextdoc4j.enums.resolver.EnumMetadataResolver;
  * @author echo
  * @since 2.15.0
  */
-@Component
 public class BaseEnumProcessor implements EnumMetadataResolver {
 
     @Override

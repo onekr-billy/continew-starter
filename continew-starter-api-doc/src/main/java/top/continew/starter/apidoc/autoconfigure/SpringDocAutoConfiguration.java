@@ -34,6 +34,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import top.continew.starter.apidoc.processor.BaseEnumProcessor;
 import top.continew.starter.core.autoconfigure.application.ApplicationProperties;
 import top.continew.starter.core.util.GeneralPropertySourceFactory;
+import top.nextdoc4j.enums.resolver.EnumMetadataResolver;
 
 /**
  * API 文档自动配置
@@ -78,11 +79,11 @@ public class SpringDocAutoConfiguration implements WebMvcConfigurer {
     /**
      * BaseEnum 枚举处理器
      *
-     * @return {@link BaseEnumProcessor }
+     * @return {@link EnumMetadataResolver }
      */
     @Bean
     @ConditionalOnMissingBean
-    public BaseEnumProcessor baseEnumProcessor() {
+    public EnumMetadataResolver enumMetadataResolver() {
         return new BaseEnumProcessor();
     }
 

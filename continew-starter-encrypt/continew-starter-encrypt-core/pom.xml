@@ -22,7 +22,7 @@
             <artifactId>continew-starter-core</artifactId>
         </dependency>
 
-        <!-- Hutool 加密解密模块（封装 JDK 中加密解密算法） -->
+        <!-- Hutool 加密模块（提供对称加密、非对称加密、摘要算法、签名算法等） -->
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-crypto</artifactId>

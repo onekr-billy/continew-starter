@@ -29,12 +29,12 @@ import org.springframework.lang.Nullable;
  * @author Charles7c
  * @since 2.6.0
  */
-public class DefaultBeforeControllerAdviceProcessImpl implements BeforeControllerAdviceProcess {
+public class DefaultBeforeControllerAdviceProcess implements BeforeControllerAdviceProcess {
 
-    private final Logger log = LoggerFactory.getLogger(DefaultBeforeControllerAdviceProcessImpl.class);
+    private final Logger log = LoggerFactory.getLogger(DefaultBeforeControllerAdviceProcess.class);
     private final GlobalResponseProperties globalResponseProperties;
 
-    public DefaultBeforeControllerAdviceProcessImpl(GlobalResponseProperties globalResponseProperties) {
+    public DefaultBeforeControllerAdviceProcess(GlobalResponseProperties globalResponseProperties) {
         this.globalResponseProperties = globalResponseProperties;
     }
 

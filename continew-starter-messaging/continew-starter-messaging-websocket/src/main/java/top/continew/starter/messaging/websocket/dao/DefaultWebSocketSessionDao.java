@@ -24,12 +24,12 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * WebSocket 会话 DAO 默认实现
+ * WebSocket 会话 DAO 默认实现 - 使用内存
  *
  * @author Charles7c
  * @since 2.1.0
  */
-public class WebSocketSessionDaoDefaultImpl implements WebSocketSessionDao {
+public class DefaultWebSocketSessionDao implements WebSocketSessionDao {
 
     private static final Map<String, WebSocketSession> SESSION_MAP = new ConcurrentHashMap<>();
 
