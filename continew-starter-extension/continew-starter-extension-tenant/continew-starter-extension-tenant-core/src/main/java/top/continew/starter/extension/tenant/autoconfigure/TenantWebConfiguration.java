@@ -16,14 +16,11 @@
 
 package top.continew.starter.extension.tenant.autoconfigure;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import top.continew.starter.core.constant.OrderedConstants;
-import top.continew.starter.extension.tenant.config.TenantProvider;
 import top.continew.starter.extension.tenant.interceptor.TenantInterceptor;
 
 /**
@@ -40,15 +37,6 @@ public class TenantWebConfiguration implements WebMvcConfigurer {
 
     public TenantWebConfiguration(TenantInterceptor tenantInterceptor) {
         this.tenantInterceptor = tenantInterceptor;
-    }
-
-    /**
-     * 租户拦截器
-     */
-    @Bean
-    @ConditionalOnMissingBean
-    public TenantInterceptor tenantInterceptor(TenantProperties properties, TenantProvider provider) {
-        return new TenantInterceptor(properties, provider);
     }
 
     @Override

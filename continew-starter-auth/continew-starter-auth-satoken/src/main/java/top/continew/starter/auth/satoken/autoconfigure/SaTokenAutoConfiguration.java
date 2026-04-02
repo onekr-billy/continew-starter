@@ -16,8 +16,11 @@
 
 package top.continew.starter.auth.satoken.autoconfigure;
 
+import cn.dev33.satoken.interceptor.SaInterceptor;
 import cn.dev33.satoken.jwt.StpLogicJwtForSimple;
+import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpLogic;
+import cn.dev33.satoken.stp.StpUtil;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +33,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import top.continew.starter.auth.satoken.autoconfigure.dao.SaTokenDaoConfiguration;
 import top.continew.starter.core.constant.PropertiesConstants;
+import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.core.util.GeneralPropertySourceFactory;
 
 /**
@@ -46,6 +50,17 @@ import top.continew.starter.core.util.GeneralPropertySourceFactory;
 public class SaTokenAutoConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(SaTokenAutoConfiguration.class);
+
+    /**
+     * SaToken 拦截器
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public SaInterceptor saInterceptor(SaTokenExtensionProperties properties) {
+        return new SaInterceptor(handle -> SaRouter.match(StringConstants.PATH_PATTERN)
+            .notMatch(properties.getSecurity().getExcludes())
+            .check(r -> StpUtil.checkLogin()));
+    }
 
     /**
      * 整合 JWT（简单模式）
