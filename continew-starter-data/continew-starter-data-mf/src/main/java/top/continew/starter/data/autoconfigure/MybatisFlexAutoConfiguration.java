@@ -20,7 +20,6 @@ import com.mybatisflex.core.dialect.DbType;
 import com.mybatisflex.core.dialect.DialectFactory;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
-import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -40,7 +39,6 @@ import top.continew.starter.data.datapermission.DataPermissionFilter;
  * @since 2.0.2
  */
 @AutoConfiguration
-@MapperScan("${mybatis-flex.extension.mapper-package}")
 @EnableTransactionManagement(proxyTargetClass = true)
 @EnableConfigurationProperties(MyBatisFlexExtensionProperties.class)
 @ConditionalOnProperty(prefix = "mybatis-flex.extension", name = PropertiesConstants.ENABLED, havingValue = "true")

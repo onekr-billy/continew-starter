@@ -34,14 +34,6 @@ public class MyBatisFlexExtensionProperties {
     private boolean enabled = false;
 
     /**
-     * Mapper 接口扫描包（配置时必须使用：mapper-package 键名）
-     * <p>
-     * e.g. com.example.**.mapper
-     * </p>
-     */
-    private String mapperPackage;
-
-    /**
      * 数据权限插件配置
      */
     private DataPermissionProperties dataPermission;
@@ -134,14 +126,6 @@ public class MyBatisFlexExtensionProperties {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-    public String getMapperPackage() {
-        return mapperPackage;
-    }
-
-    public void setMapperPackage(String mapperPackage) {
-        this.mapperPackage = mapperPackage;
     }
 
     public DataPermissionProperties getDataPermission() {
