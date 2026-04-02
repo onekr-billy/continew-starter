@@ -35,7 +35,7 @@
         <p6spy.version>3.9.1</p6spy.version>
 
         <!-- ID Generator and Job Scheduler Versions -->
-        <cosid.version>2.15.2</cosid.version>
+        <cosid.version>2.13.3</cosid.version>
         <snail-job.version>1.9.0</snail-job.version>
 
         <!-- Messaging and Notification Versions -->
