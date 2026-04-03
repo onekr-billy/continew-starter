@@ -16,19 +16,12 @@
 
 package top.continew.starter.log.autoconfigure;
 
-import jakarta.servlet.DispatcherType;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import top.continew.starter.core.constant.OrderedConstants;
 import top.continew.starter.core.constant.StringConstants;
-import top.continew.starter.log.dao.LogDao;
-import top.continew.starter.log.filter.LogFilter;
-import top.continew.starter.log.handler.LogHandler;
 import top.continew.starter.log.interceptor.LogInterceptor;
 import top.continew.starter.log.model.LogProperties;
 
@@ -48,28 +41,6 @@ public class LogWebConfiguration implements WebMvcConfigurer {
     protected LogWebConfiguration(LogProperties properties, LogInterceptor logInterceptor) {
         this.properties = properties;
         this.logInterceptor = logInterceptor;
-    }
-
-    /**
-     * 日志过滤器
-     */
-    @Bean
-    public FilterRegistrationBean<LogFilter> logFilter() {
-        FilterRegistrationBean<LogFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new LogFilter(properties));
-        registrationBean.setOrder(OrderedConstants.Filter.LOG_FILTER);
-        registrationBean.addUrlPatterns(StringConstants.PATH_PATTERN_CURRENT_DIR);
-        registrationBean.setDispatcherTypes(DispatcherType.REQUEST);
-        return registrationBean;
-    }
-
-    /**
-     * 日志拦截器
-     */
-    @Bean
-    @ConditionalOnMissingBean
-    public LogInterceptor logInterceptor(LogHandler logHandler, LogDao logDao) {
-        return new LogInterceptor(properties, logHandler, logDao);
     }
 
     @Override

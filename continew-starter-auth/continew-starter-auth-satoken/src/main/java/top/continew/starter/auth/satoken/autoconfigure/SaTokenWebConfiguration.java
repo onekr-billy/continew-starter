@@ -17,11 +17,7 @@
 package top.continew.starter.auth.satoken.autoconfigure;
 
 import cn.dev33.satoken.interceptor.SaInterceptor;
-import cn.dev33.satoken.router.SaRouter;
-import cn.dev33.satoken.stp.StpUtil;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -39,22 +35,9 @@ import top.continew.starter.core.constant.StringConstants;
 public class SaTokenWebConfiguration implements WebMvcConfigurer {
 
     private final SaInterceptor saInterceptor;
-    private final SaTokenExtensionProperties properties;
 
-    protected SaTokenWebConfiguration(SaInterceptor saInterceptor, SaTokenExtensionProperties properties) {
+    protected SaTokenWebConfiguration(SaInterceptor saInterceptor) {
         this.saInterceptor = saInterceptor;
-        this.properties = properties;
-    }
-
-    /**
-     * SaToken 拦截器
-     */
-    @Bean
-    @ConditionalOnMissingBean
-    public SaInterceptor saInterceptor() {
-        return new SaInterceptor(handle -> SaRouter.match(StringConstants.PATH_PATTERN)
-            .notMatch(properties.getSecurity().getExcludes())
-            .check(r -> StpUtil.checkLogin()));
     }
 
     @Override

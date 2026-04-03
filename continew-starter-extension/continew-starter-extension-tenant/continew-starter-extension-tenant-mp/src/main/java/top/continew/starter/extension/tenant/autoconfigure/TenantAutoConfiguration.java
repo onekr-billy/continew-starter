@@ -37,6 +37,7 @@ import top.continew.starter.extension.tenant.handler.datasource.DefaultTenantDat
 import top.continew.starter.extension.tenant.handler.datasource.TenantDataSourceAdvisor;
 import top.continew.starter.extension.tenant.handler.datasource.TenantDataSourceInterceptor;
 import top.continew.starter.extension.tenant.handler.line.DefaultTenantLineHandler;
+import top.continew.starter.extension.tenant.interceptor.TenantInterceptor;
 
 import javax.sql.DataSource;
 
@@ -53,10 +54,19 @@ import javax.sql.DataSource;
 public class TenantAutoConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(TenantAutoConfiguration.class);
-    private final TenantProperties tenantProperties;
+    private final TenantProperties properties;
 
-    public TenantAutoConfiguration(TenantProperties tenantProperties) {
-        this.tenantProperties = tenantProperties;
+    public TenantAutoConfiguration(TenantProperties properties) {
+        this.properties = properties;
+    }
+
+    /**
+     * 租户 Web 拦截器
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public TenantInterceptor tenantInterceptor(TenantProvider provider) {
+        return new TenantInterceptor(properties, provider);
     }
 
     /**
@@ -83,7 +93,7 @@ public class TenantAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public TenantLineHandler tenantLineHandler() {
-        return new DefaultTenantLineHandler(tenantProperties);
+        return new DefaultTenantLineHandler(properties);
     }
 
     /**

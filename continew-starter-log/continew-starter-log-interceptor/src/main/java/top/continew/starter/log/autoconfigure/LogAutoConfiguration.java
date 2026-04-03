@@ -17,18 +17,24 @@
 package top.continew.starter.log.autoconfigure;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.DispatcherType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import top.continew.starter.core.constant.OrderedConstants;
+import top.continew.starter.core.constant.StringConstants;
 import top.continew.starter.log.annotation.ConditionalOnEnabledLog;
 import top.continew.starter.log.dao.DefaultLogDao;
 import top.continew.starter.log.dao.LogDao;
+import top.continew.starter.log.filter.LogFilter;
 import top.continew.starter.log.handler.InterceptorLogHandler;
 import top.continew.starter.log.handler.LogHandler;
+import top.continew.starter.log.interceptor.LogInterceptor;
 import top.continew.starter.log.model.LogProperties;
 
 /**
@@ -44,6 +50,33 @@ import top.continew.starter.log.model.LogProperties;
 public class LogAutoConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(LogAutoConfiguration.class);
+    private final LogProperties properties;
+
+    public LogAutoConfiguration(LogProperties properties) {
+        this.properties = properties;
+    }
+
+    /**
+     * 日志过滤器
+     */
+    @Bean
+    public FilterRegistrationBean<LogFilter> logFilter() {
+        FilterRegistrationBean<LogFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new LogFilter(properties));
+        registrationBean.setOrder(OrderedConstants.Filter.LOG_FILTER);
+        registrationBean.addUrlPatterns(StringConstants.PATH_PATTERN_CURRENT_DIR);
+        registrationBean.setDispatcherTypes(DispatcherType.REQUEST);
+        return registrationBean;
+    }
+
+    /**
+     * 日志拦截器
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public LogInterceptor logInterceptor(LogHandler logHandler, LogDao logDao) {
+        return new LogInterceptor(properties, logHandler, logDao);
+    }
 
     /**
      * 日志处理器
