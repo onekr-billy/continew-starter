@@ -25,7 +25,6 @@ import org.springframework.boot.task.ThreadPoolTaskSchedulerCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import top.continew.starter.core.constant.PropertiesConstants;
 
 /**
@@ -35,7 +34,6 @@ import top.continew.starter.core.constant.PropertiesConstants;
  * @since 1.0.0
  */
 @Configuration(proxyBeanMethods = false)
-@EnableScheduling
 @ConditionalOnProperty(prefix = "spring.task.scheduling.extension", name = PropertiesConstants.ENABLED, havingValue = "true", matchIfMissing = true)
 class TaskSchedulingConfiguration {
 

@@ -21,21 +21,23 @@ import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
 import org.springframework.boot.task.ThreadPoolTaskExecutorCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
-import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import top.continew.starter.core.constant.PropertiesConstants;
 import top.continew.starter.core.exception.BaseException;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.concurrent.Executor;
 
 /**
@@ -46,7 +48,7 @@ import java.util.concurrent.Executor;
  */
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(prefix = "spring.task.execution.extension", name = PropertiesConstants.ENABLED, havingValue = "true", matchIfMissing = true)
-class TaskExecutionConfiguration {
+public class TaskExecutionConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(TaskExecutionConfiguration.class);
 
@@ -56,6 +58,9 @@ class TaskExecutionConfiguration {
     @Value("${spring.task.execution.pool.max-size:#{T(java.lang.Runtime).getRuntime().availableProcessors() * 2}}")
     private int maxPoolSize;
 
+    @Value("${spring.task.execution.pool.queue-capacity:#{T(java.lang.Runtime).getRuntime().availableProcessors() * 200}}")
+    private int queueCapacity;
+
     @Bean
     public ThreadPoolTaskExecutorCustomizer threadPoolTaskExecutorCustomizer(ThreadPoolExtensionProperties properties) {
         return executor -> {
@@ -63,6 +68,8 @@ class TaskExecutionConfiguration {
             executor.setCorePoolSize(corePoolSize);
             // 最大线程数
             executor.setMaxPoolSize(maxPoolSize);
+            // 队列容量
+            executor.setQueueCapacity(queueCapacity);
             // 当线程池的任务缓存队列已满并且线程池中的线程数已达到 maxPoolSize 时采取的任务拒绝策略
             executor.setRejectedExecutionHandler(properties.getExecution()
                 .getRejectedPolicy()
@@ -71,44 +78,38 @@ class TaskExecutionConfiguration {
     }
 
     /**
-     * {@link Async} 异步任务线程池配置
+     * 异步方法执行器
+     *
+     * @see org.springframework.scheduling.annotation.Async
      */
-    @EnableAsync(proxyTargetClass = true)
-    static class AsyncThreadPoolConfigurer implements AsyncConfigurer {
+    @Bean
+    @ConditionalOnMissingBean(AsyncConfigurer.class)
+    public AsyncConfigurer asyncConfigurer(BeanFactory beanFactory,
+                                           ObjectProvider<AsyncUncaughtExceptionHandler> exceptionHandlerProvider) {
 
-        private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
+        return new AsyncConfigurer() {
+            @Override
+            public Executor getAsyncExecutor() {
+                return beanFactory
+                    .getBean(TaskExecutionAutoConfiguration.APPLICATION_TASK_EXECUTOR_BEAN_NAME, Executor.class);
+            }
 
-        public AsyncThreadPoolConfigurer(ThreadPoolTaskExecutor threadPoolTaskExecutor) {
-            this.threadPoolTaskExecutor = threadPoolTaskExecutor;
-        }
-
-        @Override
-        public Executor getAsyncExecutor() {
-            return threadPoolTaskExecutor;
-        }
-
-        /**
-         * 异步任务执行时的异常处理
-         */
-        @Override
-        public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
-            return (throwable, method, objects) -> {
-                StringBuilder sb = new StringBuilder();
-                sb.append("Exception message: ")
-                    .append(throwable.getMessage())
-                    .append(", Method name: ")
-                    .append(method.getName());
-                if (ArrayUtil.isNotEmpty(objects)) {
-                    sb.append(", Parameter value: ").append(Arrays.toString(objects));
-                }
-                throw new BaseException(sb.toString());
-            };
-        }
-
-        @PostConstruct
-        public void postConstruct() {
-            log.debug("[ContiNew Starter] - Auto Configuration 'TaskExecutor-@Async' completed initialization.");
-        }
+            @Override
+            public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
+                AsyncUncaughtExceptionHandler handler = exceptionHandlerProvider.getIfAvailable();
+                return Objects.requireNonNullElseGet(handler, () -> (throwable, method, objects) -> {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("Exception message: ")
+                        .append(throwable.getMessage())
+                        .append(", Method name: ")
+                        .append(method.getName());
+                    if (ArrayUtil.isNotEmpty(objects)) {
+                        sb.append(", Parameter value: ").append(Arrays.toString(objects));
+                    }
+                    throw new BaseException(sb.toString(), throwable);
+                });
+            }
+        };
     }
 
     @PostConstruct

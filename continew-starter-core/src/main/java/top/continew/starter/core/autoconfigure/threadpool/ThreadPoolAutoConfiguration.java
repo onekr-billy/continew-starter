@@ -17,6 +17,8 @@
 package top.continew.starter.core.autoconfigure.threadpool;
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
+import org.springframework.boot.autoconfigure.task.TaskSchedulingAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Lazy;
@@ -28,7 +30,7 @@ import org.springframework.context.annotation.Lazy;
  * @since 1.0.0
  */
 @Lazy
-@AutoConfiguration
+@AutoConfiguration(before = {TaskExecutionAutoConfiguration.class, TaskSchedulingAutoConfiguration.class})
 @EnableConfigurationProperties(ThreadPoolExtensionProperties.class)
 @Import({TaskExecutionConfiguration.class, TaskSchedulingConfiguration.class})
 public class ThreadPoolAutoConfiguration {
