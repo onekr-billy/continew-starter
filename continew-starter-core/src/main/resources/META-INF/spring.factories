@@ -1,0 +1,2 @@
+org.springframework.context.ApplicationListener=\
+  top.continew.starter.core.autoconfigure.ContiNewStarterVersionLogger
