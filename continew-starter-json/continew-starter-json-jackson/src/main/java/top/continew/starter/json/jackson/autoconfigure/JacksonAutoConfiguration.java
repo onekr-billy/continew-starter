@@ -114,7 +114,7 @@ public class JacksonAutoConfiguration {
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addSerializer(BaseEnum.class, BaseEnumSerializer.SERIALIZER_INSTANCE);
         SimpleDeserializersWrapper deserializers = new SimpleDeserializersWrapper();
-        deserializers.addDeserializer(BaseEnum.class, BaseEnumDeserializer.SERIALIZER_INSTANCE);
+        deserializers.addDeserializer(BaseEnum.class, new BaseEnumDeserializer());
         simpleModule.setDeserializers(deserializers);
         return simpleModule;
     }
