@@ -1,4 +1,4 @@
-name: Scan
+name: SonarCloud
 
 on:
   push:
@@ -8,13 +8,16 @@ on:
     branches:
       - dev
 
+permissions:
+  contents: read
+
 jobs:
   sonar-scan:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         jdk-version:
-          - 17
+          - 21
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,26 +26,17 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: "adopt"
+          distribution: "temurin"
           java-version: ${{ matrix.jdk-version }}
           cache: "maven"
       - name: Cache SonarCloud packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
-      - name: Cache Maven packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
       - name: Analyze
-        run: |
-          sed -i.bak '/<repositories>/,/<\/repositories>/d' pom.xml
-          sed -i.bak '/<pluginRepositories>/,/<\/pluginRepositories>/d' pom.xml
-          mvn -B verify -Psonar
+        run: mvn -B verify -Psonar -Dsonar.scanner.skipJreProvisioning=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
