@@ -206,7 +206,6 @@ git push --force-with-lease
 
 - **Issue 广场**：https://continew.top/docs/starter/issue-hub.html
 - **官方交流群**：[入群方式](https://continew.top/discussion.html)。欢迎先提交 Issue 沉淀问题，再将 Issue 链接分享至交流群并 @ 我们，即可与维护团队及其他大佬用户直接交流探讨
-- **DeepWiki AI**：https://deepwiki.com/continew-org/continew-starter
 
 ## 许可
 

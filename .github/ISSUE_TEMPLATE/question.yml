@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        提问前建议先查阅[使用指南](https://continew.top/docs/starter/guide/introduction.html)、[常见问题](https://continew.top/docs/starter/faq.html)并询问 [DeepWiki](https://deepwiki.com/continew-org/continew-starter)，多数使用问题都能快速找到答案。
+        提问前建议先查阅[使用指南](https://continew.top/docs/starter/guide/introduction.html)、[常见问题](https://continew.top/docs/starter/faq.html)，多数使用问题都能快速找到答案。
 
         > 依赖组件自身的问题（如 MyBatis-Plus、Sa-Token 等）请提交至对应组件仓库。
   - type: checkboxes

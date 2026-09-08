@@ -9,7 +9,7 @@ body:
 
         1. 请在[最新版本](https://central.sonatype.com/artifact/top.continew.starter/continew-starter/versions)（可临时安装 dev 分支 SNAPSHOT 验证，生产请使用正式版）上验证问题是否仍然存在，项目仅维护最新版本；
         2. 请搜索 [Issue 广场](https://continew.top/docs/starter/issue-hub.html) 与[已有 Issue](https://github.com/continew-org/continew-starter/issues)，避免重复提交；
-        3. 使用与配置问题建议先查阅[使用指南](https://continew.top/docs/starter/guide/introduction.html)、[常见问题](https://continew.top/docs/starter/faq.html)或询问 [DeepWiki](https://deepwiki.com/continew-org/continew-starter)。
+        3. 使用与配置问题建议先查阅[使用指南](https://continew.top/docs/starter/guide/introduction.html)、[常见问题](https://continew.top/docs/starter/faq.html)。
 
         > ContiNew Admin 使用中的问题请先提交至 [ContiNew Admin](https://github.com/continew-org/continew-admin/issues/new/choose)；依赖组件（如 MyBatis-Plus、Sa-Token、Redisson）自身的问题请提交至对应组件仓库。
 
